@@ -90,11 +90,22 @@ successfully opened is to register for the DID_OPEN event.
     @SuppressWarnings("unchecked")
     public void open(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = open");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "open");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -106,11 +117,22 @@ successfully opened is to register for the DID_OPEN event.
     @SuppressWarnings("unchecked")
     public void close(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = close");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "close");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -120,7 +142,7 @@ successfully opened is to register for the DID_OPEN event.
     public void focus()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("focus");
+        script.appendCall(getContextPath() + "focus");
         getScriptProxy().addScript(script);
     }
 
@@ -131,11 +153,22 @@ successfully opened is to register for the DID_OPEN event.
     @SuppressWarnings("unchecked")
     public void isOpen(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isOpen");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isOpen");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -146,11 +179,22 @@ successfully opened is to register for the DID_OPEN event.
     @SuppressWarnings("unchecked")
     public void isParentOpen(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isParentOpen");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isParentOpen");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -164,7 +208,7 @@ relative to the upper-left corner of the screen.
     public void moveTo(int intOffsetLeft, int intOffsetTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("moveTo", intOffsetLeft, intOffsetTop);
+        script.appendCall(getContextPath() + "moveTo", intOffsetLeft, intOffsetTop);
         getScriptProxy().addScript(script);
     }
 
@@ -174,7 +218,7 @@ relative to the upper-left corner of the screen.
     public void constrainToScreen()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("constrainToScreen");
+        script.appendCall(getContextPath() + "constrainToScreen");
         getScriptProxy().addScript(script);
     }
 
@@ -186,11 +230,22 @@ corner of the screen.
     @SuppressWarnings("unchecked")
     public void getOffsetLeft(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOffsetLeft");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOffsetLeft");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -202,11 +257,22 @@ corner of the screen.
     @SuppressWarnings("unchecked")
     public void getOffsetTop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOffsetTop");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOffsetTop");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -255,11 +321,22 @@ to the DOM, and returns it. A window will only render its first DOM child.
     @SuppressWarnings("unchecked")
     public void repaint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = repaint");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "repaint");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -270,11 +347,22 @@ browser may render around the window content.
     @SuppressWarnings("unchecked")
     public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -286,7 +374,7 @@ immediately.
     public void setWidth(int intWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWidth", intWidth);
+        script.appendCall(getContextPath() + "setWidth", intWidth);
         getScriptProxy().addScript(script);
     }
 
@@ -297,11 +385,22 @@ browser may render around the window content.
     @SuppressWarnings("unchecked")
     public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -313,7 +412,7 @@ immediately.
     public void setHeight(int intHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeight", intHeight);
+        script.appendCall(getContextPath() + "setHeight", intHeight);
         getScriptProxy().addScript(script);
     }
 
@@ -326,11 +425,22 @@ browser window.
     @SuppressWarnings("unchecked")
     public void isResizable(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isResizable");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isResizable");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -341,7 +451,7 @@ browser window.
     public void setResizable(boolean bResizable)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setResizable", bResizable);
+        script.appendCall(getContextPath() + "setResizable", bResizable);
         getScriptProxy().addScript(script);
     }
 
@@ -354,11 +464,22 @@ reflect the current state of the browser window.
     @SuppressWarnings("unchecked")
     public void isScrollable(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isScrollable");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isScrollable");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -370,7 +491,7 @@ currently-open window.
     public void setScrollable(boolean bScrollable)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setScrollable", bScrollable);
+        script.appendCall(getContextPath() + "setScrollable", bScrollable);
         getScriptProxy().addScript(script);
     }
 
@@ -384,11 +505,22 @@ will raise errors.
     @SuppressWarnings("unchecked")
     public void isDependent(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isDependent");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isDependent");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -399,7 +531,7 @@ will raise errors.
     public void setDependent(boolean bDependent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDependent", bDependent);
+        script.appendCall(getContextPath() + "setDependent", bDependent);
         getScriptProxy().addScript(script);
     }
 
@@ -409,11 +541,22 @@ will raise errors.
     @SuppressWarnings("unchecked")
     public void getTitle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTitle");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTitle");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -425,7 +568,7 @@ currently open, the title will be updated immediately.
     public void setTitle(String strTitle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTitle", strTitle);
+        script.appendCall(getContextPath() + "setTitle", strTitle);
         getScriptProxy().addScript(script);
     }
 

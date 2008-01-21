@@ -107,7 +107,7 @@ public class Painted extends jsx3.app.Model
     public jsx3.gui.Painted setDynamicProperty(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDynamicProperty", strName, strValue);
+        script.appendCall(getContextPath() + "setDynamicProperty", strName, strValue);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -120,11 +120,22 @@ public class Painted extends jsx3.app.Model
     @SuppressWarnings("unchecked")
     public void getDynamicProperty(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDynamicProperty", strName);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDynamicProperty", strName);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -137,7 +148,7 @@ public class Painted extends jsx3.app.Model
     public jsx3.gui.Painted setAttribute(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAttribute", strName, strValue);
+        script.appendCall(getContextPath() + "setAttribute", strName, strValue);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -149,11 +160,22 @@ public class Painted extends jsx3.app.Model
     @SuppressWarnings("unchecked")
     public void getAttribute(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAttribute", strName);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAttribute", strName);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -282,28 +304,22 @@ public class Painted extends jsx3.app.Model
     @SuppressWarnings("unchecked")
     public void focus(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = focus");
-        script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
+        String callbackPrefix = "";
 
-    /**
-     * Returns handle/reference to the JSX GUI Object's on-screen counterpart—basically a handle to a DHTML object such as a DIV, SPAN, etc
-     * @param objGUI either the HTML document containing the rendered object or an HTML element in that document.
-  This argument is optional but improves the efficiency of this method if provided.
-     * @param callback IE DHTML object
-     */
-    @SuppressWarnings("unchecked")
-    public void getRendered(jsx3.lang.Object objGUI, org.directwebremoting.proxy.Callback<String> callback)
-    {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
 
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRendered", objGUI);
-        script.appendCall("__System.activateCallback", key, "reply");
+        script.appendCall(callbackPrefix + getContextPath() + "focus");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -316,11 +332,50 @@ public class Painted extends jsx3.app.Model
     @SuppressWarnings("unchecked")
     public void getRendered(jsx3.gui.Event objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRendered", objGUI);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRendered", objGUI);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Returns handle/reference to the JSX GUI Object's on-screen counterpart—basically a handle to a DHTML object such as a DIV, SPAN, etc
+     * @param objGUI either the HTML document containing the rendered object or an HTML element in that document.
+  This argument is optional but improves the efficiency of this method if provided.
+     * @param callback IE DHTML object
+     */
+    @SuppressWarnings("unchecked")
+    public void getRendered(jsx3.lang.Object objGUI, org.directwebremoting.proxy.Callback<String> callback)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRendered", objGUI);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -332,11 +387,22 @@ returned HTML. This method has no effect if this object is not currently display
     @SuppressWarnings("unchecked")
     public void repaint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = repaint");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "repaint");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -347,11 +413,22 @@ returned HTML. This method has no effect if this object is not currently display
     @SuppressWarnings("unchecked")
     public void paint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = paint");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "paint");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -368,7 +445,7 @@ the screen does not update between steps 2 and 3.
     public void onAfterPaint(String objGUI)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("onAfterPaint", objGUI);
+        script.appendCall(getContextPath() + "onAfterPaint", objGUI);
         getScriptProxy().addScript(script);
     }
 
@@ -385,7 +462,7 @@ has no effect if this object is not currently painted.
     public void paintChild(jsx3.gui.Painted objChild, boolean bGroup, String objGUI, boolean bCascadeOnly)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("paintChild", objChild, bGroup, objGUI, bCascadeOnly);
+        script.appendCall(getContextPath() + "paintChild", objChild, bGroup, objGUI, bCascadeOnly);
         getScriptProxy().addScript(script);
     }
 
@@ -397,11 +474,22 @@ has no effect if this object is not currently painted.
     @SuppressWarnings("unchecked")
     public void paintChildren(Object[] c, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = paintChildren", c);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "paintChildren", c);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -412,7 +500,7 @@ has no effect if this object is not currently painted.
     public void recalcBox(Object[] properties)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("recalcBox", properties);
+        script.appendCall(getContextPath() + "recalcBox", properties);
         getScriptProxy().addScript(script);
     }
 

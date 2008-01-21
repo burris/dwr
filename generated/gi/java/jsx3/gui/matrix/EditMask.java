@@ -56,7 +56,7 @@ to initialize itself.
     public void emInit(jsx3.gui.matrix.Column objColumn)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("emInit", objColumn);
+        script.appendCall(getContextPath() + "emInit", objColumn);
         getScriptProxy().addScript(script);
     }
 
@@ -74,11 +74,22 @@ to initialize itself.
     @SuppressWarnings("unchecked")
     public void emBeginEdit(String strValue, jsx3.lang.Object objTdDim, jsx3.lang.Object objPaneDim, jsx3.gui.Matrix objMatrix, jsx3.gui.matrix.Column objColumn, String strRecordId, String objTD, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = emBeginEdit", strValue, objTdDim, objPaneDim, objMatrix, objColumn, strRecordId, objTD);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "emBeginEdit", strValue, objTdDim, objPaneDim, objMatrix, objColumn, strRecordId, objTD);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -89,11 +100,22 @@ to initialize itself.
     @SuppressWarnings("unchecked")
     public void emEndEdit(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = emEndEdit");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "emEndEdit");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -104,11 +126,22 @@ to initialize itself.
     @SuppressWarnings("unchecked")
     public void emGetValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = emGetValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "emGetValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -118,7 +151,7 @@ to initialize itself.
     public void suspendEditSession()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("suspendEditSession");
+        script.appendCall(getContextPath() + "suspendEditSession");
         getScriptProxy().addScript(script);
     }
 
@@ -128,7 +161,7 @@ to initialize itself.
     public void resumeEditSession()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("resumeEditSession");
+        script.appendCall(getContextPath() + "resumeEditSession");
         getScriptProxy().addScript(script);
     }
 
@@ -195,7 +228,7 @@ value {String} may be null
     public void commitEditMask(jsx3.gui.Event objEvent, boolean bKeepOpen)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("commitEditMask", objEvent, bKeepOpen);
+        script.appendCall(getContextPath() + "commitEditMask", objEvent, bKeepOpen);
         getScriptProxy().addScript(script);
     }
 

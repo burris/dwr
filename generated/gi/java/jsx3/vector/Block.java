@@ -160,11 +160,22 @@ CustomVector.prototype.updateVector = function(objVector) {
     @SuppressWarnings("unchecked")
     public void updateVector(jsx3.vector.Tag objVector, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = updateVector", objVector);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "updateVector", objVector);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -221,7 +232,7 @@ jsx3.gui.Event, and the native HTMLElement that defined the event handler.
     public void paintEventHandler(String strEvtType, String strMethod, jsx3.vector.Tag objElm)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("paintEventHandler", strEvtType, strMethod, objElm);
+        script.appendCall(getContextPath() + "paintEventHandler", strEvtType, strMethod, objElm);
         getScriptProxy().addScript(script);
     }
 

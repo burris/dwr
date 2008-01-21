@@ -58,7 +58,7 @@ public class Template extends jsx3.lang.Object
     public void setParam(String strName, jsx3.lang.Object objValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setParam", strName, objValue);
+        script.appendCall(getContextPath() + "setParam", strName, objValue);
         getScriptProxy().addScript(script);
     }
 
@@ -68,7 +68,7 @@ public class Template extends jsx3.lang.Object
     public void reset()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("reset");
+        script.appendCall(getContextPath() + "reset");
         getScriptProxy().addScript(script);
     }
 
@@ -80,7 +80,7 @@ public class Template extends jsx3.lang.Object
     public void setParams(jsx3.lang.Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setParams", objParams);
+        script.appendCall(getContextPath() + "setParams", objParams);
         getScriptProxy().addScript(script);
     }
 
@@ -94,11 +94,22 @@ property of this processor and returns null.
     @SuppressWarnings("unchecked")
     public void transform(jsx3.xml.Node objXML, boolean bObject, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = transform", objXML, bObject);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "transform", objXML, bObject);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -194,11 +205,22 @@ description Ð a text description of the error that occurred.
     @SuppressWarnings("unchecked")
     public void hasError(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = hasError");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "hasError");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

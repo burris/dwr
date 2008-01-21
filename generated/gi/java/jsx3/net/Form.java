@@ -113,11 +113,22 @@ public class Form extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getMethod(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMethod");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMethod");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -128,7 +139,7 @@ public class Form extends jsx3.lang.Object
     public void setMethod(String method)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMethod", method);
+        script.appendCall(getContextPath() + "setMethod", method);
         getScriptProxy().addScript(script);
     }
 
@@ -139,11 +150,22 @@ public class Form extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getAction(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAction");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAction");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -154,7 +176,7 @@ public class Form extends jsx3.lang.Object
     public void setAction(String action)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAction", action);
+        script.appendCall(getContextPath() + "setAction", action);
         getScriptProxy().addScript(script);
     }
 
@@ -164,11 +186,22 @@ public class Form extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getMultipart(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMultipart");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMultipart");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -179,7 +212,7 @@ public class Form extends jsx3.lang.Object
     public void setMultipart(boolean multipart)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMultipart", multipart);
+        script.appendCall(getContextPath() + "setMultipart", multipart);
         getScriptProxy().addScript(script);
     }
 
@@ -191,11 +224,22 @@ public class Form extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getField(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getField", strName);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getField", strName);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -205,11 +249,22 @@ public class Form extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getFields(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFields");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFields");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -223,7 +278,7 @@ public class Form extends jsx3.lang.Object
     public void setField(String strName, String strValue, boolean bConcat)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setField", strName, strValue, bConcat);
+        script.appendCall(getContextPath() + "setField", strName, strValue, bConcat);
         getScriptProxy().addScript(script);
     }
 
@@ -234,7 +289,7 @@ public class Form extends jsx3.lang.Object
     public void removeField(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("removeField", strName);
+        script.appendCall(getContextPath() + "removeField", strName);
         getScriptProxy().addScript(script);
     }
 
@@ -245,7 +300,7 @@ public class Form extends jsx3.lang.Object
     public void addFileUploadField(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("addFileUploadField", strName);
+        script.appendCall(getContextPath() + "addFileUploadField", strName);
         getScriptProxy().addScript(script);
     }
 
@@ -257,7 +312,7 @@ supported in browsers other than Microsoft Internet Explorer.
     public void promptForFile(String strFieldName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("promptForFile", strFieldName);
+        script.appendCall(getContextPath() + "promptForFile", strFieldName);
         getScriptProxy().addScript(script);
     }
 
@@ -267,7 +322,7 @@ supported in browsers other than Microsoft Internet Explorer.
     public void abort()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("abort");
+        script.appendCall(getContextPath() + "abort");
         getScriptProxy().addScript(script);
     }
 
@@ -279,7 +334,7 @@ supported in browsers other than Microsoft Internet Explorer.
     public void send(int intPollInterval, int intTimeout)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("send", intPollInterval, intTimeout);
+        script.appendCall(getContextPath() + "send", intPollInterval, intTimeout);
         getScriptProxy().addScript(script);
     }
 
@@ -289,11 +344,22 @@ supported in browsers other than Microsoft Internet Explorer.
     @SuppressWarnings("unchecked")
     public void getResponseText(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getResponseText");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getResponseText");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -341,7 +407,7 @@ onTimeout event for proper garbage collection.
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("destroy");
+        script.appendCall(getContextPath() + "destroy");
         getScriptProxy().addScript(script);
     }
 
@@ -356,7 +422,7 @@ or a default position and dimensions will be used.
     public void reveal(int l, int t, int w, int h)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("reveal", l, t, w, h);
+        script.appendCall(getContextPath() + "reveal", l, t, w, h);
         getScriptProxy().addScript(script);
     }
 
@@ -366,7 +432,7 @@ or a default position and dimensions will be used.
     public void conceal()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("conceal");
+        script.appendCall(getContextPath() + "conceal");
         getScriptProxy().addScript(script);
     }
 
@@ -378,41 +444,22 @@ or a default position and dimensions will be used.
     @SuppressWarnings("unchecked")
     public void publish(jsx3.lang.Object objEvent, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = publish", objEvent);
-        script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
+        String callbackPrefix = "";
 
-    /**
-     * Subscribes an object or function to a type of event published by this object.
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
 
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
+        script.appendCall(callbackPrefix + getContextPath() + "publish", objEvent);
 
-    /**
-     * Subscribes an object or function to a type of event published by this object.
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
 
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, jsx3.lang.Object objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -427,67 +474,7 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, String objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, String objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, String objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -502,7 +489,22 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, String objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -517,37 +519,7 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Subscribes an object or function to a type of event published by this object.
-
-As of version 3.4 a string value for objHandler is deprecated.
-     * @param strEventId the event type(s).
-     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
-     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
-     */
-    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -562,35 +534,112 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void subscribe(String strEventId, jsx3.lang.Object objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("subscribe", strEventId, objHandler, objFunction);
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
     /**
-     * Unsubscribe an object or function from an event published by this object.
+     * Subscribes an object or function to a type of event published by this object.
 
 As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void unsubscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
+    public void subscribe(String strEventId, String objHandler, String objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
     /**
-     * Unsubscribe an object or function from an event published by this object.
+     * Subscribes an object or function to a type of event published by this object.
 
 As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
-     * @param objHandler the value of objHandler passed to subscribe
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
      */
-    public void unsubscribe(String strEventId, String objHandler)
+    public void subscribe(String strEventId, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, String objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, jsx3.lang.Object objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, jsx3.lang.Object objHandler, String objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Subscribes an object or function to a type of event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler if an object, the instance to notify of events (objFunction is required); if a string, the JSX id of the instance to notify of events (objFunction is required), must exist in the same Server; if a function, the function to call to notify of events (objFunction ignored)
+     * @param objFunction if objHandler is a string or object then the function to call on that instance. either a function or a string that is the name of a method of the instance
+     */
+    public void subscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler, org.directwebremoting.proxy.CodeBlock objFunction)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "subscribe", strEventId, objHandler, objFunction);
         getScriptProxy().addScript(script);
     }
 
@@ -604,7 +653,7 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void unsubscribe(Object[] strEventId, String objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall(getContextPath() + "unsubscribe", strEventId, objHandler);
         getScriptProxy().addScript(script);
     }
 
@@ -615,10 +664,10 @@ As of version 3.4 a string value for objHandler is deprecated.
      * @param strEventId the event type(s).
      * @param objHandler the value of objHandler passed to subscribe
      */
-    public void unsubscribe(Object[] strEventId, jsx3.lang.Object objHandler)
+    public void unsubscribe(String strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall(getContextPath() + "unsubscribe", strEventId, objHandler);
         getScriptProxy().addScript(script);
     }
 
@@ -632,7 +681,21 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void unsubscribe(String strEventId, jsx3.lang.Object objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall(getContextPath() + "unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(String strEventId, String objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "unsubscribe", strEventId, objHandler);
         getScriptProxy().addScript(script);
     }
 
@@ -646,7 +709,21 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void unsubscribe(Object[] strEventId, org.directwebremoting.proxy.CodeBlock objHandler)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribe", strEventId, objHandler);
+        script.appendCall(getContextPath() + "unsubscribe", strEventId, objHandler);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Unsubscribe an object or function from an event published by this object.
+
+As of version 3.4 a string value for objHandler is deprecated.
+     * @param strEventId the event type(s).
+     * @param objHandler the value of objHandler passed to subscribe
+     */
+    public void unsubscribe(Object[] strEventId, jsx3.lang.Object objHandler)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "unsubscribe", strEventId, objHandler);
         getScriptProxy().addScript(script);
     }
 
@@ -657,7 +734,7 @@ As of version 3.4 a string value for objHandler is deprecated.
     public void unsubscribeAll(String strEventId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("unsubscribeAll", strEventId);
+        script.appendCall(getContextPath() + "unsubscribeAll", strEventId);
         getScriptProxy().addScript(script);
     }
 

@@ -63,11 +63,22 @@ public class LayoutGrid extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getCols(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCols");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCols");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -80,7 +91,7 @@ public class LayoutGrid extends jsx3.gui.Block
     public jsx3.gui.LayoutGrid setCols(String strCols, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCols", strCols, bRepaint);
+        script.appendCall(getContextPath() + "setCols", strCols, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -91,11 +102,22 @@ public class LayoutGrid extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getRows(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRows");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRows");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -108,7 +130,7 @@ public class LayoutGrid extends jsx3.gui.Block
     public jsx3.gui.LayoutGrid setRows(String strRows, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRows", strRows, bRepaint);
+        script.appendCall(getContextPath() + "setRows", strRows, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }

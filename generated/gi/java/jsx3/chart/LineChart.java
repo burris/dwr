@@ -82,11 +82,22 @@ public class LineChart extends jsx3.chart.CartesianChart
     @SuppressWarnings("unchecked")
     public void getType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -97,7 +108,7 @@ public class LineChart extends jsx3.chart.CartesianChart
     public void setType(String type)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setType", type);
+        script.appendCall(getContextPath() + "setType", type);
         getScriptProxy().addScript(script);
     }
 

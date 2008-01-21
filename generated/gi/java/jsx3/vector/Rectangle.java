@@ -60,7 +60,7 @@ public class Rectangle extends jsx3.vector.Shape
     public void clipToBox(jsx3.gui.Block obj)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clipToBox", obj);
+        script.appendCall(getContextPath() + "clipToBox", obj);
         getScriptProxy().addScript(script);
     }
 
@@ -71,7 +71,7 @@ public class Rectangle extends jsx3.vector.Shape
     public void clipToBox(jsx3.html.BlockTag obj)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clipToBox", obj);
+        script.appendCall(getContextPath() + "clipToBox", obj);
         getScriptProxy().addScript(script);
     }
 
@@ -85,7 +85,7 @@ public class Rectangle extends jsx3.vector.Shape
     public void clipTo(int l1, int t1, int w1, int h1)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clipTo", l1, t1, w1, h1);
+        script.appendCall(getContextPath() + "clipTo", l1, t1, w1, h1);
         getScriptProxy().addScript(script);
     }
 

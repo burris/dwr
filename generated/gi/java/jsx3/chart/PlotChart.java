@@ -84,11 +84,22 @@ public class PlotChart extends jsx3.chart.CartesianChart
     @SuppressWarnings("unchecked")
     public void getMaxPointRadius(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMaxPointRadius");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMaxPointRadius");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -99,7 +110,7 @@ public class PlotChart extends jsx3.chart.CartesianChart
     public void setMaxPointRadius(int maxPointRadius)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMaxPointRadius", maxPointRadius);
+        script.appendCall(getContextPath() + "setMaxPointRadius", maxPointRadius);
         getScriptProxy().addScript(script);
     }
 
@@ -110,11 +121,22 @@ public class PlotChart extends jsx3.chart.CartesianChart
     @SuppressWarnings("unchecked")
     public void getMagnitudeMethod(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMagnitudeMethod");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMagnitudeMethod");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -125,7 +147,7 @@ public class PlotChart extends jsx3.chart.CartesianChart
     public void setMagnitudeMethod(String magnitudeMethod)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMagnitudeMethod", magnitudeMethod);
+        script.appendCall(getContextPath() + "setMagnitudeMethod", magnitudeMethod);
         getScriptProxy().addScript(script);
     }
 

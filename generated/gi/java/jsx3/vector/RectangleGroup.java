@@ -63,7 +63,7 @@ public class RectangleGroup extends jsx3.vector.Shape
     public void addRectangle(int x1, int y1, int x2, int y2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("addRectangle", x1, y1, x2, y2);
+        script.appendCall(getContextPath() + "addRectangle", x1, y1, x2, y2);
         getScriptProxy().addScript(script);
     }
 
@@ -77,7 +77,7 @@ public class RectangleGroup extends jsx3.vector.Shape
     public void addRelativeRectangle(int x1, int y1, int w, int h)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("addRelativeRectangle", x1, y1, w, h);
+        script.appendCall(getContextPath() + "addRelativeRectangle", x1, y1, w, h);
         getScriptProxy().addScript(script);
     }
 
@@ -87,7 +87,7 @@ public class RectangleGroup extends jsx3.vector.Shape
     public void clearRectangles()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clearRectangles");
+        script.appendCall(getContextPath() + "clearRectangles");
         getScriptProxy().addScript(script);
     }
 

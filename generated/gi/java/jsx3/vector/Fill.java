@@ -70,7 +70,7 @@ public class Fill extends jsx3.html.Tag
     public void getColor()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getColor");
+        script.appendCall(getContextPath() + "getColor");
         getScriptProxy().addScript(script);
     }
 
@@ -80,11 +80,22 @@ public class Fill extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getColorHtml(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getColorHtml");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getColorHtml");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -95,7 +106,7 @@ public class Fill extends jsx3.html.Tag
     public void setColor(Integer color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", color);
+        script.appendCall(getContextPath() + "setColor", color);
         getScriptProxy().addScript(script);
     }
 
@@ -106,7 +117,7 @@ public class Fill extends jsx3.html.Tag
     public void setColor(String color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", color);
+        script.appendCall(getContextPath() + "setColor", color);
         getScriptProxy().addScript(script);
     }
 
@@ -117,11 +128,22 @@ public class Fill extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAlpha");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAlpha");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -132,7 +154,7 @@ public class Fill extends jsx3.html.Tag
     public void setAlpha(float alpha)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAlpha", alpha);
+        script.appendCall(getContextPath() + "setAlpha", alpha);
         getScriptProxy().addScript(script);
     }
 
@@ -143,11 +165,22 @@ public class Fill extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -158,7 +191,7 @@ public class Fill extends jsx3.html.Tag
     public void setType(String type)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setType", type);
+        script.appendCall(getContextPath() + "setType", type);
         getScriptProxy().addScript(script);
     }
 
@@ -168,7 +201,7 @@ public class Fill extends jsx3.html.Tag
     public void getColor2()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getColor2");
+        script.appendCall(getContextPath() + "getColor2");
         getScriptProxy().addScript(script);
     }
 
@@ -178,7 +211,7 @@ public class Fill extends jsx3.html.Tag
     public void getColor2Html()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getColor2Html");
+        script.appendCall(getContextPath() + "getColor2Html");
         getScriptProxy().addScript(script);
     }
 
@@ -189,7 +222,7 @@ public class Fill extends jsx3.html.Tag
     public void setColor2(String color2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor2", color2);
+        script.appendCall(getContextPath() + "setColor2", color2);
         getScriptProxy().addScript(script);
     }
 
@@ -200,7 +233,7 @@ public class Fill extends jsx3.html.Tag
     public void setColor2(Integer color2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor2", color2);
+        script.appendCall(getContextPath() + "setColor2", color2);
         getScriptProxy().addScript(script);
     }
 
@@ -211,11 +244,22 @@ public class Fill extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getAlpha2(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAlpha2");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAlpha2");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -226,7 +270,7 @@ public class Fill extends jsx3.html.Tag
     public void setAlpha2(float alpha2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAlpha2", alpha2);
+        script.appendCall(getContextPath() + "setAlpha2", alpha2);
         getScriptProxy().addScript(script);
     }
 
@@ -237,11 +281,22 @@ public class Fill extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getAngle(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAngle");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAngle");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -252,7 +307,7 @@ public class Fill extends jsx3.html.Tag
     public void setAngle(int angle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAngle", angle);
+        script.appendCall(getContextPath() + "setAngle", angle);
         getScriptProxy().addScript(script);
     }
 
@@ -263,11 +318,22 @@ public class Fill extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getColors(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getColors");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getColors");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -278,7 +344,7 @@ public class Fill extends jsx3.html.Tag
     public void setColors(String colors)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColors", colors);
+        script.appendCall(getContextPath() + "setColors", colors);
         getScriptProxy().addScript(script);
     }
 

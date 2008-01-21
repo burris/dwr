@@ -73,11 +73,22 @@ public class Stroke extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getColor(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -87,11 +98,22 @@ public class Stroke extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getColorHtml(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getColorHtml");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getColorHtml");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -102,7 +124,7 @@ public class Stroke extends jsx3.html.Tag
     public void setColor(String color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", color);
+        script.appendCall(getContextPath() + "setColor", color);
         getScriptProxy().addScript(script);
     }
 
@@ -113,7 +135,7 @@ public class Stroke extends jsx3.html.Tag
     public void setColor(int color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", color);
+        script.appendCall(getContextPath() + "setColor", color);
         getScriptProxy().addScript(script);
     }
 
@@ -124,11 +146,22 @@ public class Stroke extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -139,7 +172,7 @@ public class Stroke extends jsx3.html.Tag
     public void setWidth(int width)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWidth", width);
+        script.appendCall(getContextPath() + "setWidth", width);
         getScriptProxy().addScript(script);
     }
 
@@ -150,11 +183,22 @@ public class Stroke extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAlpha");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAlpha");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -165,7 +209,7 @@ public class Stroke extends jsx3.html.Tag
     public void setAlpha(float alpha)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAlpha", alpha);
+        script.appendCall(getContextPath() + "setAlpha", alpha);
         getScriptProxy().addScript(script);
     }
 
@@ -177,11 +221,22 @@ public class Stroke extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void valueOf(String v, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = valueOf", v);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "valueOf", v);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

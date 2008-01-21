@@ -65,7 +65,7 @@ public class DatePicker extends jsx3.gui.Block
      * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public DatePicker(String strName, int intLeft, int intTop, int intWidth, String intHeight)
+    public DatePicker(String strName, String intLeft, String intTop, int intWidth, int intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -81,7 +81,7 @@ public class DatePicker extends jsx3.gui.Block
      * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public DatePicker(String strName, String intLeft, String intTop, String intWidth, String intHeight)
+    public DatePicker(String strName, int intLeft, String intTop, int intWidth, int intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -97,55 +97,7 @@ public class DatePicker extends jsx3.gui.Block
      * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public DatePicker(String strName, String intLeft, String intTop, String intWidth, int intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, int intLeft, int intTop, String intWidth, int intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, String intLeft, String intTop, int intWidth, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, int intLeft, String intTop, int intWidth, String intHeight)
+    public DatePicker(String strName, String intLeft, int intTop, int intWidth, String intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -177,87 +129,7 @@ public class DatePicker extends jsx3.gui.Block
      * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public DatePicker(String strName, int intLeft, int intTop, String intWidth, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, String intLeft, int intTop, String intWidth, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, String intLeft, int intTop, int intWidth, int intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, String intLeft, String intTop, int intWidth, int intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, int intLeft, int intTop, int intWidth, int intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public DatePicker(String strName, String intLeft, int intTop, int intWidth, String intHeight)
+    public DatePicker(String strName, String intLeft, String intTop, String intWidth, int intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -305,7 +177,135 @@ public class DatePicker extends jsx3.gui.Block
      * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public DatePicker(String strName, int intLeft, String intTop, int intWidth, int intHeight)
+    public DatePicker(String strName, int intLeft, int intTop, int intWidth, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, String intLeft, int intTop, String intWidth, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, String intLeft, int intTop, int intWidth, int intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, int intLeft, String intTop, int intWidth, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, int intLeft, int intTop, String intWidth, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, String intLeft, String intTop, int intWidth, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, String intLeft, String intTop, String intWidth, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, int intLeft, int intTop, int intWidth, int intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new DatePicker", strName, intLeft, intTop, intWidth, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public DatePicker(String strName, int intLeft, int intTop, String intWidth, int intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -322,7 +322,7 @@ on the show calendar button. The calendar hides automatically when focus leaves 
     public void focusCalendar()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("focusCalendar");
+        script.appendCall(getContextPath() + "focusCalendar");
         getScriptProxy().addScript(script);
     }
 
@@ -333,11 +333,22 @@ on the show calendar button. The calendar hides automatically when focus leaves 
     @SuppressWarnings("unchecked")
     public void getFormat(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFormat");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFormat");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -351,7 +362,7 @@ the displayed format will be localized accordingly.
     public void setFormat(int jsxformat)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFormat", jsxformat);
+        script.appendCall(getContextPath() + "setFormat", jsxformat);
         getScriptProxy().addScript(script);
     }
 
@@ -365,7 +376,7 @@ the displayed format will be localized accordingly.
     public void setFormat(String jsxformat)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFormat", jsxformat);
+        script.appendCall(getContextPath() + "setFormat", jsxformat);
         getScriptProxy().addScript(script);
     }
 
@@ -376,11 +387,22 @@ the displayed format will be localized accordingly.
     @SuppressWarnings("unchecked")
     public void getFirstDayOfWeek(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFirstDayOfWeek");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFirstDayOfWeek");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -391,7 +413,7 @@ the displayed format will be localized accordingly.
     public void setFirstDayOfWeek(int jsxfirstweekday)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFirstDayOfWeek", jsxfirstweekday);
+        script.appendCall(getContextPath() + "setFirstDayOfWeek", jsxfirstweekday);
         getScriptProxy().addScript(script);
     }
 
@@ -401,11 +423,22 @@ the displayed format will be localized accordingly.
     @SuppressWarnings("unchecked")
     public void getDate(org.directwebremoting.proxy.Callback<java.util.Date> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.Date.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.Date.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -415,11 +448,22 @@ the displayed format will be localized accordingly.
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -430,7 +474,7 @@ the displayed format will be localized accordingly.
     public void setDate(java.util.Date date)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDate", date);
+        script.appendCall(getContextPath() + "setDate", date);
         getScriptProxy().addScript(script);
     }
 
@@ -440,11 +484,22 @@ the displayed format will be localized accordingly.
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -526,11 +581,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -541,11 +607,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -557,11 +634,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -572,11 +660,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -588,11 +687,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -604,11 +714,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -703,7 +824,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 

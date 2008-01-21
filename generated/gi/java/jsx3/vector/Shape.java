@@ -64,11 +64,22 @@ public class Shape extends jsx3.vector.Tag
     @SuppressWarnings("unchecked")
     public void getPath(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPath");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPath");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -79,7 +90,7 @@ public class Shape extends jsx3.vector.Tag
     public void setPath(String path)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPath", path);
+        script.appendCall(getContextPath() + "setPath", path);
         getScriptProxy().addScript(script);
     }
 
@@ -276,7 +287,7 @@ public class Shape extends jsx3.vector.Tag
     public void setFill(jsx3.vector.Fill fill)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFill", fill);
+        script.appendCall(getContextPath() + "setFill", fill);
         getScriptProxy().addScript(script);
     }
 
@@ -287,7 +298,7 @@ public class Shape extends jsx3.vector.Tag
     public void setStroke(jsx3.vector.Stroke stroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setStroke", stroke);
+        script.appendCall(getContextPath() + "setStroke", stroke);
         getScriptProxy().addScript(script);
     }
 
@@ -297,7 +308,7 @@ public class Shape extends jsx3.vector.Tag
     public void getFill()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getFill");
+        script.appendCall(getContextPath() + "getFill");
         getScriptProxy().addScript(script);
     }
 
@@ -307,7 +318,7 @@ public class Shape extends jsx3.vector.Tag
     public void getStroke()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getStroke");
+        script.appendCall(getContextPath() + "getStroke");
         getScriptProxy().addScript(script);
     }
 

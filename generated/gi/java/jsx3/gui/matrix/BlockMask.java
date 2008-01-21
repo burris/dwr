@@ -48,7 +48,7 @@ public class BlockMask extends jsx3.gui.matrix.EditMask
     public void emInit(java.lang.Object objColumn)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("emInit", objColumn);
+        script.appendCall(getContextPath() + "emInit", objColumn);
         getScriptProxy().addScript(script);
     }
 
@@ -65,7 +65,7 @@ public class BlockMask extends jsx3.gui.matrix.EditMask
     public void emBeginEdit(String strValue, java.lang.Object objTdDim, java.lang.Object objPaneDim, java.lang.Object objMatrix, java.lang.Object objColumn, String strRecordId, java.lang.Object objTD)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("emBeginEdit", strValue, objTdDim, objPaneDim, objMatrix, objColumn, strRecordId, objTD);
+        script.appendCall(getContextPath() + "emBeginEdit", strValue, objTdDim, objPaneDim, objMatrix, objColumn, strRecordId, objTD);
         getScriptProxy().addScript(script);
     }
 
@@ -75,7 +75,7 @@ public class BlockMask extends jsx3.gui.matrix.EditMask
     public void emGetValue()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("emGetValue");
+        script.appendCall(getContextPath() + "emGetValue");
         getScriptProxy().addScript(script);
     }
 
@@ -125,11 +125,22 @@ the first descendant (breadth-first) that implements jsx3.gui.Form.
     @SuppressWarnings("unchecked")
     public void getMaskValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMaskValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMaskValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -141,7 +152,7 @@ the first descendant (breadth-first) that implements jsx3.gui.Form.
     public void setMaskValue(String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMaskValue", strValue);
+        script.appendCall(getContextPath() + "setMaskValue", strValue);
         getScriptProxy().addScript(script);
     }
 
@@ -151,7 +162,7 @@ the first descendant (breadth-first) that implements jsx3.gui.Form.
     public void emEndEdit()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("emEndEdit");
+        script.appendCall(getContextPath() + "emEndEdit");
         getScriptProxy().addScript(script);
     }
 

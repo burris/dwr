@@ -73,7 +73,7 @@ public class ImageButton extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
-    public ImageButton(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
+    public ImageButton(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -105,7 +105,7 @@ public class ImageButton extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
-    public ImageButton(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
+    public ImageButton(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -141,11 +141,22 @@ public class ImageButton extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -158,7 +169,7 @@ is off or if the button is in a state for which no image URI is specified.
     public jsx3.gui.ImageButton setImage(String strImage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setImage", strImage);
+        script.appendCall(getContextPath() + "setImage", strImage);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -169,11 +180,22 @@ is off or if the button is in a state for which no image URI is specified.
     @SuppressWarnings("unchecked")
     public void getOverImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOverImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOverImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -186,7 +208,7 @@ over the image button.
     public jsx3.gui.ImageButton setOverImage(String strImage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setOverImage", strImage);
+        script.appendCall(getContextPath() + "setOverImage", strImage);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -197,11 +219,22 @@ over the image button.
     @SuppressWarnings("unchecked")
     public void getDownImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDownImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDownImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -214,7 +247,7 @@ over the image button.
     public jsx3.gui.ImageButton setDownImage(String strImage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDownImage", strImage);
+        script.appendCall(getContextPath() + "setDownImage", strImage);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -225,11 +258,22 @@ over the image button.
     @SuppressWarnings("unchecked")
     public void getOnImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOnImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOnImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -242,7 +286,7 @@ of type TYPE_TOGGLE and its state is STATE_ON.
     public jsx3.gui.ImageButton setOnImage(String strImage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setOnImage", strImage);
+        script.appendCall(getContextPath() + "setOnImage", strImage);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -253,11 +297,22 @@ of type TYPE_TOGGLE and its state is STATE_ON.
     @SuppressWarnings("unchecked")
     public void getDisabledImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -270,7 +325,7 @@ button disabled.
     public jsx3.gui.ImageButton setDisabledImage(String strImage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDisabledImage", strImage);
+        script.appendCall(getContextPath() + "setDisabledImage", strImage);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -282,11 +337,22 @@ button disabled.
     @SuppressWarnings("unchecked")
     public void getState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -298,7 +364,7 @@ button disabled.
     public jsx3.gui.ImageButton setState(int intState)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setState", intState);
+        script.appendCall(getContextPath() + "setState", intState);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -310,11 +376,22 @@ button disabled.
     @SuppressWarnings("unchecked")
     public void getType(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -326,7 +403,7 @@ button disabled.
     public jsx3.gui.ImageButton setType(int intType)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setType", intType);
+        script.appendCall(getContextPath() + "setType", intType);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -337,11 +414,22 @@ button disabled.
     @SuppressWarnings("unchecked")
     public void isPreFetch(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isPreFetch");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isPreFetch");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -354,7 +442,7 @@ the first time a state image is displayed.
     public jsx3.gui.ImageButton setPreFetch(boolean bFetch)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPreFetch", bFetch);
+        script.appendCall(getContextPath() + "setPreFetch", bFetch);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -366,11 +454,22 @@ or required must be OPTIONAL to pass validation.
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -452,11 +551,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -467,11 +577,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -483,11 +604,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -498,11 +630,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -514,11 +657,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -530,11 +684,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -544,11 +709,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -643,7 +819,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 

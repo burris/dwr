@@ -225,7 +225,7 @@ public class Matrix extends jsx3.gui.Block
     public void resetMask()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("resetMask");
+        script.appendCall(getContextPath() + "resetMask");
         getScriptProxy().addScript(script);
     }
 
@@ -236,7 +236,7 @@ has changed. Does not recalculate and reprofile the box profile and resulting XS
     public void repaintData()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("repaintData");
+        script.appendCall(getContextPath() + "repaintData");
         getScriptProxy().addScript(script);
     }
 
@@ -246,7 +246,7 @@ has changed. Does not recalculate and reprofile the box profile and resulting XS
     public void repaintHead()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("repaintHead");
+        script.appendCall(getContextPath() + "repaintHead");
         getScriptProxy().addScript(script);
     }
 
@@ -257,7 +257,7 @@ has changed. Does not recalculate and reprofile the box profile and resulting XS
     public void doSort(String intSortDir)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("doSort", intSortDir);
+        script.appendCall(getContextPath() + "doSort", intSortDir);
         getScriptProxy().addScript(script);
     }
 
@@ -267,11 +267,22 @@ has changed. Does not recalculate and reprofile the box profile and resulting XS
     @SuppressWarnings("unchecked")
     public void getSortPath(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSortPath");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSortPath");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -283,7 +294,7 @@ on this attribute before being painted to screen.
     public void setSortPath(String strAttr)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSortPath", strAttr);
+        script.appendCall(getContextPath() + "setSortPath", strAttr);
         getScriptProxy().addScript(script);
     }
 
@@ -295,11 +306,22 @@ setSortType() or the data type of the current sort.
     @SuppressWarnings("unchecked")
     public void getSortType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSortType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSortType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -311,7 +333,7 @@ the data type specific to the sort column is used for sorting.
     public void setSortType(String DATATYPE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSortType", DATATYPE);
+        script.appendCall(getContextPath() + "setSortType", DATATYPE);
         getScriptProxy().addScript(script);
     }
 
@@ -322,11 +344,22 @@ the data type specific to the sort column is used for sorting.
     @SuppressWarnings("unchecked")
     public void getSortDirection(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSortDirection");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSortDirection");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -337,7 +370,7 @@ the data type specific to the sort column is used for sorting.
     public void setSortDirection(String intSortDir)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSortDirection", intSortDir);
+        script.appendCall(getContextPath() + "setSortDirection", intSortDir);
         getScriptProxy().addScript(script);
     }
 
@@ -347,11 +380,22 @@ the data type specific to the sort column is used for sorting.
     @SuppressWarnings("unchecked")
     public void getCanSort(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanSort");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanSort");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -362,7 +406,7 @@ the data type specific to the sort column is used for sorting.
     public void setCanSort(int SORT)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCanSort", SORT);
+        script.appendCall(getContextPath() + "setCanSort", SORT);
         getScriptProxy().addScript(script);
     }
 
@@ -374,11 +418,22 @@ the isntance will allow child columns to be reordered.
     @SuppressWarnings("unchecked")
     public void getCanReorder(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanReorder");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanReorder");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -389,7 +444,7 @@ the isntance will allow child columns to be reordered.
     public void setCanReorder(int REORDER)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCanReorder", REORDER);
+        script.appendCall(getContextPath() + "setCanReorder", REORDER);
         getScriptProxy().addScript(script);
     }
 
@@ -402,7 +457,7 @@ first cell child in the row.
     public void focusRowById(String strCdfId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("focusRowById", strCdfId);
+        script.appendCall(getContextPath() + "focusRowById", strCdfId);
         getScriptProxy().addScript(script);
     }
 
@@ -415,7 +470,7 @@ document identified by strCdfId, and the first column mapped to strAttName.
     public void focusCellById(String strCdfId, String strAttName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("focusCellById", strCdfId, strAttName);
+        script.appendCall(getContextPath() + "focusCellById", strCdfId, strAttName);
         getScriptProxy().addScript(script);
     }
 
@@ -428,7 +483,7 @@ the element in the CDF source document identified by strCdfId, and the cell at t
     public void focusCellByIndex(String strCdfId, int intCellIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("focusCellByIndex", strCdfId, intCellIndex);
+        script.appendCall(getContextPath() + "focusCellByIndex", strCdfId, intCellIndex);
         getScriptProxy().addScript(script);
     }
 
@@ -439,11 +494,22 @@ the element in the CDF source document identified by strCdfId, and the cell at t
     @SuppressWarnings("unchecked")
     public void getFocusStyle(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFocusStyle", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFocusStyle", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -456,7 +522,7 @@ styles that affect position, left, top, width, height, border, background-image,
     public void setFocusStyle(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFocusStyle", strCSS);
+        script.appendCall(getContextPath() + "setFocusStyle", strCSS);
         getScriptProxy().addScript(script);
     }
 
@@ -470,7 +536,7 @@ a call to repaint or repaintData.
     public void resetFocusContext(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("resetFocusContext", strId);
+        script.appendCall(getContextPath() + "resetFocusContext", strId);
         getScriptProxy().addScript(script);
     }
 
@@ -481,7 +547,7 @@ a call to repaint or repaintData.
     public void executeRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("executeRecord", strRecordId);
+        script.appendCall(getContextPath() + "executeRecord", strRecordId);
         getScriptProxy().addScript(script);
     }
 
@@ -492,11 +558,22 @@ a call to repaint or repaintData.
     @SuppressWarnings("unchecked")
     public void getSelectionBG(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSelectionBG", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSelectionBG", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -507,7 +584,7 @@ a call to repaint or repaintData.
     public void setSelectionBG(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSelectionBG", strURL);
+        script.appendCall(getContextPath() + "setSelectionBG", strURL);
         getScriptProxy().addScript(script);
     }
 
@@ -517,11 +594,22 @@ a call to repaint or repaintData.
     @SuppressWarnings("unchecked")
     public void getSelectedNodes(org.directwebremoting.proxy.Callback<java.util.List> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.List.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSelectedNodes");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSelectedNodes");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.List.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -532,11 +620,22 @@ a call to repaint or repaintData.
     @SuppressWarnings("unchecked")
     public void getSelectedIds(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSelectedIds");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSelectedIds");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -548,7 +647,7 @@ accordingly. If this list is a multi-select list then this selection will be add
     public void selectRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("selectRecord", strRecordId);
+        script.appendCall(getContextPath() + "selectRecord", strRecordId);
         getScriptProxy().addScript(script);
     }
 
@@ -559,7 +658,7 @@ accordingly. If this list is a multi-select list then this selection will be add
     public void deselectRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("deselectRecord", strRecordId);
+        script.appendCall(getContextPath() + "deselectRecord", strRecordId);
         getScriptProxy().addScript(script);
     }
 
@@ -569,7 +668,7 @@ accordingly. If this list is a multi-select list then this selection will be add
     public void deselectAllRecords()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("deselectAllRecords");
+        script.appendCall(getContextPath() + "deselectAllRecords");
         getScriptProxy().addScript(script);
     }
 
@@ -620,7 +719,7 @@ object will be converted into a CDF Record for the instance.
     public void commitAutoRowSession(jsx3.gui.Event objEvent, int intCellIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("commitAutoRowSession", objEvent, intCellIndex);
+        script.appendCall(getContextPath() + "commitAutoRowSession", objEvent, intCellIndex);
         getScriptProxy().addScript(script);
     }
 
@@ -632,7 +731,7 @@ object will be converted into a CDF Record for the instance.
     public void toggleItem(String strRecordId, boolean bOpen)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("toggleItem", strRecordId, bOpen);
+        script.appendCall(getContextPath() + "toggleItem", strRecordId, bOpen);
         getScriptProxy().addScript(script);
     }
 
@@ -643,7 +742,7 @@ object will be converted into a CDF Record for the instance.
     public void revealRecord(String strRecordId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("revealRecord", strRecordId);
+        script.appendCall(getContextPath() + "revealRecord", strRecordId);
         getScriptProxy().addScript(script);
     }
 
@@ -653,11 +752,22 @@ object will be converted into a CDF Record for the instance.
     @SuppressWarnings("unchecked")
     public void getResizable(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getResizable");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getResizable");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -669,7 +779,7 @@ is set as NOT resizable, this setting is ignored and no child columns can be res
     public void setResizable(int RESIZE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setResizable", RESIZE);
+        script.appendCall(getContextPath() + "setResizable", RESIZE);
         getScriptProxy().addScript(script);
     }
 
@@ -680,11 +790,22 @@ is set as NOT resizable, this setting is ignored and no child columns can be res
     @SuppressWarnings("unchecked")
     public void getAutoRow(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAutoRow");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAutoRow");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -698,7 +819,7 @@ parameter, jsx_autorow_style
     public void setAutoRow(int intBoolean)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAutoRow", intBoolean);
+        script.appendCall(getContextPath() + "setAutoRow", intBoolean);
         getScriptProxy().addScript(script);
     }
 
@@ -711,11 +832,22 @@ by strCdfId and the first column mapped to the named CDF attribute, strAttName.
     @SuppressWarnings("unchecked")
     public void getContentElement(String strCdfId, String strAttName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getContentElement", strCdfId, strAttName);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getContentElement", strCdfId, strAttName);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -727,7 +859,7 @@ by strCdfId and the first column mapped to the named CDF attribute, strAttName.
     public void resetXmlCacheData(jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("resetXmlCacheData", objServer);
+        script.appendCall(getContextPath() + "resetXmlCacheData", objServer);
         getScriptProxy().addScript(script);
     }
 
@@ -870,11 +1002,22 @@ source XML document of this object.
     @SuppressWarnings("unchecked")
     public void getSortedIds(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSortedIds");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSortedIds");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -885,11 +1028,22 @@ source XML document of this object.
     @SuppressWarnings("unchecked")
     public void getSelectionModel(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSelectionModel", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSelectionModel", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -900,7 +1054,7 @@ source XML document of this object.
     public void setSelectionModel(int intType)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSelectionModel", intType);
+        script.appendCall(getContextPath() + "setSelectionModel", intType);
         getScriptProxy().addScript(script);
     }
 
@@ -911,11 +1065,22 @@ source XML document of this object.
     @SuppressWarnings("unchecked")
     public void getRowHeight(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRowHeight", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRowHeight", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -931,7 +1096,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setRowHeight(int intHeight, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRowHeight", intHeight, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setRowHeight", intHeight, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -942,11 +1107,22 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     @SuppressWarnings("unchecked")
     public void getRowsPerPanel(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRowsPerPanel", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRowsPerPanel", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -958,7 +1134,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setRowsPerPanel(int intCount, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRowsPerPanel", intCount, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setRowsPerPanel", intCount, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -970,11 +1146,22 @@ Note that this is different from the number of painted panels allowed on screen 
     @SuppressWarnings("unchecked")
     public void getPanelQueueSize(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPanelQueueSize", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPanelQueueSize", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -985,7 +1172,7 @@ Note that this is different from the number of painted panels allowed on screen 
     public void setPanelQueueSize(int intCount)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPanelQueueSize", intCount);
+        script.appendCall(getContextPath() + "setPanelQueueSize", intCount);
         getScriptProxy().addScript(script);
     }
 
@@ -996,11 +1183,22 @@ Note that this is different from the number of painted panels allowed on screen 
     @SuppressWarnings("unchecked")
     public void getReaperInterval(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getReaperInterval", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getReaperInterval", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1011,7 +1209,7 @@ Note that this is different from the number of painted panels allowed on screen 
     public void setReaperInterval(int intInterval)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setReaperInterval", intInterval);
+        script.appendCall(getContextPath() + "setReaperInterval", intInterval);
         getScriptProxy().addScript(script);
     }
 
@@ -1024,11 +1222,22 @@ the value defined by the constant, Matrix.DEFAULT_PANEL_POOL_COUNT, will be used
     @SuppressWarnings("unchecked")
     public void getPanelPoolSize(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPanelPoolSize", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPanelPoolSize", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1039,7 +1248,7 @@ the value defined by the constant, Matrix.DEFAULT_PANEL_POOL_COUNT, will be used
     public void setPanelPoolSize(int intCount)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPanelPoolSize", intCount);
+        script.appendCall(getContextPath() + "setPanelPoolSize", intCount);
         getScriptProxy().addScript(script);
     }
 
@@ -1060,11 +1269,22 @@ Matrix.PAGING_STEPPED: Paint root nodes and any open descendants. Paint others a
     @SuppressWarnings("unchecked")
     public void getPagingModel(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPagingModel", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPagingModel", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1075,7 +1295,7 @@ Matrix.PAGING_STEPPED: Paint root nodes and any open descendants. Paint others a
     public void setPagingModel(int intModel)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPagingModel", intModel);
+        script.appendCall(getContextPath() + "setPagingModel", intModel);
         getScriptProxy().addScript(script);
     }
 
@@ -1087,11 +1307,22 @@ the default value of jsx3.gui.Matrix.DEFAULT_HEADER_HEIGHT.
     @SuppressWarnings("unchecked")
     public void getHeaderHeight(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHeaderHeight", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHeaderHeight", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1106,7 +1337,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setHeaderHeight(int intHeight, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeaderHeight", intHeight, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setHeaderHeight", intHeight, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1117,11 +1348,22 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     @SuppressWarnings("unchecked")
     public void getScrollInfoLabel(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getScrollInfoLabel", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getScrollInfoLabel", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1137,7 +1379,7 @@ an appropriate localized value will be used. Set to an empty string to suppress 
     public void setScrollInfoLabel(String strLabel)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setScrollInfoLabel", strLabel);
+        script.appendCall(getContextPath() + "setScrollInfoLabel", strLabel);
         getScriptProxy().addScript(script);
     }
 
@@ -1148,11 +1390,22 @@ an appropriate localized value will be used. Set to an empty string to suppress 
     @SuppressWarnings("unchecked")
     public void getScrollLeft(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getScrollLeft");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getScrollLeft");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1163,7 +1416,7 @@ an appropriate localized value will be used. Set to an empty string to suppress 
     public void setScrollLeft(int intScrollLeft)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setScrollLeft", intScrollLeft);
+        script.appendCall(getContextPath() + "setScrollLeft", intScrollLeft);
         getScriptProxy().addScript(script);
     }
 
@@ -1174,11 +1427,22 @@ an appropriate localized value will be used. Set to an empty string to suppress 
     @SuppressWarnings("unchecked")
     public void getScrollTop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getScrollTop");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getScrollTop");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1190,7 +1454,7 @@ an appropriate localized value will be used. Set to an empty string to suppress 
     public void setScrollTop(int intScrollTop, String objGUI)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setScrollTop", intScrollTop, objGUI);
+        script.appendCall(getContextPath() + "setScrollTop", intScrollTop, objGUI);
         getScriptProxy().addScript(script);
     }
 
@@ -1203,7 +1467,7 @@ By calling this method after the view has been restored (i.e., when display is s
     public void synchronizeVScroller()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("synchronizeVScroller");
+        script.appendCall(getContextPath() + "synchronizeVScroller");
         getScriptProxy().addScript(script);
     }
 
@@ -1216,11 +1480,22 @@ jsx3.gui.Matrix.Column.DEFAULT_WIDTH.
     @SuppressWarnings("unchecked")
     public void getScaleWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getScaleWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getScaleWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1233,7 +1508,7 @@ exceed the available width of the viewport.
     public void setScaleWidth(int intBoolean)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setScaleWidth", intBoolean);
+        script.appendCall(getContextPath() + "setScaleWidth", intBoolean);
         getScriptProxy().addScript(script);
     }
 
@@ -1243,11 +1518,22 @@ exceed the available width of the viewport.
     @SuppressWarnings("unchecked")
     public void getHeaderBorder(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHeaderBorder");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHeaderBorder");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1258,7 +1544,7 @@ exceed the available width of the viewport.
     public void setHeaderBorder(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeaderBorder", strCSS);
+        script.appendCall(getContextPath() + "setHeaderBorder", strCSS);
         getScriptProxy().addScript(script);
     }
 
@@ -1268,11 +1554,22 @@ exceed the available width of the viewport.
     @SuppressWarnings("unchecked")
     public void getBodyBorder(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBodyBorder");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBodyBorder");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1332,11 +1629,22 @@ for the other selection models
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1347,11 +1655,22 @@ for the other selection models
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1363,11 +1682,22 @@ of the rendering context will be painted on-screen.
     @SuppressWarnings("unchecked")
     public void getRenderingModel(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRenderingModel", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRenderingModel", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1379,7 +1709,7 @@ of the rendering context will be painted on-screen.
     public void setRenderingModel(String MODEL, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRenderingModel", MODEL, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setRenderingModel", MODEL, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1391,11 +1721,22 @@ id, jsxroot, (which is the id for the root node, <data>) will be used.
     @SuppressWarnings("unchecked")
     public void getRenderingContext(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRenderingContext", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRenderingContext", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1407,7 +1748,7 @@ id, jsxroot, (which is the id for the root node, <data>) will be used.
     public void setRenderingContext(String strJsxId, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRenderingContext", strJsxId, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setRenderingContext", strJsxId, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1419,11 +1760,22 @@ id, jsxroot, (which is the id for the root node, <data>) will be used.
     @SuppressWarnings("unchecked")
     public void getSuppressHScroller(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSuppressHScroller", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSuppressHScroller", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1434,7 +1786,7 @@ id, jsxroot, (which is the id for the root node, <data>) will be used.
     public void setSuppressHScroller(int intTrueFalse)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSuppressHScroller", intTrueFalse);
+        script.appendCall(getContextPath() + "setSuppressHScroller", intTrueFalse);
         getScriptProxy().addScript(script);
     }
 
@@ -1446,11 +1798,22 @@ id, jsxroot, (which is the id for the root node, <data>) will be used.
     @SuppressWarnings("unchecked")
     public void getSuppressVScroller(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSuppressVScroller", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSuppressVScroller", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1465,7 +1828,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setSuppressVScroller(int intTrueFalse, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSuppressVScroller", intTrueFalse, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setSuppressVScroller", intTrueFalse, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1479,11 +1842,22 @@ the first two columns will be fixed.  Setting this value to 0 is effectively the
     @SuppressWarnings("unchecked")
     public void getFixedColumnIndex(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFixedColumnIndex", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFixedColumnIndex", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1494,7 +1868,7 @@ the first two columns will be fixed.  Setting this value to 0 is effectively the
     public void setFixedColumnIndex(int intIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFixedColumnIndex", intIndex);
+        script.appendCall(getContextPath() + "setFixedColumnIndex", intIndex);
         getScriptProxy().addScript(script);
     }
 
@@ -1506,11 +1880,22 @@ the first two columns will be fixed.  Setting this value to 0 is effectively the
     @SuppressWarnings("unchecked")
     public void getRenderNavigators(String strDefault, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRenderNavigators", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRenderNavigators", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1525,7 +1910,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setRenderNavigators(int intTrueFalse, boolean bSuppressRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRenderNavigators", intTrueFalse, bSuppressRepaint);
+        script.appendCall(getContextPath() + "setRenderNavigators", intTrueFalse, bSuppressRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1537,11 +1922,22 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     @SuppressWarnings("unchecked")
     public void getIcon(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getIcon", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getIcon", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1552,7 +1948,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setIcon(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setIcon", strURL);
+        script.appendCall(getContextPath() + "setIcon", strURL);
         getScriptProxy().addScript(script);
     }
 
@@ -1564,11 +1960,22 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     @SuppressWarnings("unchecked")
     public void getIconMinus(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getIconMinus", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getIconMinus", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1579,7 +1986,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setIconMinus(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setIconMinus", strURL);
+        script.appendCall(getContextPath() + "setIconMinus", strURL);
         getScriptProxy().addScript(script);
     }
 
@@ -1591,11 +1998,22 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     @SuppressWarnings("unchecked")
     public void getIconPlus(String strDefault, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getIconPlus", strDefault);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getIconPlus", strDefault);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1606,7 +2024,7 @@ suppressed to avoid unnecessary reparsing of the XSLT during repeated property u
     public void setIconPlus(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setIconPlus", strURL);
+        script.appendCall(getContextPath() + "setIconPlus", strURL);
         getScriptProxy().addScript(script);
     }
 
@@ -1697,7 +2115,7 @@ in the XML document, this method fails quietly.
     public void redrawCell(String strRecordId, jsx3.gui.matrix.Column objColumn, boolean bSuppressTriggers)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("redrawCell", strRecordId, objColumn, bSuppressTriggers);
+        script.appendCall(getContextPath() + "redrawCell", strRecordId, objColumn, bSuppressTriggers);
         getScriptProxy().addScript(script);
     }
 
@@ -1711,7 +2129,7 @@ in the XML document, this method fails quietly.
     public void redrawMappedCells(String strRecordId, String strAttName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("redrawMappedCells", strRecordId, strAttName);
+        script.appendCall(getContextPath() + "redrawMappedCells", strRecordId, strAttName);
         getScriptProxy().addScript(script);
     }
 
@@ -1724,7 +2142,7 @@ in the XML document, this method fails quietly.
     public void redrawRecord(String strRecordId, int intAction, boolean bRecurse)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("redrawRecord", strRecordId, intAction, bRecurse);
+        script.appendCall(getContextPath() + "redrawRecord", strRecordId, intAction, bRecurse);
         getScriptProxy().addScript(script);
     }
 
@@ -1736,7 +2154,7 @@ in the XML document, this method fails quietly.
     public jsx3.gui.Matrix setValue(Object[] strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValue", strId);
+        script.appendCall(getContextPath() + "setValue", strId);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1749,7 +2167,7 @@ in the XML document, this method fails quietly.
     public jsx3.gui.Matrix setValue(String strId)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValue", strId);
+        script.appendCall(getContextPath() + "setValue", strId);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1832,11 +2250,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1847,11 +2276,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1863,11 +2303,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1878,11 +2329,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1894,11 +2356,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1910,11 +2383,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2009,7 +2493,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -2145,7 +2629,7 @@ document.
     public void clearXmlData()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clearXmlData");
+        script.appendCall(getContextPath() + "clearXmlData");
         getScriptProxy().addScript(script);
     }
 
@@ -2157,11 +2641,22 @@ is destroyed.
     @SuppressWarnings("unchecked")
     public void getShareResources(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getShareResources");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getShareResources");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2237,11 +2732,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXMLId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXMLId");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXMLId");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2251,11 +2757,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXMLString(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXMLString");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXMLString");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2265,11 +2782,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXMLTransformers(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXMLTransformers");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXMLTransformers");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2279,11 +2807,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXMLURL(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXMLURL");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXMLURL");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2293,11 +2832,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXSLId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXSLId");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXSLId");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2345,11 +2895,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXmlAsync(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXmlAsync");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXmlAsync");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2360,11 +2921,22 @@ following actions are also taken:
     @SuppressWarnings("unchecked")
     public void getXmlBind(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXmlBind");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXmlBind");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2383,7 +2955,7 @@ Any methods overriding this method should begin with a call to jsxsupermix().
     public void onXmlBinding(jsx3.lang.Object objEvent)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("onXmlBinding", objEvent);
+        script.appendCall(getContextPath() + "onXmlBinding", objEvent);
         getScriptProxy().addScript(script);
     }
 
@@ -2475,7 +3047,7 @@ Any methods overriding this method should begin with a call to jsxsupermix().
     public void resetCacheData(jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("resetCacheData", objServer);
+        script.appendCall(getContextPath() + "resetCacheData", objServer);
         getScriptProxy().addScript(script);
     }
 
@@ -2601,7 +3173,7 @@ without throwing an error.
     public void setXMLTransformers(Object[] arrTrans)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setXMLTransformers", arrTrans);
+        script.appendCall(getContextPath() + "setXMLTransformers", arrTrans);
         getScriptProxy().addScript(script);
     }
 
@@ -2703,11 +3275,22 @@ the cache under the XML Id of this object changes.
     @SuppressWarnings("unchecked")
     public void setXmlBind(boolean bBind, org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = setXmlBind", bBind);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "setXmlBind", bBind);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -2879,7 +3462,7 @@ the value of the property.
     public void convertProperties(java.util.Properties objProps, Object[] arrProps, boolean bUnion)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("convertProperties", objProps, arrProps, bUnion);
+        script.appendCall(getContextPath() + "convertProperties", objProps, arrProps, bUnion);
         getScriptProxy().addScript(script);
     }
 
@@ -2893,7 +3476,7 @@ the value of the property.
     public void deleteRecordProperty(String strRecordId, String strPropName, boolean bRedraw)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("deleteRecordProperty", strRecordId, strPropName, bRedraw);
+        script.appendCall(getContextPath() + "deleteRecordProperty", strRecordId, strPropName, bRedraw);
         getScriptProxy().addScript(script);
     }
 
@@ -3062,7 +3645,7 @@ Object.
     public void insertRecordNode(jsx3.xml.Node objRecordNode, String strParentRecordId, boolean bRedraw)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("insertRecordNode", objRecordNode, strParentRecordId, bRedraw);
+        script.appendCall(getContextPath() + "insertRecordNode", objRecordNode, strParentRecordId, bRedraw);
         getScriptProxy().addScript(script);
     }
 

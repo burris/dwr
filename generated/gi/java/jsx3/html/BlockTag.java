@@ -64,11 +64,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getLeft(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getLeft");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getLeft");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -79,7 +90,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setLeft(int left)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLeft", left);
+        script.appendCall(getContextPath() + "setLeft", left);
         getScriptProxy().addScript(script);
     }
 
@@ -90,11 +101,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getTop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTop");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTop");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -105,7 +127,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setTop(int top)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTop", top);
+        script.appendCall(getContextPath() + "setTop", top);
         getScriptProxy().addScript(script);
     }
 
@@ -116,11 +138,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -131,7 +164,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setWidth(int width)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWidth", width);
+        script.appendCall(getContextPath() + "setWidth", width);
         getScriptProxy().addScript(script);
     }
 
@@ -142,11 +175,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -157,7 +201,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setHeight(int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeight", height);
+        script.appendCall(getContextPath() + "setHeight", height);
         getScriptProxy().addScript(script);
     }
 
@@ -168,11 +212,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getMargin(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMargin");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMargin");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -183,7 +238,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setMargin(String margin)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMargin", margin);
+        script.appendCall(getContextPath() + "setMargin", margin);
         getScriptProxy().addScript(script);
     }
 
@@ -194,11 +249,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getPadding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPadding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPadding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -209,7 +275,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setPadding(String padding)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPadding", padding);
+        script.appendCall(getContextPath() + "setPadding", padding);
         getScriptProxy().addScript(script);
     }
 
@@ -220,11 +286,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getPosition(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPosition");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPosition");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -235,7 +312,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setPosition(String position)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPosition", position);
+        script.appendCall(getContextPath() + "setPosition", position);
         getScriptProxy().addScript(script);
     }
 
@@ -246,11 +323,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getZIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getZIndex");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getZIndex");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -261,7 +349,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setZIndex(int zIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setZIndex", zIndex);
+        script.appendCall(getContextPath() + "setZIndex", zIndex);
         getScriptProxy().addScript(script);
     }
 
@@ -272,11 +360,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -287,7 +386,7 @@ public class BlockTag extends jsx3.html.Tag
     public void setBackgroundColor(String bgcolor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBackgroundColor", bgcolor);
+        script.appendCall(getContextPath() + "setBackgroundColor", bgcolor);
         getScriptProxy().addScript(script);
     }
 
@@ -298,11 +397,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getMarginDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMarginDimensions");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMarginDimensions");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -313,11 +423,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getPaddingDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPaddingDimensions");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPaddingDimensions");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -328,25 +449,22 @@ public class BlockTag extends jsx3.html.Tag
     @SuppressWarnings("unchecked")
     public void getDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDimensions");
-        script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
+        String callbackPrefix = "";
 
-    /**
-     * Sets all four dimensions at once.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     */
-    public void setDimensions(Object[] left, int top, int width, int height)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height);
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDimensions");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -360,7 +478,21 @@ public class BlockTag extends jsx3.html.Tag
     public void setDimensions(int left, int top, int width, int height)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets all four dimensions at once.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     */
+    public void setDimensions(Object[] left, int top, int width, int height)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height);
         getScriptProxy().addScript(script);
     }
 

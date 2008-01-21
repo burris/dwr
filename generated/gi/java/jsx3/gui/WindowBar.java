@@ -108,11 +108,22 @@ public class WindowBar extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getType(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -125,7 +136,7 @@ public class WindowBar extends jsx3.gui.Block
     public jsx3.gui.WindowBar setType(int TYPE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setType", TYPE);
+        script.appendCall(getContextPath() + "setType", TYPE);
         getScriptProxy().addScript(script);
         return this;
     }

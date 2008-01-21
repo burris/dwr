@@ -48,7 +48,7 @@ public class TimePicker extends jsx3.gui.Block
      * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public TimePicker(String strName, int intLeft, String intTop, int intHeight)
+    public TimePicker(String strName, String intLeft, int intTop, String intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -78,7 +78,37 @@ public class TimePicker extends jsx3.gui.Block
      * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
+    public TimePicker(String strName, int intLeft, String intTop, int intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
     public TimePicker(String strName, int intLeft, String intTop, String intHeight)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     */
+    public TimePicker(String strName, String intLeft, int intTop, int intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -108,21 +138,6 @@ public class TimePicker extends jsx3.gui.Block
      * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public TimePicker(String strName, int intLeft, int intTop, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
     public TimePicker(String strName, String intLeft, String intTop, String intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -138,22 +153,7 @@ public class TimePicker extends jsx3.gui.Block
      * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      */
-    public TimePicker(String strName, String intLeft, int intTop, String intHeight)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TimePicker", strName, intLeft, intTop, intHeight);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param intLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param intHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     */
-    public TimePicker(String strName, String intLeft, int intTop, int intHeight)
+    public TimePicker(String strName, int intLeft, int intTop, String intHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -170,11 +170,22 @@ public class TimePicker extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getShowSeconds(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getShowSeconds");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getShowSeconds");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -186,11 +197,22 @@ display if both this and showSeconds are true.
     @SuppressWarnings("unchecked")
     public void getShowMillis(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getShowMillis");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getShowMillis");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -202,11 +224,22 @@ locale.
     @SuppressWarnings("unchecked")
     public void is24Hour(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = is24Hour");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "is24Hour");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -217,7 +250,7 @@ locale.
     public void setShowSeconds(boolean bShow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setShowSeconds", bShow);
+        script.appendCall(getContextPath() + "setShowSeconds", bShow);
         getScriptProxy().addScript(script);
     }
 
@@ -228,7 +261,7 @@ locale.
     public void setShowMillis(boolean bShow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setShowMillis", bShow);
+        script.appendCall(getContextPath() + "setShowMillis", bShow);
         getScriptProxy().addScript(script);
     }
 
@@ -239,7 +272,7 @@ locale.
     public void set24Hour(boolean b24Hour)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set24Hour", b24Hour);
+        script.appendCall(getContextPath() + "set24Hour", b24Hour);
         getScriptProxy().addScript(script);
     }
 
@@ -249,11 +282,22 @@ locale.
     @SuppressWarnings("unchecked")
     public void getHours(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHours");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHours");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -264,7 +308,7 @@ locale.
     public void setHours(int intHours)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHours", intHours);
+        script.appendCall(getContextPath() + "setHours", intHours);
         getScriptProxy().addScript(script);
     }
 
@@ -274,11 +318,22 @@ locale.
     @SuppressWarnings("unchecked")
     public void getMinutes(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMinutes");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMinutes");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -289,7 +344,7 @@ locale.
     public void setMinutes(int intMinutes)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMinutes", intMinutes);
+        script.appendCall(getContextPath() + "setMinutes", intMinutes);
         getScriptProxy().addScript(script);
     }
 
@@ -299,11 +354,22 @@ locale.
     @SuppressWarnings("unchecked")
     public void getSeconds(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSeconds");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSeconds");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -314,7 +380,7 @@ locale.
     public void setSeconds(int intSeconds)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSeconds", intSeconds);
+        script.appendCall(getContextPath() + "setSeconds", intSeconds);
         getScriptProxy().addScript(script);
     }
 
@@ -324,11 +390,22 @@ locale.
     @SuppressWarnings("unchecked")
     public void getMilliseconds(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMilliseconds");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMilliseconds");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -339,7 +416,7 @@ locale.
     public void setMilliseconds(int intMillis)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMilliseconds", intMillis);
+        script.appendCall(getContextPath() + "setMilliseconds", intMillis);
         getScriptProxy().addScript(script);
     }
 
@@ -352,11 +429,22 @@ it returns a new date (the current day) with the time of day set.
     @SuppressWarnings("unchecked")
     public void getDate(java.util.Date objDate, org.directwebremoting.proxy.Callback<java.util.Date> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.Date.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDate", objDate);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDate", objDate);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, java.util.Date.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -366,11 +454,22 @@ it returns a new date (the current day) with the time of day set.
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -382,7 +481,7 @@ it returns a new date (the current day) with the time of day set.
     public void setDate(java.util.Date objDate)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDate", objDate);
+        script.appendCall(getContextPath() + "setDate", objDate);
         getScriptProxy().addScript(script);
     }
 
@@ -464,11 +563,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -479,11 +589,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -494,11 +615,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -510,11 +642,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -525,11 +668,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -541,11 +695,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -557,11 +722,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -656,7 +832,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 

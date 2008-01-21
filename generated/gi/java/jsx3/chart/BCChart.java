@@ -80,11 +80,22 @@ public class BCChart extends jsx3.chart.CartesianChart
     @SuppressWarnings("unchecked")
     public void getType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -95,7 +106,7 @@ public class BCChart extends jsx3.chart.CartesianChart
     public void setType(String type)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setType", type);
+        script.appendCall(getContextPath() + "setType", type);
         getScriptProxy().addScript(script);
     }
 
@@ -106,11 +117,22 @@ public class BCChart extends jsx3.chart.CartesianChart
     @SuppressWarnings("unchecked")
     public void getSeriesOverlap(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSeriesOverlap");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSeriesOverlap");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -121,7 +143,7 @@ public class BCChart extends jsx3.chart.CartesianChart
     public void setSeriesOverlap(float seriesOverlap)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSeriesOverlap", seriesOverlap);
+        script.appendCall(getContextPath() + "setSeriesOverlap", seriesOverlap);
         getScriptProxy().addScript(script);
     }
 
@@ -132,11 +154,22 @@ public class BCChart extends jsx3.chart.CartesianChart
     @SuppressWarnings("unchecked")
     public void getCategoryCoverage(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCategoryCoverage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCategoryCoverage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -147,7 +180,7 @@ public class BCChart extends jsx3.chart.CartesianChart
     public void setCategoryCoverage(float categoryCoverage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCategoryCoverage", categoryCoverage);
+        script.appendCall(getContextPath() + "setCategoryCoverage", categoryCoverage);
         getScriptProxy().addScript(script);
     }
 

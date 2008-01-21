@@ -61,11 +61,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getHorizontalAbove(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHorizontalAbove");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHorizontalAbove");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -76,7 +87,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setHorizontalAbove(boolean horizontalAbove)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHorizontalAbove", horizontalAbove);
+        script.appendCall(getContextPath() + "setHorizontalAbove", horizontalAbove);
         getScriptProxy().addScript(script);
     }
 
@@ -87,11 +98,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getInForeground(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getInForeground");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getInForeground");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -102,7 +124,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setInForeground(boolean inForeground)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setInForeground", inForeground);
+        script.appendCall(getContextPath() + "setInForeground", inForeground);
         getScriptProxy().addScript(script);
     }
 
@@ -113,11 +135,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getBorderStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBorderStroke");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBorderStroke");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -128,7 +161,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setBorderStroke(String borderStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBorderStroke", borderStroke);
+        script.appendCall(getContextPath() + "setBorderStroke", borderStroke);
         getScriptProxy().addScript(script);
     }
 
@@ -139,11 +172,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getFillV(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFillV");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFillV");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -154,7 +198,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setFillV(Object[] fillV)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFillV", fillV);
+        script.appendCall(getContextPath() + "setFillV", fillV);
         getScriptProxy().addScript(script);
     }
 
@@ -165,11 +209,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getStrokeMajorV(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getStrokeMajorV");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getStrokeMajorV");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -180,7 +235,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setStrokeMajorV(Object[] strokeMajorV)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setStrokeMajorV", strokeMajorV);
+        script.appendCall(getContextPath() + "setStrokeMajorV", strokeMajorV);
         getScriptProxy().addScript(script);
     }
 
@@ -191,11 +246,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getStrokeMinorV(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getStrokeMinorV");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getStrokeMinorV");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -206,7 +272,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setStrokeMinorV(Object[] strokeMinorV)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setStrokeMinorV", strokeMinorV);
+        script.appendCall(getContextPath() + "setStrokeMinorV", strokeMinorV);
         getScriptProxy().addScript(script);
     }
 
@@ -217,11 +283,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getFillH(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFillH");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFillH");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -232,7 +309,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setFillH(Object[] fillH)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFillH", fillH);
+        script.appendCall(getContextPath() + "setFillH", fillH);
         getScriptProxy().addScript(script);
     }
 
@@ -243,11 +320,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getStrokeMajorH(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getStrokeMajorH");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getStrokeMajorH");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -258,7 +346,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setStrokeMajorH(Object[] strokeMajorH)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setStrokeMajorH", strokeMajorH);
+        script.appendCall(getContextPath() + "setStrokeMajorH", strokeMajorH);
         getScriptProxy().addScript(script);
     }
 
@@ -269,11 +357,22 @@ public class GridLines extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getStrokeMinorH(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getStrokeMinorH");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getStrokeMinorH");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -284,7 +383,7 @@ public class GridLines extends jsx3.chart.ChartComponent
     public void setStrokeMinorH(Object[] strokeMinorH)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setStrokeMinorH", strokeMinorH);
+        script.appendCall(getContextPath() + "setStrokeMinorH", strokeMinorH);
         getScriptProxy().addScript(script);
     }
 

@@ -88,7 +88,7 @@ public class Alerts extends jsx3.lang.Object
     public void alert(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, String strOk, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("alert", strTitle, strMessage, fctOnOk, strOk, objParams);
+        script.appendCall(getContextPath() + "alert", strTitle, strMessage, fctOnOk, strOk, objParams);
         getScriptProxy().addScript(script);
     }
 
@@ -105,7 +105,7 @@ public class Alerts extends jsx3.lang.Object
     public void prompt(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("prompt", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, objParams);
+        script.appendCall(getContextPath() + "prompt", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, objParams);
         getScriptProxy().addScript(script);
     }
 
@@ -125,7 +125,7 @@ public class Alerts extends jsx3.lang.Object
     public void confirm(String strTitle, String strMessage, org.directwebremoting.proxy.CodeBlock fctOnOk, org.directwebremoting.proxy.CodeBlock fctOnCancel, String strOk, String strCancel, int intBtnDefault, org.directwebremoting.proxy.CodeBlock fctOnNo, String strNo, String objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("confirm", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, intBtnDefault, fctOnNo, strNo, objParams);
+        script.appendCall(getContextPath() + "confirm", strTitle, strMessage, fctOnOk, fctOnCancel, strOk, strCancel, intBtnDefault, fctOnNo, strNo, objParams);
         getScriptProxy().addScript(script);
     }
 
@@ -137,7 +137,7 @@ public class Alerts extends jsx3.lang.Object
     public void configureAlert(java.lang.Object objDialog, jsx3.lang.Object objParams)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("configureAlert", objDialog, objParams);
+        script.appendCall(getContextPath() + "configureAlert", objDialog, objParams);
         getScriptProxy().addScript(script);
     }
 

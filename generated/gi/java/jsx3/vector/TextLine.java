@@ -61,11 +61,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getText(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getText");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getText");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -76,7 +87,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setText(String text)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setText", text);
+        script.appendCall(getContextPath() + "setText", text);
         getScriptProxy().addScript(script);
     }
 
@@ -87,11 +98,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -102,11 +124,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getFontFamily(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontFamily");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontFamily");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -117,11 +150,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getFontSize(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontSize");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontSize");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -132,11 +176,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getFontStyle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontStyle");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontStyle");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -147,11 +202,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getFontWeight(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontWeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontWeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -162,11 +228,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getTextAlign(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTextAlign");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTextAlign");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -177,11 +254,22 @@ public class TextLine extends jsx3.vector.Shape
     @SuppressWarnings("unchecked")
     public void getTextDecoration(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTextDecoration");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTextDecoration");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -192,7 +280,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setColor(String color)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", color);
+        script.appendCall(getContextPath() + "setColor", color);
         getScriptProxy().addScript(script);
     }
 
@@ -203,18 +291,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setFontFamily(String fontFamily)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontFamily", fontFamily);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Sets the fontsize field.
-     * @param fontSize the new value for fontsize
-     */
-    public void setFontSize(int fontSize)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontSize", fontSize);
+        script.appendCall(getContextPath() + "setFontFamily", fontFamily);
         getScriptProxy().addScript(script);
     }
 
@@ -225,7 +302,18 @@ public class TextLine extends jsx3.vector.Shape
     public void setFontSize(String fontSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontSize", fontSize);
+        script.appendCall(getContextPath() + "setFontSize", fontSize);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets the fontsize field.
+     * @param fontSize the new value for fontsize
+     */
+    public void setFontSize(int fontSize)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setFontSize", fontSize);
         getScriptProxy().addScript(script);
     }
 
@@ -236,7 +324,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setFontStyle(String fontStyle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontStyle", fontStyle);
+        script.appendCall(getContextPath() + "setFontStyle", fontStyle);
         getScriptProxy().addScript(script);
     }
 
@@ -247,7 +335,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setFontWeight(String fontWeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontWeight", fontWeight);
+        script.appendCall(getContextPath() + "setFontWeight", fontWeight);
         getScriptProxy().addScript(script);
     }
 
@@ -258,7 +346,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setTextAlign(String textAlign)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTextAlign", textAlign);
+        script.appendCall(getContextPath() + "setTextAlign", textAlign);
         getScriptProxy().addScript(script);
     }
 
@@ -269,7 +357,7 @@ public class TextLine extends jsx3.vector.Shape
     public void setTextDecoration(String textDecoration)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTextDecoration", textDecoration);
+        script.appendCall(getContextPath() + "setTextDecoration", textDecoration);
         getScriptProxy().addScript(script);
     }
 

@@ -80,11 +80,22 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getPreferredWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPreferredWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPreferredWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -95,7 +106,7 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     public void setPreferredWidth(int preferredWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPreferredWidth", preferredWidth);
+        script.appendCall(getContextPath() + "setPreferredWidth", preferredWidth);
         getScriptProxy().addScript(script);
     }
 
@@ -106,11 +117,22 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getPreferredHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPreferredHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPreferredHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -121,7 +143,7 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     public void setPreferredHeight(int preferredHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPreferredHeight", preferredHeight);
+        script.appendCall(getContextPath() + "setPreferredHeight", preferredHeight);
         getScriptProxy().addScript(script);
     }
 
@@ -132,11 +154,22 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getAlpha(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAlpha");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAlpha");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -147,7 +180,7 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     public void setAlpha(float alpha)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAlpha", alpha);
+        script.appendCall(getContextPath() + "setAlpha", alpha);
         getScriptProxy().addScript(script);
     }
 
@@ -158,11 +191,22 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getBorderStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBorderStroke");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBorderStroke");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -173,7 +217,7 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     public void setBorderStroke(String borderStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBorderStroke", borderStroke);
+        script.appendCall(getContextPath() + "setBorderStroke", borderStroke);
         getScriptProxy().addScript(script);
     }
 
@@ -184,11 +228,22 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getLabelRotation(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getLabelRotation");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getLabelRotation");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -199,7 +254,7 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     public void setLabelRotation(int labelRotation)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLabelRotation", labelRotation);
+        script.appendCall(getContextPath() + "setLabelRotation", labelRotation);
         getScriptProxy().addScript(script);
     }
 
@@ -209,11 +264,22 @@ public class ChartLabel extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void isRotated(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isRotated");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isRotated");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

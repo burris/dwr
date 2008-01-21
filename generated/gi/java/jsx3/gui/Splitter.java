@@ -69,11 +69,22 @@ public class Splitter extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getSubcontainer1Pct(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSubcontainer1Pct");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSubcontainer1Pct");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -86,7 +97,7 @@ public class Splitter extends jsx3.gui.Block
     public jsx3.gui.Splitter setSubcontainer1Pct(String strSubcontainerPct, boolean bView)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSubcontainer1Pct", strSubcontainerPct, bView);
+        script.appendCall(getContextPath() + "setSubcontainer1Pct", strSubcontainerPct, bView);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -97,11 +108,22 @@ public class Splitter extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getSubcontainer1Min(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSubcontainer1Min");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSubcontainer1Min");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -114,7 +136,7 @@ public class Splitter extends jsx3.gui.Block
     public jsx3.gui.Splitter setSubcontainer1Min(int intMin)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSubcontainer1Min", intMin);
+        script.appendCall(getContextPath() + "setSubcontainer1Min", intMin);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -125,11 +147,22 @@ public class Splitter extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getSubcontainer2Min(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSubcontainer2Min");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSubcontainer2Min");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -142,7 +175,7 @@ public class Splitter extends jsx3.gui.Block
     public jsx3.gui.Splitter setSubcontainer2Min(int intMin)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSubcontainer2Min", intMin);
+        script.appendCall(getContextPath() + "setSubcontainer2Min", intMin);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -153,11 +186,22 @@ public class Splitter extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getOrientation(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOrientation");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOrientation");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -170,7 +214,7 @@ public class Splitter extends jsx3.gui.Block
     public jsx3.gui.Splitter setOrientation(int ORIENTATION)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setOrientation", ORIENTATION);
+        script.appendCall(getContextPath() + "setOrientation", ORIENTATION);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -181,11 +225,22 @@ public class Splitter extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getVSplitImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getVSplitImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getVSplitImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -197,7 +252,7 @@ public class Splitter extends jsx3.gui.Block
     public jsx3.gui.Splitter setVSplitImage(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setVSplitImage", strURL);
+        script.appendCall(getContextPath() + "setVSplitImage", strURL);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -208,11 +263,22 @@ public class Splitter extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getHSplitImage(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHSplitImage");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHSplitImage");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -224,7 +290,7 @@ public class Splitter extends jsx3.gui.Block
     public jsx3.gui.Splitter setHSplitImage(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHSplitImage", strURL);
+        script.appendCall(getContextPath() + "setHSplitImage", strURL);
         getScriptProxy().addScript(script);
         return this;
     }

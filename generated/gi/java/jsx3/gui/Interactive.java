@@ -300,7 +300,7 @@ any registered event script.
     public jsx3.gui.Interactive setEvent(String strScript, String strType)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEvent", strScript, strType);
+        script.appendCall(getContextPath() + "setEvent", strScript, strType);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -355,11 +355,22 @@ setEvent() method or during component deserialization.
     @SuppressWarnings("unchecked")
     public void getEvent(String strType, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEvent", strType);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEvent", strType);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -371,11 +382,22 @@ setEvent() method or during component deserialization.
     @SuppressWarnings("unchecked")
     public void hasEvent(String strType, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = hasEvent", strType);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "hasEvent", strType);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -519,7 +541,7 @@ can decide whether to consult this value or ignore it.
     public jsx3.gui.Interactive setCanMove(int bMovable)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCanMove", bMovable);
+        script.appendCall(getContextPath() + "setCanMove", bMovable);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -531,11 +553,22 @@ can decide whether to consult this value or ignore it.
     @SuppressWarnings("unchecked")
     public void getCanMove(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanMove");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanMove");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -548,7 +581,7 @@ Implementing classes can decide whether to consult this value or ignore it.
     public jsx3.gui.Interactive setCanDrag(int bDrag)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCanDrag", bDrag);
+        script.appendCall(getContextPath() + "setCanDrag", bDrag);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -561,11 +594,22 @@ dragged and dropped on another container supporting drop.
     @SuppressWarnings("unchecked")
     public void getCanDrag(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanDrag");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanDrag");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -578,7 +622,7 @@ this value or ignore it.
     public jsx3.gui.Interactive setCanDrop(int bDrop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCanDrop", bDrop);
+        script.appendCall(getContextPath() + "setCanDrop", bDrop);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -590,11 +634,22 @@ this value or ignore it.
     @SuppressWarnings("unchecked")
     public void getCanDrop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanDrop");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanDrop");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -607,7 +662,7 @@ this value or ignore it.
     public jsx3.gui.Interactive setCanSpy(int bSpy)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCanSpy", bSpy);
+        script.appendCall(getContextPath() + "setCanSpy", bSpy);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -619,11 +674,22 @@ this value or ignore it.
     @SuppressWarnings("unchecked")
     public void getCanSpy(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanSpy");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanSpy");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -634,11 +700,22 @@ clicks on this object with the right button.
     @SuppressWarnings("unchecked")
     public void getMenu(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMenu");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMenu");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -651,23 +728,9 @@ clicks on this object with the right button. The name is a pointer by-name to a 
     public jsx3.gui.Interactive setMenu(String strMenu)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMenu", strMenu);
+        script.appendCall(getContextPath() + "setMenu", strMenu);
         getScriptProxy().addScript(script);
         return this;
-    }
-
-    /**
-     * called by 'window.setTimeout()' to display the spyglass hover for a given object;
-     * @param strHTML HTML/text to display in the spyglass; as the spyglass does not define a height/width, this content will
-         have improved layout if it specifies a preferred width in its in-line-style or referenced-css rule.
-     * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
-     * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
-     */
-    public void showSpy(String strHTML, int intLeft, int intTop)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("showSpy", strHTML, intLeft, intTop);
-        getScriptProxy().addScript(script);
     }
 
     /**
@@ -680,7 +743,21 @@ clicks on this object with the right button. The name is a pointer by-name to a 
     public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("showSpy", strHTML, intLeft, intTop);
+        script.appendCall(getContextPath() + "showSpy", strHTML, intLeft, intTop);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * called by 'window.setTimeout()' to display the spyglass hover for a given object;
+     * @param strHTML HTML/text to display in the spyglass; as the spyglass does not define a height/width, this content will
+         have improved layout if it specifies a preferred width in its in-line-style or referenced-css rule.
+     * @param intLeft use an integer to specify an on-screen location; otherwise, use a <code>jsx3.gui.Event</code> instance to have the system automatically calculate the x/y position.
+     * @param intTop use an integer if <code>intLeft</code> also uses an integer. Otherwise, use null.
+     */
+    public void showSpy(String strHTML, int intLeft, int intTop)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "showSpy", strHTML, intLeft, intTop);
         getScriptProxy().addScript(script);
     }
 
@@ -691,7 +768,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
     public void setSpyStyles(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSpyStyles", strCSS);
+        script.appendCall(getContextPath() + "setSpyStyles", strCSS);
         getScriptProxy().addScript(script);
     }
 
@@ -720,7 +797,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -760,47 +837,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(String vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -880,7 +917,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -920,7 +957,47 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(String vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try

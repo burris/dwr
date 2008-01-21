@@ -44,7 +44,7 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
-    public ColorPicker(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
+    public ColorPicker(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -76,7 +76,7 @@ public class ColorPicker extends jsx3.gui.Block
      * @param vntWidth 
      * @param vntHeight 
      */
-    public ColorPicker(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight)
+    public ColorPicker(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -134,23 +134,22 @@ a 24-bit number of the form 0xRRGGBB.
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
+        String callbackPrefix = "";
 
-    /**
-     * Sets the RGB value of this color picker.
-     * @param strValue the supported formats are: RGB integer value as number or string and HTML hex
-   code, <code>"#000000"</code>.
-     */
-    public void setValue(String strValue)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValue", strValue);
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -162,7 +161,19 @@ a 24-bit number of the form 0xRRGGBB.
     public void setValue(int strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValue", strValue);
+        script.appendCall(getContextPath() + "setValue", strValue);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets the RGB value of this color picker.
+     * @param strValue the supported formats are: RGB integer value as number or string and HTML hex
+   code, <code>"#000000"</code>.
+     */
+    public void setValue(String strValue)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setValue", strValue);
         getScriptProxy().addScript(script);
     }
 
@@ -173,11 +184,22 @@ a 24-bit number of the form 0xRRGGBB.
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -188,11 +210,22 @@ a 24-bit number of the form 0xRRGGBB.
     @SuppressWarnings("unchecked")
     public void getRGB(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRGB");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRGB");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -203,7 +236,7 @@ a 24-bit number of the form 0xRRGGBB.
     public void setRGB(int rgb)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRGB", rgb);
+        script.appendCall(getContextPath() + "setRGB", rgb);
         getScriptProxy().addScript(script);
     }
 
@@ -214,11 +247,22 @@ a 24-bit number of the form 0xRRGGBB.
     @SuppressWarnings("unchecked")
     public void getAxis(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getAxis");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getAxis");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -230,7 +274,7 @@ left side.
     public jsx3.gui.ColorPicker setAxis(int intAxis)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setAxis", intAxis);
+        script.appendCall(getContextPath() + "setAxis", intAxis);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -244,7 +288,7 @@ left side.
     public void setHSB(float h, float s, float b)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHSB", h, s, b);
+        script.appendCall(getContextPath() + "setHSB", h, s, b);
         getScriptProxy().addScript(script);
     }
 
@@ -258,11 +302,22 @@ left side.
     @SuppressWarnings("unchecked")
     public void HSBtoRGB(float h, float s, float l, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = HSBtoRGB", h, s, l);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "HSBtoRGB", h, s, l);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -277,11 +332,22 @@ left side.
     @SuppressWarnings("unchecked")
     public void RGBtoHSB(int r, int g, int b, org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = RGBtoHSB", r, g, b);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "RGBtoHSB", r, g, b);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -363,11 +429,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -378,11 +455,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -394,11 +482,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -409,11 +508,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -425,11 +535,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -441,11 +562,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -540,7 +672,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 

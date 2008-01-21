@@ -45,11 +45,22 @@ public class System extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getProperty(String strKey, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getProperty", strKey);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getProperty", strKey);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -60,7 +71,7 @@ locale is determined by introspecting the browser. If all else fails the default
     public void getLocale()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getLocale");
+        script.appendCall(getContextPath() + "getLocale");
         getScriptProxy().addScript(script);
     }
 
@@ -71,7 +82,7 @@ locale is determined by introspecting the browser. If all else fails the default
     public void setLocale(java.lang.Object objLocale)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLocale", objLocale);
+        script.appendCall(getContextPath() + "setLocale", objLocale);
         getScriptProxy().addScript(script);
     }
 
@@ -81,7 +92,7 @@ locale is determined by introspecting the browser. If all else fails the default
     public void reloadLocalizedResources()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("reloadLocalizedResources");
+        script.appendCall(getContextPath() + "reloadLocalizedResources");
         getScriptProxy().addScript(script);
     }
 
@@ -93,11 +104,22 @@ locale is determined by introspecting the browser. If all else fails the default
     @SuppressWarnings("unchecked")
     public void getMessage(String strKey, jsx3.lang.Object strTokens, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMessage", strKey, strTokens);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMessage", strKey, strTokens);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -108,11 +130,22 @@ locale is determined by introspecting the browser. If all else fails the default
     @SuppressWarnings("unchecked")
     public void getVersion(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getVersion");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getVersion");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

@@ -76,11 +76,22 @@ public class TabbedPane extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getSelectedIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSelectedIndex");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSelectedIndex");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -94,7 +105,7 @@ the tab itself.
     public jsx3.gui.TabbedPane setSelectedIndex(jsx3.gui.Tab intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSelectedIndex", intIndex, bRepaint);
+        script.appendCall(getContextPath() + "setSelectedIndex", intIndex, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -109,7 +120,7 @@ the tab itself.
     public jsx3.gui.TabbedPane setSelectedIndex(int intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSelectedIndex", intIndex, bRepaint);
+        script.appendCall(getContextPath() + "setSelectedIndex", intIndex, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -121,11 +132,22 @@ the tab itself.
     @SuppressWarnings("unchecked")
     public void getTabHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTabHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTabHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -138,7 +160,7 @@ the tab itself.
     public jsx3.gui.TabbedPane setTabHeight(int intTabHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTabHeight", intTabHeight);
+        script.appendCall(getContextPath() + "setTabHeight", intTabHeight);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -149,7 +171,7 @@ the tab itself.
     public void getShowTabs()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getShowTabs");
+        script.appendCall(getContextPath() + "getShowTabs");
         getScriptProxy().addScript(script);
     }
 
@@ -160,7 +182,7 @@ the tab itself.
     public void setShowTabs(int intShowTabs)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setShowTabs", intShowTabs);
+        script.appendCall(getContextPath() + "setShowTabs", intShowTabs);
         getScriptProxy().addScript(script);
     }
 

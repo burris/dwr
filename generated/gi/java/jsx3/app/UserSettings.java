@@ -71,59 +71,22 @@ public class UserSettings extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void get(String strKey, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = get", strKey);
-        script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
+        String callbackPrefix = "";
 
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, String value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
-        getScriptProxy().addScript(script);
-    }
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
 
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, boolean value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
-        getScriptProxy().addScript(script);
-    }
+        script.appendCall(callbackPrefix + getContextPath() + "get", strKey);
 
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, jsx3.lang.Object value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
-        getScriptProxy().addScript(script);
-    }
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
 
-    /**
-     * Sets a stored setting value.
-     * @param strKey the setting key.
-     * @param value the value to store.
-     */
-    public void set(String strKey, Integer value)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
         getScriptProxy().addScript(script);
     }
 
@@ -135,7 +98,55 @@ public class UserSettings extends jsx3.lang.Object
     public void set(String strKey, Object[] value)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("set", strKey, value);
+        script.appendCall(getContextPath() + "set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, jsx3.lang.Object value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, Integer value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, String value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "set", strKey, value);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Sets a stored setting value.
+     * @param strKey the setting key.
+     * @param value the value to store.
+     */
+    public void set(String strKey, boolean value)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "set", strKey, value);
         getScriptProxy().addScript(script);
     }
 
@@ -146,7 +157,7 @@ public class UserSettings extends jsx3.lang.Object
     public void remove(String strKey)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("remove", strKey);
+        script.appendCall(getContextPath() + "remove", strKey);
         getScriptProxy().addScript(script);
     }
 
@@ -156,7 +167,7 @@ public class UserSettings extends jsx3.lang.Object
     public void clear()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clear");
+        script.appendCall(getContextPath() + "clear");
         getScriptProxy().addScript(script);
     }
 
@@ -167,7 +178,7 @@ is not called.
     public void save()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("save");
+        script.appendCall(getContextPath() + "save");
         getScriptProxy().addScript(script);
     }
 

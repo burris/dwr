@@ -85,7 +85,7 @@ public class Heavyweight extends jsx3.lang.Object
     public void show(boolean bDisplay)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("show", bDisplay);
+        script.appendCall(getContextPath() + "show", bDisplay);
         getScriptProxy().addScript(script);
     }
 
@@ -95,7 +95,7 @@ public class Heavyweight extends jsx3.lang.Object
     public void applyRatio()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("applyRatio");
+        script.appendCall(getContextPath() + "applyRatio");
         getScriptProxy().addScript(script);
     }
 
@@ -107,7 +107,7 @@ public class Heavyweight extends jsx3.lang.Object
     public void applyRules(String strAxis, int intSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("applyRules", strAxis, intSize);
+        script.appendCall(getContextPath() + "applyRules", strAxis, intSize);
         getScriptProxy().addScript(script);
     }
 
@@ -117,7 +117,7 @@ public class Heavyweight extends jsx3.lang.Object
     public void hide()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("hide");
+        script.appendCall(getContextPath() + "hide");
         getScriptProxy().addScript(script);
     }
 
@@ -127,23 +127,7 @@ public class Heavyweight extends jsx3.lang.Object
     public void destroy()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("destroy");
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Returns handle/reference to the Heavyweight Object's on-screen counterpart—basically a handle to a DHTML SPAN;
-     * @param objGUI optional argument improves efficiency if provided.
-     * @param callback Browser-Native DHTML object
-     */
-    @SuppressWarnings("unchecked")
-    public void getRendered(String objGUI, org.directwebremoting.proxy.Callback<String> callback)
-    {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRendered", objGUI);
-        script.appendCall("__System.activateCallback", key, "reply");
+        script.appendCall(getContextPath() + "destroy");
         getScriptProxy().addScript(script);
     }
 
@@ -155,11 +139,49 @@ public class Heavyweight extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getRendered(jsx3.gui.Event objGUI, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRendered", objGUI);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRendered", objGUI);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Returns handle/reference to the Heavyweight Object's on-screen counterpart—basically a handle to a DHTML SPAN;
+     * @param objGUI optional argument improves efficiency if provided.
+     * @param callback Browser-Native DHTML object
+     */
+    @SuppressWarnings("unchecked")
+    public void getRendered(String objGUI, org.directwebremoting.proxy.Callback<String> callback)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRendered", objGUI);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -169,11 +191,22 @@ public class Heavyweight extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getId");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getId");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -183,11 +216,22 @@ public class Heavyweight extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getHTML(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHTML");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHTML");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -200,7 +244,7 @@ public class Heavyweight extends jsx3.lang.Object
     public jsx3.gui.Heavyweight setHTML(String strHTML, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHTML", strHTML, bRepaint);
+        script.appendCall(getContextPath() + "setHTML", strHTML, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -211,11 +255,22 @@ public class Heavyweight extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getDomParent(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDomParent");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDomParent");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -228,7 +283,7 @@ Note that this method must be called before setting any point rules for the hW i
     public jsx3.gui.Heavyweight setDomParent(String objGUI)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDomParent", objGUI);
+        script.appendCall(getContextPath() + "setDomParent", objGUI);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -242,11 +297,22 @@ represent 80% and the height would represent 20% of the total perimiter
     @SuppressWarnings("unchecked")
     public void getRatio(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRatio");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRatio");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -259,7 +325,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public jsx3.gui.Heavyweight setRatio(Integer vntRatio)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRatio", vntRatio);
+        script.appendCall(getContextPath() + "setRatio", vntRatio);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -271,11 +337,22 @@ represent 80% and the height would represent 20% of the total perimiter
     @SuppressWarnings("unchecked")
     public void getOverflow(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOverflow");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOverflow");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -288,7 +365,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public jsx3.gui.Heavyweight setOverflow(String strOverflow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setOverflow", strOverflow);
+        script.appendCall(getContextPath() + "setOverflow", strOverflow);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -302,7 +379,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public jsx3.gui.Heavyweight setVisibility(String strVisibility)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setVisibility", strVisibility);
+        script.appendCall(getContextPath() + "setVisibility", strVisibility);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -313,11 +390,22 @@ represent 80% and the height would represent 20% of the total perimiter
     @SuppressWarnings("unchecked")
     public void getZIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getZIndex");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getZIndex");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -328,7 +416,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public void setZIndex(int intZIndex)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setZIndex", intZIndex);
+        script.appendCall(getContextPath() + "setZIndex", intZIndex);
         getScriptProxy().addScript(script);
     }
 
@@ -339,11 +427,22 @@ represent 80% and the height would represent 20% of the total perimiter
     @SuppressWarnings("unchecked")
     public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -354,7 +453,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public void setWidth(int intWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWidth", intWidth);
+        script.appendCall(getContextPath() + "setWidth", intWidth);
         getScriptProxy().addScript(script);
     }
 
@@ -365,11 +464,22 @@ represent 80% and the height would represent 20% of the total perimiter
     @SuppressWarnings("unchecked")
     public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -382,7 +492,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public jsx3.gui.Heavyweight setHeight(int intHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeight", intHeight);
+        script.appendCall(getContextPath() + "setHeight", intHeight);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -398,7 +508,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addXRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    public jsx3.gui.Heavyweight addXRule(jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
         String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
@@ -424,7 +534,7 @@ represent 80% and the height would represent 20% of the total perimiter
      * @return this object (this)
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Heavyweight addXRule(jsx3.gui.Event objAnchor, String strAnchorPoint, String strPoint, int intOff)
+    public jsx3.gui.Heavyweight addXRule(jsx3.lang.Object objAnchor, String strAnchorPoint, String strPoint, int intOff)
     {
         String extension = "addXRule(\"" + objAnchor + "\", \"" + strAnchorPoint + "\", \"" + strPoint + "\", \"" + intOff + "\").";
         try
@@ -524,11 +634,22 @@ represent 80% and the height would represent 20% of the total perimiter
     @SuppressWarnings("unchecked")
     public void getPositionRule(int intIndex, String strAxis, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPositionRule", intIndex, strAxis);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPositionRule", intIndex, strAxis);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -574,10 +695,22 @@ represent 80% and the height would represent 20% of the total perimiter
      * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
      * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
      */
+    public void getPoint(int objGUI, String strPoint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "getPoint", objGUI, strPoint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Returns a JavaScript object with properties:  X,Y (Left and Top); relating to the 4 primary (N, S, E, W), 4 secondary (NE, SE, SW, NW), and origin (O) compass positions for O
+     * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
+     * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
+     */
     public void getPoint(jsx3.gui.Block objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getPoint", objGUI, strPoint);
+        script.appendCall(getContextPath() + "getPoint", objGUI, strPoint);
         getScriptProxy().addScript(script);
     }
 
@@ -589,19 +722,7 @@ represent 80% and the height would represent 20% of the total perimiter
     public void getPoint(String objGUI, String strPoint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getPoint", objGUI, strPoint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Returns a JavaScript object with properties:  X,Y (Left and Top); relating to the 4 primary (N, S, E, W), 4 secondary (NE, SE, SW, NW), and origin (O) compass positions for O
-     * @param objGUI GUI object in the browser DOM (typically an HTML element such as a DIV or SPAN) for which to provide the X,Y for
-     * @param strPoint a character denoting one of the valid 9 compass points: 4 primary: (N, S, E, W); 4 secondary: (NE, SE, SW, NW); and origin: (O)
-     */
-    public void getPoint(int objGUI, String strPoint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getPoint", objGUI, strPoint);
+        script.appendCall(getContextPath() + "getPoint", objGUI, strPoint);
         getScriptProxy().addScript(script);
     }
 

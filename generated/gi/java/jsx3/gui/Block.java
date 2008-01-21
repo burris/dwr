@@ -45,143 +45,7 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, int vntLeft, int vntTop, String vntWidth, String vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
     public Block(String strName, int vntLeft, int vntTop, String vntWidth, int vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
-     */
-    public Block(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -232,7 +96,7 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strHTML)
+    public Block(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -249,7 +113,24 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
-    public Block(String strName, int vntLeft, int vntTop, int vntWidth, String vntHeight, String strHTML)
+    public Block(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -283,6 +164,23 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
+    public Block(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
     public Block(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -300,7 +198,109 @@ public class Block extends jsx3.gui.Painted
      * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
      * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
      */
+    public Block(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, int vntLeft, int vntTop, int vntWidth, String vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
     public Block(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strHTML)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new Block", strName, vntLeft, vntTop, vntWidth, vntHeight, strHTML);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strHTML Text/HTML markup to place in the jsx3.gui.Block instance
+     */
+    public Block(String strName, int vntLeft, int vntTop, String vntWidth, String vntHeight, String strHTML)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -407,11 +407,22 @@ public class Block extends jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public void getBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -425,7 +436,7 @@ public class Block extends jsx3.gui.Painted
     public jsx3.gui.Block setBackgroundColor(String strColor, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBackgroundColor", strColor, bRepaint);
+        script.appendCall(getContextPath() + "setBackgroundColor", strColor, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -437,11 +448,22 @@ public class Block extends jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public void getBackground(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBackground");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBackground");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -454,7 +476,7 @@ public class Block extends jsx3.gui.Painted
     public jsx3.gui.Block setBackground(String strBG)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBackground", strBG);
+        script.appendCall(getContextPath() + "setBackground", strBG);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -465,11 +487,22 @@ public class Block extends jsx3.gui.Painted
     @SuppressWarnings("unchecked")
     public void getBorder(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBorder");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBorder");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -483,7 +516,7 @@ together as in: border:solid 1px #989885;border-left-width:0px;
     public jsx3.gui.Block setBorder(String strCSS, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBorder", strCSS, bRecalc);
+        script.appendCall(getContextPath() + "setBorder", strCSS, bRecalc);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -495,11 +528,22 @@ together as in: border:solid 1px #989885;border-left-width:0px;
     @SuppressWarnings("unchecked")
     public void getColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -513,7 +557,7 @@ together as in: border:solid 1px #989885;border-left-width:0px;
     public jsx3.gui.Block setColor(String strColor, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setColor", strColor, bRepaint);
+        script.appendCall(getContextPath() + "setColor", strColor, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -525,11 +569,22 @@ together as in: border:solid 1px #989885;border-left-width:0px;
     @SuppressWarnings("unchecked")
     public void getCursor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCursor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCursor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -541,7 +596,7 @@ together as in: border:solid 1px #989885;border-left-width:0px;
     public void setCursor(String strCursor, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCursor", strCursor, bRepaint);
+        script.appendCall(getContextPath() + "setCursor", strCursor, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -552,11 +607,22 @@ together as in: border:solid 1px #989885;border-left-width:0px;
     @SuppressWarnings("unchecked")
     public void getCSSOverride(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCSSOverride");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCSSOverride");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -571,7 +637,7 @@ Instance Properties are the preferred method for applying styles.
     public jsx3.gui.Block setCSSOverride(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCSSOverride", strCSS);
+        script.appendCall(getContextPath() + "setCSSOverride", strCSS);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -582,11 +648,22 @@ Instance Properties are the preferred method for applying styles.
     @SuppressWarnings("unchecked")
     public void getClassName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getClassName");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getClassName");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -601,7 +678,7 @@ Dynamic Properties are the preferred method for applying global styles.
     public jsx3.gui.Block setClassName(String strClassName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setClassName", strClassName);
+        script.appendCall(getContextPath() + "setClassName", strClassName);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -612,11 +689,22 @@ Dynamic Properties are the preferred method for applying global styles.
     @SuppressWarnings("unchecked")
     public void getDisplay(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisplay");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisplay");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -630,7 +718,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setDisplay(String intDisplay, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDisplay", intDisplay, bRepaint);
+        script.appendCall(getContextPath() + "setDisplay", intDisplay, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -642,11 +730,22 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     @SuppressWarnings("unchecked")
     public void getFontName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontName");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontName");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -659,7 +758,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setFontName(String strFontName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontName", strFontName);
+        script.appendCall(getContextPath() + "setFontName", strFontName);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -671,11 +770,22 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     @SuppressWarnings("unchecked")
     public void getFontSize(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontSize");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontSize");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -688,7 +798,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setFontSize(int intPixelSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontSize", intPixelSize);
+        script.appendCall(getContextPath() + "setFontSize", intPixelSize);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -700,11 +810,22 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     @SuppressWarnings("unchecked")
     public void getFontWeight(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getFontWeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getFontWeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -717,7 +838,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setFontWeight(String FONTWEIGHT)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setFontWeight", FONTWEIGHT);
+        script.appendCall(getContextPath() + "setFontWeight", FONTWEIGHT);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -729,11 +850,22 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     @SuppressWarnings("unchecked")
     public void getHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -746,7 +878,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setHeight(String vntHeight, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeight", vntHeight, bRepaint);
+        script.appendCall(getContextPath() + "setHeight", vntHeight, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -760,7 +892,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setHeight(int vntHeight, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setHeight", vntHeight, bRepaint);
+        script.appendCall(getContextPath() + "setHeight", vntHeight, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -771,11 +903,22 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     @SuppressWarnings("unchecked")
     public void getIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getIndex");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getIndex");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -789,7 +932,7 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     public jsx3.gui.Block setIndex(int intIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setIndex", intIndex, bRepaint);
+        script.appendCall(getContextPath() + "setIndex", intIndex, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -801,11 +944,22 @@ Only those parameters listed for @DISPLAY are supported as inputs to this functi
     @SuppressWarnings("unchecked")
     public void getLeft(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getLeft");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getLeft");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -819,7 +973,7 @@ from its parent and only applies if this object is absolutely positioned.
     public jsx3.gui.Block setLeft(int vntLeft, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLeft", vntLeft, bRepaint);
+        script.appendCall(getContextPath() + "setLeft", vntLeft, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -834,281 +988,9 @@ from its parent and only applies if this object is absolutely positioned.
     public jsx3.gui.Block setLeft(String vntLeft, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLeft", vntLeft, bRepaint);
+        script.appendCall(getContextPath() + "setLeft", vntLeft, bRepaint);
         getScriptProxy().addScript(script);
         return this;
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, String top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, int top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, String top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, int top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, String top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(String left, int top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, String width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, String top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, String top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, String top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, String top, int width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(Object[] left, int top, String width, int height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
     }
 
     /**
@@ -1124,7 +1006,7 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
     public void setDimensions(String left, int top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1141,7 +1023,7 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
     public void setDimensions(Object[] left, int top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1155,10 +1037,10 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
-    public void setDimensions(Object[] left, String top, String width, int height, boolean bRepaint)
+    public void setDimensions(Object[] left, int top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1172,10 +1054,10 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
-    public void setDimensions(int left, String top, String width, int height, boolean bRepaint)
+    public void setDimensions(String left, int top, String width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1189,27 +1071,10 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
      * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
    an <code>Array</code> then this parameter is the second parameter passed to this method.
      */
-    public void setDimensions(String left, String top, String width, int height, boolean bRepaint)
+    public void setDimensions(Object[] left, int top, String width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
-        getScriptProxy().addScript(script);
-    }
-
-    /**
-     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
-setLeft, setTop, etc. Any argument can be null to indicate not to update it.
-     * @param left the new left value or an array containing all four new values
-     * @param top the new top value
-     * @param width the new width value
-     * @param height the new height value
-     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
-   an <code>Array</code> then this parameter is the second parameter passed to this method.
-     */
-    public void setDimensions(int left, int top, int width, String height, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1226,7 +1091,143 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
     public void setDimensions(String left, String top, int width, int height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, String top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, String top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, int top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, String top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, String top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1243,7 +1244,160 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
     public void setDimensions(String left, String top, int width, String height, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDimensions", left, top, width, height, bRepaint);
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, String top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, String top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(Object[] left, int top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, String top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, String top, int width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, String top, String width, int height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, int top, int width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(String left, int top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
+        getScriptProxy().addScript(script);
+    }
+
+    /**
+     * Set one to four dimensions at once. This operation is more efficient than calling more than one of
+setLeft, setTop, etc. Any argument can be null to indicate not to update it.
+     * @param left the new left value or an array containing all four new values
+     * @param top the new top value
+     * @param width the new width value
+     * @param height the new height value
+     * @param bRepaint whether to update the display of this object immediately. If <code>left</code> is
+   an <code>Array</code> then this parameter is the second parameter passed to this method.
+     */
+    public void setDimensions(int left, String top, String width, String height, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setDimensions", left, top, width, height, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1254,11 +1408,22 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
     @SuppressWarnings("unchecked")
     public void getDimensions(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDimensions");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDimensions");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1268,11 +1433,22 @@ setLeft, setTop, etc. Any argument can be null to indicate not to update it.
     @SuppressWarnings("unchecked")
     public void getMargin(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMargin");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMargin");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1288,7 +1464,7 @@ supported, but requires that pixels be designated.  For example, using <code>mar
     public jsx3.gui.Block setMargin(String strCSS, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMargin", strCSS, bRecalc);
+        script.appendCall(getContextPath() + "setMargin", strCSS, bRecalc);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1300,11 +1476,22 @@ supported, but requires that pixels be designated.  For example, using <code>mar
     @SuppressWarnings("unchecked")
     public void getOverflow(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getOverflow");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getOverflow");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1317,7 +1504,7 @@ supported, but requires that pixels be designated.  For example, using <code>mar
     public jsx3.gui.Block setOverflow(int OVERFLOW)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setOverflow", OVERFLOW);
+        script.appendCall(getContextPath() + "setOverflow", OVERFLOW);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1328,11 +1515,22 @@ supported, but requires that pixels be designated.  For example, using <code>mar
     @SuppressWarnings("unchecked")
     public void getPadding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPadding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPadding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1348,7 +1546,7 @@ supported, but requires that pixels be designated.  For example, using <code>pad
     public jsx3.gui.Block setPadding(String strCSS, boolean bRecalc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPadding", strCSS, bRecalc);
+        script.appendCall(getContextPath() + "setPadding", strCSS, bRecalc);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1359,11 +1557,22 @@ supported, but requires that pixels be designated.  For example, using <code>pad
     @SuppressWarnings("unchecked")
     public void getRelativePosition(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRelativePosition");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRelativePosition");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1377,7 +1586,7 @@ supported, but requires that pixels be designated.  For example, using <code>pad
     public jsx3.gui.Block setRelativePosition(int intRelative, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRelativePosition", intRelative, bRepaint);
+        script.appendCall(getContextPath() + "setRelativePosition", intRelative, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1390,11 +1599,22 @@ supported, but requires that pixels be designated.  For example, using <code>pad
     @SuppressWarnings("unchecked")
     public void getTagName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTagName");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTagName");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1407,7 +1627,7 @@ supported, but requires that pixels be designated.  For example, using <code>pad
     public jsx3.gui.Block setTagName(String strTagName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTagName", strTagName);
+        script.appendCall(getContextPath() + "setTagName", strTagName);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1421,11 +1641,22 @@ enclosing tag with an empty string (no content): <span></span>.  To return null 
     @SuppressWarnings("unchecked")
     public void getText(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getText");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getText");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1438,7 +1669,7 @@ enclosing tag with an empty string (no content): <span></span>.  To return null 
     public jsx3.gui.Block setText(String strText, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setText", strText, bRepaint);
+        script.appendCall(getContextPath() + "setText", strText, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1450,11 +1681,22 @@ enclosing tag with an empty string (no content): <span></span>.  To return null 
     @SuppressWarnings("unchecked")
     public void getTextAlign(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTextAlign");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTextAlign");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1466,7 +1708,7 @@ enclosing tag with an empty string (no content): <span></span>.  To return null 
     public jsx3.gui.Block setTextAlign(String ALIGN)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTextAlign", ALIGN);
+        script.appendCall(getContextPath() + "setTextAlign", ALIGN);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1477,11 +1719,22 @@ enclosing tag with an empty string (no content): <span></span>.  To return null 
     @SuppressWarnings("unchecked")
     public void getTip(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTip");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTip");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1494,7 +1747,7 @@ Returns reference to self to facilitate method chaining;
     public jsx3.gui.Block setTip(String strTip)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTip", strTip);
+        script.appendCall(getContextPath() + "setTip", strTip);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1506,11 +1759,22 @@ Returns reference to self to facilitate method chaining;
     @SuppressWarnings("unchecked")
     public void getTop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTop");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTop");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1524,7 +1788,7 @@ from its parent and only applies if this object is absolutely positioned.
     public jsx3.gui.Block setTop(String vntTop, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTop", vntTop, bRepaint);
+        script.appendCall(getContextPath() + "setTop", vntTop, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1539,7 +1803,7 @@ from its parent and only applies if this object is absolutely positioned.
     public jsx3.gui.Block setTop(int vntTop, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTop", vntTop, bRepaint);
+        script.appendCall(getContextPath() + "setTop", vntTop, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1551,11 +1815,22 @@ from its parent and only applies if this object is absolutely positioned.
     @SuppressWarnings("unchecked")
     public void getVisibility(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getVisibility");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getVisibility");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1567,7 +1842,7 @@ from its parent and only applies if this object is absolutely positioned.
     public void setVisibility(String VISIBILITY, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setVisibility", VISIBILITY, bRepaint);
+        script.appendCall(getContextPath() + "setVisibility", VISIBILITY, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1578,26 +1853,23 @@ from its parent and only applies if this object is absolutely positioned.
     @SuppressWarnings("unchecked")
     public void getWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
-        getScriptProxy().addScript(script);
-    }
+        String callbackPrefix = "";
 
-    /**
-     * Sets the width property of this object.
-     * @param vntWidth the width as non-negative integer or non-negative percentage. For example: 45%, 12.
-     * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
-     * @return this object.
-     */
-    public jsx3.gui.Block setWidth(int vntWidth, boolean bRepaint)
-    {
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWidth", vntWidth, bRepaint);
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
-        return this;
     }
 
     /**
@@ -1609,7 +1881,21 @@ from its parent and only applies if this object is absolutely positioned.
     public jsx3.gui.Block setWidth(String vntWidth, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWidth", vntWidth, bRepaint);
+        script.appendCall(getContextPath() + "setWidth", vntWidth, bRepaint);
+        getScriptProxy().addScript(script);
+        return this;
+    }
+
+    /**
+     * Sets the width property of this object.
+     * @param vntWidth the width as non-negative integer or non-negative percentage. For example: 45%, 12.
+     * @param bRepaint if <code>true</code>, the view of this object is immediately updated, obviating the need to call <code>repaint()</code>.
+     * @return this object.
+     */
+    public jsx3.gui.Block setWidth(int vntWidth, boolean bRepaint)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall(getContextPath() + "setWidth", vntWidth, bRepaint);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -1620,11 +1906,22 @@ from its parent and only applies if this object is absolutely positioned.
     @SuppressWarnings("unchecked")
     public void getZIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getZIndex");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getZIndex");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1636,7 +1933,7 @@ from its parent and only applies if this object is absolutely positioned.
     public void setZIndex(int intZIndex, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setZIndex", intZIndex, bRepaint);
+        script.appendCall(getContextPath() + "setZIndex", intZIndex, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -1647,7 +1944,7 @@ from its parent and only applies if this object is absolutely positioned.
     public void showMask(String strMessage)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("showMask", strMessage);
+        script.appendCall(getContextPath() + "showMask", strMessage);
         getScriptProxy().addScript(script);
     }
 
@@ -1657,7 +1954,7 @@ from its parent and only applies if this object is absolutely positioned.
     public void hideMask()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("hideMask");
+        script.appendCall(getContextPath() + "hideMask");
         getScriptProxy().addScript(script);
     }
 
@@ -1720,11 +2017,22 @@ dragged and dropped on another container supporting drop.
     @SuppressWarnings("unchecked")
     public void getCanDrag(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanDrag");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanDrag");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1735,11 +2043,22 @@ dragged and dropped on another container supporting drop.
     @SuppressWarnings("unchecked")
     public void getCanDrop(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanDrop");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanDrop");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1750,11 +2069,22 @@ dragged and dropped on another container supporting drop.
     @SuppressWarnings("unchecked")
     public void getCanMove(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanMove");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanMove");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1765,11 +2095,22 @@ dragged and dropped on another container supporting drop.
     @SuppressWarnings("unchecked")
     public void getCanSpy(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCanSpy");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCanSpy");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1782,11 +2123,22 @@ setEvent() method or during component deserialization.
     @SuppressWarnings("unchecked")
     public void getEvent(String strType, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEvent", strType);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEvent", strType);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1838,11 +2190,22 @@ clicks on this object with the right button.
     @SuppressWarnings("unchecked")
     public void getMenu(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMenu");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMenu");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -1854,53 +2217,24 @@ clicks on this object with the right button.
     @SuppressWarnings("unchecked")
     public void hasEvent(String strType, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = hasEvent", strType);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "hasEvent", strType);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
-
-    /**
-     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
-will be checked against the hot key. If an event matches, the callback function will execute and the event
-bubble will be canceled.
-
-If the four parameters vntKey, bShift, bControl, and bAlt
-match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
-function (the most recently registered) will be executed by a single keydown event.
-     * @param vntCallback either a function, or the name of a method bound to this object.
-   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
-   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
-   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
-   other parameters are ignored.
-     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
-   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
-   keycode value.
-     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
-   to invoke the hot key.
-     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
-   to invoke the hot key.
-     * @return the registered hot key.
-     */
-    @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
-    {
-        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
-        }
-    }
-
 
     /**
      * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
@@ -1968,6 +2302,46 @@ function (the most recently registered) will be executed by a single keydown eve
      */
     @SuppressWarnings("unchecked")
     public jsx3.gui.HotKey registerHotKey(org.directwebremoting.proxy.CodeBlock vntCallback, String vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    {
+        String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.HotKey> ctor = jsx3.gui.HotKey.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.HotKey.class.getName());
+        }
+    }
+
+
+    /**
+     * Registers a hot key with this JSX model node. All keydown events that bubble up to this object
+will be checked against the hot key. If an event matches, the callback function will execute and the event
+bubble will be canceled.
+
+If the four parameters vntKey, bShift, bControl, and bAlt
+match a previously registered hot key, the previous hot key is clobbered by the new one. Only one hot key callback
+function (the most recently registered) will be executed by a single keydown event.
+     * @param vntCallback either a function, or the name of a method bound to this object.
+   When a keydown event bubbles up to this object that matches the hot key created by this method, this function
+   is called on this object. If this function returns <code>false</code> then this hot key will not cancel the
+   key event. This parameter can also be an instance of <code>HotKey</code>, in which case all
+   other parameters are ignored.
+     * @param vntKey if this parameter is a String, the hot key matches that key (the keycode to match is
+   determined by <code>HotKey.keyDownCharToCode()</code>). If it is an integer, the hot key will match that
+   keycode value.
+     * @param bShift if not <code>null</code> the shift key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bControl if not <code>null</code> the control key state of the keydown event must match this value
+   to invoke the hot key.
+     * @param bAlt if not <code>null</code> the alt key state of the keydown event must match this value
+   to invoke the hot key.
+     * @return the registered hot key.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -2087,7 +2461,7 @@ function (the most recently registered) will be executed by a single keydown eve
      * @return the registered hot key.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.HotKey registerHotKey(String vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
+    public jsx3.gui.HotKey registerHotKey(jsx3.gui.HotKey vntCallback, int vntKey, boolean bShift, boolean bControl, boolean bAlt)
     {
         String extension = "registerHotKey(\"" + vntCallback + "\", \"" + vntKey + "\", \"" + bShift + "\", \"" + bControl + "\", \"" + bAlt + "\").";
         try
@@ -2465,7 +2839,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
     public void setSpyStyles(String strCSS)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSpyStyles", strCSS);
+        script.appendCall(getContextPath() + "setSpyStyles", strCSS);
         getScriptProxy().addScript(script);
     }
 
@@ -2479,7 +2853,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
     public void showSpy(String strHTML, int intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("showSpy", strHTML, intLeft, intTop);
+        script.appendCall(getContextPath() + "showSpy", strHTML, intLeft, intTop);
         getScriptProxy().addScript(script);
     }
 
@@ -2493,7 +2867,7 @@ clicks on this object with the right button. The name is a pointer by-name to a 
     public void showSpy(String strHTML, jsx3.gui.Event intLeft, int intTop)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("showSpy", strHTML, intLeft, intTop);
+        script.appendCall(getContextPath() + "showSpy", strHTML, intLeft, intTop);
         getScriptProxy().addScript(script);
     }
 

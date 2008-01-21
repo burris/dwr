@@ -63,7 +63,7 @@ public class LineGroup extends jsx3.vector.Shape
     public void addLine(int x1, int y1, int x2, int y2)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("addLine", x1, y1, x2, y2);
+        script.appendCall(getContextPath() + "addLine", x1, y1, x2, y2);
         getScriptProxy().addScript(script);
     }
 
@@ -77,7 +77,7 @@ public class LineGroup extends jsx3.vector.Shape
     public void addRelativeLine(int x1, int y1, int dx, int dy)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("addRelativeLine", x1, y1, dx, dy);
+        script.appendCall(getContextPath() + "addRelativeLine", x1, y1, dx, dy);
         getScriptProxy().addScript(script);
     }
 
@@ -87,7 +87,7 @@ public class LineGroup extends jsx3.vector.Shape
     public void clearLines()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("clearLines");
+        script.appendCall(getContextPath() + "clearLines");
         getScriptProxy().addScript(script);
     }
 

@@ -68,11 +68,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getBoxHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBoxHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBoxHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -83,7 +94,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setBoxHeight(int boxHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBoxHeight", boxHeight);
+        script.appendCall(getContextPath() + "setBoxHeight", boxHeight);
         getScriptProxy().addScript(script);
     }
 
@@ -94,11 +105,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getLineHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getLineHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getLineHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -109,7 +131,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setLineHeight(int lineHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLineHeight", lineHeight);
+        script.appendCall(getContextPath() + "setLineHeight", lineHeight);
         getScriptProxy().addScript(script);
     }
 
@@ -120,11 +142,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getLabelClass(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getLabelClass");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getLabelClass");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -135,7 +168,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setLabelClass(String labelClass)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLabelClass", labelClass);
+        script.appendCall(getContextPath() + "setLabelClass", labelClass);
         getScriptProxy().addScript(script);
     }
 
@@ -146,11 +179,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getLabelStyle(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getLabelStyle");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getLabelStyle");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -161,7 +205,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setLabelStyle(String labelStyle)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setLabelStyle", labelStyle);
+        script.appendCall(getContextPath() + "setLabelStyle", labelStyle);
         getScriptProxy().addScript(script);
     }
 
@@ -172,11 +216,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getBackgroundFill(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBackgroundFill");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBackgroundFill");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -187,7 +242,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setBackgroundFill(String backgroundFill)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBackgroundFill", backgroundFill);
+        script.appendCall(getContextPath() + "setBackgroundFill", backgroundFill);
         getScriptProxy().addScript(script);
     }
 
@@ -198,11 +253,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getBackgroundStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBackgroundStroke");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBackgroundStroke");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -213,7 +279,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setBackgroundStroke(String backgroundStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBackgroundStroke", backgroundStroke);
+        script.appendCall(getContextPath() + "setBackgroundStroke", backgroundStroke);
         getScriptProxy().addScript(script);
     }
 
@@ -224,11 +290,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getPreferredWidth(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPreferredWidth");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPreferredWidth");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -239,7 +316,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setPreferredWidth(int preferredWidth)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPreferredWidth", preferredWidth);
+        script.appendCall(getContextPath() + "setPreferredWidth", preferredWidth);
         getScriptProxy().addScript(script);
     }
 
@@ -250,11 +327,22 @@ public class Legend extends jsx3.chart.ChartComponent
     @SuppressWarnings("unchecked")
     public void getPreferredHeight(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPreferredHeight");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPreferredHeight");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -265,7 +353,7 @@ public class Legend extends jsx3.chart.ChartComponent
     public void setPreferredHeight(int preferredHeight)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPreferredHeight", preferredHeight);
+        script.appendCall(getContextPath() + "setPreferredHeight", preferredHeight);
         getScriptProxy().addScript(script);
     }
 

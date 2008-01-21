@@ -61,7 +61,7 @@ public class Tag extends jsx3.html.BlockTag
     public void getToolTip()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("getToolTip");
+        script.appendCall(getContextPath() + "getToolTip");
         getScriptProxy().addScript(script);
     }
 
@@ -72,7 +72,7 @@ public class Tag extends jsx3.html.BlockTag
     public void setToolTip(String title)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setToolTip", title);
+        script.appendCall(getContextPath() + "setToolTip", title);
         getScriptProxy().addScript(script);
     }
 
@@ -83,11 +83,22 @@ public class Tag extends jsx3.html.BlockTag
     @SuppressWarnings("unchecked")
     public void getRotation(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRotation");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRotation");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -98,7 +109,7 @@ public class Tag extends jsx3.html.BlockTag
     public void setRotation(int rotation)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setRotation", rotation);
+        script.appendCall(getContextPath() + "setRotation", rotation);
         getScriptProxy().addScript(script);
     }
 

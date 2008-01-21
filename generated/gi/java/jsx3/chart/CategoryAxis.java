@@ -70,11 +70,22 @@ public class CategoryAxis extends jsx3.chart.Axis
     @SuppressWarnings("unchecked")
     public void getTickAlignment(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTickAlignment");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTickAlignment");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -85,7 +96,7 @@ public class CategoryAxis extends jsx3.chart.Axis
     public void setTickAlignment(String tickAlignment)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setTickAlignment", tickAlignment);
+        script.appendCall(getContextPath() + "setTickAlignment", tickAlignment);
         getScriptProxy().addScript(script);
     }
 
@@ -96,11 +107,22 @@ public class CategoryAxis extends jsx3.chart.Axis
     @SuppressWarnings("unchecked")
     public void getCategoryField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getCategoryField");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getCategoryField");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -111,7 +133,7 @@ public class CategoryAxis extends jsx3.chart.Axis
     public void setCategoryField(String categoryField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setCategoryField", categoryField);
+        script.appendCall(getContextPath() + "setCategoryField", categoryField);
         getScriptProxy().addScript(script);
     }
 
@@ -122,11 +144,22 @@ public class CategoryAxis extends jsx3.chart.Axis
     @SuppressWarnings("unchecked")
     public void getPaddingLow(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPaddingLow");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPaddingLow");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -137,7 +170,7 @@ public class CategoryAxis extends jsx3.chart.Axis
     public void setPaddingLow(float paddingLow)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPaddingLow", paddingLow);
+        script.appendCall(getContextPath() + "setPaddingLow", paddingLow);
         getScriptProxy().addScript(script);
     }
 
@@ -148,11 +181,22 @@ public class CategoryAxis extends jsx3.chart.Axis
     @SuppressWarnings("unchecked")
     public void getPaddingHigh(org.directwebremoting.proxy.Callback<Float> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPaddingHigh");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPaddingHigh");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Float.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -163,7 +207,7 @@ public class CategoryAxis extends jsx3.chart.Axis
     public void setPaddingHigh(float paddingHigh)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPaddingHigh", paddingHigh);
+        script.appendCall(getContextPath() + "setPaddingHigh", paddingHigh);
         getScriptProxy().addScript(script);
     }
 

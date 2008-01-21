@@ -60,11 +60,22 @@ iframe, the native iframe object may not be available. In this case, this method
     @SuppressWarnings("unchecked")
     public void getIFrame(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getIFrame");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getIFrame");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -75,11 +86,22 @@ iframe, the native document object may not be available. In this case, this meth
     @SuppressWarnings("unchecked")
     public void getContentDocument(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getContentDocument");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getContentDocument");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -89,11 +111,22 @@ iframe, the native document object may not be available. In this case, this meth
     @SuppressWarnings("unchecked")
     public void getSrc(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSrc");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSrc");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -106,7 +139,7 @@ owns this object. If this iframe is rendered on screen, its location is updated 
     public jsx3.gui.IFrame setSrc(String srcSrc)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setSrc", srcSrc);
+        script.appendCall(getContextPath() + "setSrc", srcSrc);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -117,11 +150,22 @@ owns this object. If this iframe is rendered on screen, its location is updated 
     @SuppressWarnings("unchecked")
     public void getScrolling(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getScrolling");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getScrolling");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -133,7 +177,7 @@ owns this object. If this iframe is rendered on screen, its location is updated 
     public jsx3.gui.IFrame setScrolling(int intScrolling)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setScrolling", intScrolling);
+        script.appendCall(getContextPath() + "setScrolling", intScrolling);
         getScriptProxy().addScript(script);
         return this;
     }

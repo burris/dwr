@@ -72,11 +72,22 @@ public class StackGroup extends jsx3.gui.LayoutGrid
     @SuppressWarnings("unchecked")
     public void getBarSize(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBarSize");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBarSize");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -89,7 +100,7 @@ public class StackGroup extends jsx3.gui.LayoutGrid
     public jsx3.gui.StackGroup setBarSize(int intBarSize)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBarSize", intBarSize);
+        script.appendCall(getContextPath() + "setBarSize", intBarSize);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -100,11 +111,22 @@ public class StackGroup extends jsx3.gui.LayoutGrid
     @SuppressWarnings("unchecked")
     public void getSelectedIndex(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getSelectedIndex");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getSelectedIndex");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

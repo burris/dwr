@@ -60,7 +60,7 @@ public class Tag extends jsx3.lang.Object
     public void appendChild(jsx3.html.Tag child)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("appendChild", child);
+        script.appendCall(getContextPath() + "appendChild", child);
         getScriptProxy().addScript(script);
     }
 
@@ -71,7 +71,7 @@ public class Tag extends jsx3.lang.Object
     public void removeChild(jsx3.html.Tag child)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("removeChild", child);
+        script.appendCall(getContextPath() + "removeChild", child);
         getScriptProxy().addScript(script);
     }
 
@@ -83,7 +83,7 @@ public class Tag extends jsx3.lang.Object
     public void replaceChild(jsx3.html.Tag child, jsx3.html.Tag oldChild)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("replaceChild", child, oldChild);
+        script.appendCall(getContextPath() + "replaceChild", child, oldChild);
         getScriptProxy().addScript(script);
     }
 
@@ -93,7 +93,7 @@ public class Tag extends jsx3.lang.Object
     public void removeChildren()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("removeChildren");
+        script.appendCall(getContextPath() + "removeChildren");
         getScriptProxy().addScript(script);
     }
 
@@ -143,11 +143,22 @@ public class Tag extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getChildren(org.directwebremoting.proxy.Callback<Object[]> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getChildren");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getChildren");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Object[].class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -158,11 +169,22 @@ public class Tag extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getId(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getId");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getId");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -173,7 +195,7 @@ public class Tag extends jsx3.lang.Object
     public void setId(String id)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setId", id);
+        script.appendCall(getContextPath() + "setId", id);
         getScriptProxy().addScript(script);
     }
 
@@ -184,11 +206,22 @@ public class Tag extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void getClassName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getClassName");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getClassName");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -199,7 +232,7 @@ public class Tag extends jsx3.lang.Object
     public void setClassName(String cssClass)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setClassName", cssClass);
+        script.appendCall(getContextPath() + "setClassName", cssClass);
         getScriptProxy().addScript(script);
     }
 
@@ -210,7 +243,7 @@ public class Tag extends jsx3.lang.Object
     public void setExtraStyles(String extraStyles)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setExtraStyles", extraStyles);
+        script.appendCall(getContextPath() + "setExtraStyles", extraStyles);
         getScriptProxy().addScript(script);
     }
 
@@ -220,7 +253,7 @@ public class Tag extends jsx3.lang.Object
     public void release()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("release");
+        script.appendCall(getContextPath() + "release");
         getScriptProxy().addScript(script);
     }
 
@@ -232,11 +265,22 @@ public class Tag extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void onAppendChild(jsx3.html.Tag child, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = onAppendChild", child);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "onAppendChild", child);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -248,11 +292,22 @@ public class Tag extends jsx3.lang.Object
     @SuppressWarnings("unchecked")
     public void onRemoveChild(jsx3.html.Tag child, org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = onRemoveChild", child);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "onRemoveChild", child);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -265,7 +320,7 @@ interpreted as name/value pairs, i.e.: tag.setProperty(n1, p1, n2, p2);.
     public void setProperty(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setProperty", strName, strValue);
+        script.appendCall(getContextPath() + "setProperty", strName, strValue);
         getScriptProxy().addScript(script);
     }
 
@@ -277,11 +332,22 @@ interpreted as name/value pairs, i.e.: tag.setProperty(n1, p1, n2, p2);.
     @SuppressWarnings("unchecked")
     public void getProperty(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getProperty", strName);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getProperty", strName);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -292,7 +358,7 @@ interpreted as name/value pairs, i.e.: tag.setProperty(n1, p1, n2, p2);.
     public void removeProperty(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("removeProperty", strName);
+        script.appendCall(getContextPath() + "removeProperty", strName);
         getScriptProxy().addScript(script);
     }
 
@@ -305,7 +371,7 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
     public void setStyle(String strName, String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setStyle", strName, strValue);
+        script.appendCall(getContextPath() + "setStyle", strName, strValue);
         getScriptProxy().addScript(script);
     }
 
@@ -317,11 +383,22 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
     @SuppressWarnings("unchecked")
     public void getStyle(String strName, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getStyle", strName);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getStyle", strName);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -332,7 +409,7 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
     public void removeStyle(String strName)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("removeStyle", strName);
+        script.appendCall(getContextPath() + "removeStyle", strName);
         getScriptProxy().addScript(script);
     }
 
@@ -343,11 +420,22 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
     @SuppressWarnings("unchecked")
     public void getTagName(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTagName");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTagName");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -358,11 +446,22 @@ interpreted as name/value pairs, i.e.: tag.setStyle(n1, s1, n2, s2);.
     @SuppressWarnings("unchecked")
     public void getTagNS(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getTagNS");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getTagNS");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -374,11 +473,22 @@ This method is only available in the VML version of this class.
     @SuppressWarnings("unchecked")
     public void paint(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = paint");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "paint");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -390,11 +500,22 @@ This method is only available in the SVG version of this class.
     @SuppressWarnings("unchecked")
     public void paintDom(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = paintDom");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "paintDom");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -405,7 +526,7 @@ override this method should begin with a call to jsxsuper().
     public void paintUpdate()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("paintUpdate");
+        script.appendCall(getContextPath() + "paintUpdate");
         getScriptProxy().addScript(script);
     }
 

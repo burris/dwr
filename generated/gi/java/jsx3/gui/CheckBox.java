@@ -54,6 +54,60 @@ public class CheckBox extends jsx3.gui.Block
      * @param strText text/HTML markup to display with the checkbox;
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
+    public CheckBox(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strText text/HTML markup to display with the checkbox;
+     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
+     */
+    public CheckBox(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strText text/HTML markup to display with the checkbox;
+     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
+     */
+    public CheckBox(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strText, int CHECKED)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strText text/HTML markup to display with the checkbox;
+     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
+     */
     public CheckBox(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
@@ -72,25 +126,7 @@ public class CheckBox extends jsx3.gui.Block
      * @param strText text/HTML markup to display with the checkbox;
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
-    public CheckBox(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strText text/HTML markup to display with the checkbox;
-     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
-     */
-    public CheckBox(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
+    public CheckBox(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -126,43 +162,25 @@ public class CheckBox extends jsx3.gui.Block
      * @param strText text/HTML markup to display with the checkbox;
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
-    public CheckBox(String strName, int vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, int CHECKED)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strText text/HTML markup to display with the checkbox;
-     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
-     */
-    public CheckBox(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strText text/HTML markup to display with the checkbox;
-     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
-     */
     public CheckBox(String strName, String vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, int CHECKED)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strText text/HTML markup to display with the checkbox;
+     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
+     */
+    public CheckBox(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -216,7 +234,7 @@ public class CheckBox extends jsx3.gui.Block
      * @param strText text/HTML markup to display with the checkbox;
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
-    public CheckBox(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strText, int CHECKED)
+    public CheckBox(String strName, String vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -234,7 +252,7 @@ public class CheckBox extends jsx3.gui.Block
      * @param strText text/HTML markup to display with the checkbox;
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
-    public CheckBox(String strName, int vntLeft, int vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
+    public CheckBox(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -270,7 +288,25 @@ public class CheckBox extends jsx3.gui.Block
      * @param strText text/HTML markup to display with the checkbox;
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
-    public CheckBox(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
+    public CheckBox(String strName, int vntLeft, int vntTop, String vntWidth, int vntHeight, String strText, int CHECKED)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
+        setInitScript(script);
+    }
+
+    /**
+     * The instance initializer.
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strText text/HTML markup to display with the checkbox;
+     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
+     */
+    public CheckBox(String strName, int vntLeft, String vntTop, int vntWidth, String vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -289,42 +325,6 @@ public class CheckBox extends jsx3.gui.Block
      * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
      */
     public CheckBox(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strText, int CHECKED)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strText text/HTML markup to display with the checkbox;
-     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
-     */
-    public CheckBox(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strText, int CHECKED)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new CheckBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strText, CHECKED);
-        setInitScript(script);
-    }
-
-    /**
-     * The instance initializer.
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strText text/HTML markup to display with the checkbox;
-     * @param CHECKED if jsx3.gui.CheckBox.CHECKED or null, checkbox is checked; if jsx3.gui.CheckBox.UNCHECKED checkbox is unchecked
-     */
-    public CheckBox(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strText, int CHECKED)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -361,11 +361,22 @@ public class CheckBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getDefaultChecked(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDefaultChecked");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDefaultChecked");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -377,7 +388,7 @@ public class CheckBox extends jsx3.gui.Block
     public jsx3.gui.CheckBox setDefaultChecked(int CHECKED)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDefaultChecked", CHECKED);
+        script.appendCall(getContextPath() + "setDefaultChecked", CHECKED);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -389,11 +400,22 @@ public class CheckBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getChecked(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getChecked");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getChecked");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -406,7 +428,7 @@ deprecated 3.0 model event protocol.
     public jsx3.gui.CheckBox setChecked(int intChecked)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setChecked", intChecked);
+        script.appendCall(getContextPath() + "setChecked", intChecked);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -418,11 +440,22 @@ deprecated 3.0 model event protocol.
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -504,11 +537,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -519,11 +563,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -535,11 +590,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -550,11 +616,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -566,11 +643,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -582,11 +670,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -596,11 +695,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -695,7 +805,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 
@@ -830,47 +940,6 @@ event for this control.
      * @return this object.
      */
     @SuppressWarnings("unchecked")
-    public jsx3.gui.Form setValue(Integer vntValue)
-    {
-        String extension = "setValue(\"" + vntValue + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.Form.class.getName());
-        }
-    }
-
-    /**
-     * Sets the value of this control.
-     * @param vntValue string/int value for the component
-     * @param returnType The expected return type
-     * @return this object.
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T setValue(Integer vntValue, Class<T> returnType)
-    {
-        String extension = "setValue(\"" + vntValue + "\").";
-        try
-        {
-            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
-            return ctor.newInstance(this, extension, getScriptProxy());
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
-        }
-    }
-
-    /**
-     * Sets the value of this control.
-     * @param vntValue string/int value for the component
-     * @return this object.
-     */
-    @SuppressWarnings("unchecked")
     public jsx3.gui.Form setValue(String vntValue)
     {
         String extension = "setValue(\"" + vntValue + "\").";
@@ -893,6 +962,47 @@ event for this control.
      */
     @SuppressWarnings("unchecked")
     public <T> T setValue(String vntValue, Class<T> returnType)
+    {
+        String extension = "setValue(\"" + vntValue + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<T> ctor = returnType.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported return type: " + returnType.getName());
+        }
+    }
+
+    /**
+     * Sets the value of this control.
+     * @param vntValue string/int value for the component
+     * @return this object.
+     */
+    @SuppressWarnings("unchecked")
+    public jsx3.gui.Form setValue(Integer vntValue)
+    {
+        String extension = "setValue(\"" + vntValue + "\").";
+        try
+        {
+            java.lang.reflect.Constructor<jsx3.gui.Form> ctor = jsx3.gui.Form.class.getConstructor(Context.class, String.class, ScriptProxy.class);
+            return ctor.newInstance(this, extension, getScriptProxy());
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalArgumentException("Unsupported type: " + jsx3.gui.Form.class.getName());
+        }
+    }
+
+    /**
+     * Sets the value of this control.
+     * @param vntValue string/int value for the component
+     * @param returnType The expected return type
+     * @return this object.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T setValue(Integer vntValue, Class<T> returnType)
     {
         String extension = "setValue(\"" + vntValue + "\").";
         try

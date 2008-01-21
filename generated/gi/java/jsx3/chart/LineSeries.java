@@ -97,11 +97,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getXField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getXField");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getXField");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -112,7 +123,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setXField(String xField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setXField", xField);
+        script.appendCall(getContextPath() + "setXField", xField);
         getScriptProxy().addScript(script);
     }
 
@@ -123,11 +134,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getYField(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getYField");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getYField");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -138,7 +160,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setYField(String yField)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setYField", yField);
+        script.appendCall(getContextPath() + "setYField", yField);
         getScriptProxy().addScript(script);
     }
 
@@ -149,11 +171,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getForm(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getForm");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getForm");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -164,7 +197,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setForm(String form)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setForm", form);
+        script.appendCall(getContextPath() + "setForm", form);
         getScriptProxy().addScript(script);
     }
 
@@ -175,11 +208,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getInterpolateValues(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getInterpolateValues");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getInterpolateValues");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -190,7 +234,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setInterpolateValues(boolean interpolateValues)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setInterpolateValues", interpolateValues);
+        script.appendCall(getContextPath() + "setInterpolateValues", interpolateValues);
         getScriptProxy().addScript(script);
     }
 
@@ -201,11 +245,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getPointRadius(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPointRadius");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPointRadius");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -216,7 +271,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setPointRadius(int pointRadius)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointRadius", pointRadius);
+        script.appendCall(getContextPath() + "setPointRadius", pointRadius);
         getScriptProxy().addScript(script);
     }
 
@@ -247,7 +302,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setPointRenderer(String pointRenderer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointRenderer", pointRenderer);
+        script.appendCall(getContextPath() + "setPointRenderer", pointRenderer);
         getScriptProxy().addScript(script);
     }
 
@@ -258,11 +313,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getPointFill(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPointFill");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPointFill");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -273,7 +339,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setPointFill(String pointFill)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointFill", pointFill);
+        script.appendCall(getContextPath() + "setPointFill", pointFill);
         getScriptProxy().addScript(script);
     }
 
@@ -284,11 +350,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getPointStroke(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPointStroke");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPointStroke");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -299,7 +376,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setPointStroke(String pointStroke)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointStroke", pointStroke);
+        script.appendCall(getContextPath() + "setPointStroke", pointStroke);
         getScriptProxy().addScript(script);
     }
 
@@ -310,11 +387,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void getPointGradient(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getPointGradient");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getPointGradient");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -325,7 +413,7 @@ public class LineSeries extends jsx3.chart.Series
     public void setPointGradient(String pointGradient)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointGradient", pointGradient);
+        script.appendCall(getContextPath() + "setPointGradient", pointGradient);
         getScriptProxy().addScript(script);
     }
 
@@ -337,11 +425,22 @@ public class LineSeries extends jsx3.chart.Series
     @SuppressWarnings("unchecked")
     public void tooltip(jsx3.chart.Series series, jsx3.xml.Node record, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = tooltip", series, record);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "tooltip", series, record);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

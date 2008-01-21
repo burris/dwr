@@ -73,7 +73,7 @@ public class Polygon extends jsx3.vector.Shape
     public void setPoints(Object[] points)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPoints", points);
+        script.appendCall(getContextPath() + "setPoints", points);
         getScriptProxy().addScript(script);
     }
 
@@ -84,7 +84,7 @@ public class Polygon extends jsx3.vector.Shape
     public void setPointsAsNumberArray(Object[] points)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointsAsNumberArray", points);
+        script.appendCall(getContextPath() + "setPointsAsNumberArray", points);
         getScriptProxy().addScript(script);
     }
 
@@ -95,7 +95,7 @@ public class Polygon extends jsx3.vector.Shape
     public void setPointsAsString(String points)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setPointsAsString", points);
+        script.appendCall(getContextPath() + "setPointsAsString", points);
         getScriptProxy().addScript(script);
     }
 

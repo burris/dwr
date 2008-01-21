@@ -67,11 +67,22 @@ public class PointSeries extends jsx3.chart.PlotSeries
     @SuppressWarnings("unchecked")
     public void getMagnitude(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMagnitude");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMagnitude");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -82,7 +93,7 @@ public class PointSeries extends jsx3.chart.PlotSeries
     public void setMagnitude(int magnitude)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMagnitude", magnitude);
+        script.appendCall(getContextPath() + "setMagnitude", magnitude);
         getScriptProxy().addScript(script);
     }
 
@@ -94,11 +105,22 @@ public class PointSeries extends jsx3.chart.PlotSeries
     @SuppressWarnings("unchecked")
     public void tooltip(jsx3.chart.Series series, jsx3.xml.Node record, org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = tooltip", series, record);
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "tooltip", series, record);
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 

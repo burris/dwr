@@ -46,7 +46,7 @@ public class Tab extends jsx3.gui.Block
      * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
      * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
      */
-    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    public Tab(String strName, String strText, String vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -62,7 +62,7 @@ public class Tab extends jsx3.gui.Block
      * @param strHexActiveColor valid css property for defining the color to use when the tab is active (i.e., red, #ff0000, etc)
      * @param strHexInactiveColor valid css property for defining the color to use when the tab is inactive (i.e., red, #ff0000, etc)
      */
-    public Tab(String strName, String strText, String vntWidth, String strHexActiveColor, String strHexInactiveColor)
+    public Tab(String strName, String strText, int vntWidth, String strHexActiveColor, String strHexInactiveColor)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -119,11 +119,22 @@ public class Tab extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getBevel(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getBevel");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getBevel");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -135,7 +146,7 @@ public class Tab extends jsx3.gui.Block
     public jsx3.gui.Tab setBevel(String strURL)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setBevel", strURL);
+        script.appendCall(getContextPath() + "setBevel", strURL);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -146,7 +157,7 @@ public class Tab extends jsx3.gui.Block
     public void doShow()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("doShow");
+        script.appendCall(getContextPath() + "doShow");
         getScriptProxy().addScript(script);
     }
 
@@ -157,11 +168,22 @@ public class Tab extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getActiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getActiveColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getActiveColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -173,7 +195,7 @@ public class Tab extends jsx3.gui.Block
     public jsx3.gui.Tab setActiveColor(String strActiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setActiveColor", strActiveColor);
+        script.appendCall(getContextPath() + "setActiveColor", strActiveColor);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -185,11 +207,22 @@ public class Tab extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getInactiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getInactiveColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getInactiveColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -201,7 +234,7 @@ public class Tab extends jsx3.gui.Block
     public jsx3.gui.Tab setInactiveColor(String strInactiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setInactiveColor", strInactiveColor);
+        script.appendCall(getContextPath() + "setInactiveColor", strInactiveColor);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -213,11 +246,22 @@ public class Tab extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -229,7 +273,7 @@ public class Tab extends jsx3.gui.Block
     public jsx3.gui.Tab setEnabled(int STATE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", STATE);
+        script.appendCall(getContextPath() + "setEnabled", STATE);
         getScriptProxy().addScript(script);
         return this;
     }

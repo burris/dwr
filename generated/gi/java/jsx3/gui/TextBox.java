@@ -46,7 +46,7 @@ public class TextBox extends jsx3.gui.Block
      * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
      * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
      */
-    public TextBox(String strName, int vntLeft, int vntTop, int vntWidth, String vntHeight, String strValue, String TYPE)
+    public TextBox(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strValue, String TYPE)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -64,115 +64,7 @@ public class TextBox extends jsx3.gui.Block
      * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
      * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
      */
-    public TextBox(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, int vntLeft, int vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
+    public TextBox(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -208,7 +100,151 @@ public class TextBox extends jsx3.gui.Block
      * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
      * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
      */
+    public TextBox(String strName, String vntLeft, String vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, int vntLeft, int vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, String vntLeft, String vntTop, String vntWidth, String vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
     public TextBox(String strName, int vntLeft, String vntTop, int vntWidth, int vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, String vntLeft, String vntTop, int vntWidth, int vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, int vntLeft, int vntTop, int vntWidth, String vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, String vntLeft, int vntTop, String vntWidth, String vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
+    public TextBox(String strName, int vntLeft, String vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -262,61 +298,25 @@ public class TextBox extends jsx3.gui.Block
      * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
      * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
      */
+    public TextBox(String strName, int vntLeft, int vntTop, int vntWidth, int vntHeight, String strValue, String TYPE)
+    {
+        super((Context) null, (String) null, (ScriptProxy) null);
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
+        setInitScript(script);
+    }
+
+    /**
+     * instance initializer
+     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
+     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
+     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
+     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
+     */
     public TextBox(String strName, String vntLeft, String vntTop, int vntWidth, String vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, String vntLeft, int vntTop, String vntWidth, int vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, String vntLeft, int vntTop, int vntWidth, String vntHeight, String strValue, String TYPE)
-    {
-        super((Context) null, (String) null, (ScriptProxy) null);
-        ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("new TextBox", strName, vntLeft, vntTop, vntWidth, vntHeight, strValue, TYPE);
-        setInitScript(script);
-    }
-
-    /**
-     * instance initializer
-     * @param strName unique name distinguishing this object from all other JSX GUI objects in the JSX application
-     * @param vntLeft either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntTop either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntWidth either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param vntHeight either a number (i.e, 12, 30, etc) or a number and a unit value (i.e., "25%", "36pt", etc); if a number is passed, pixels will be the assumed unit when painted to screen
-     * @param strValue this value to appear in the textbox/textarea. This value will be set as the defaultValue for the text box when it is initialized; if edits are made by the user, these edits can be accessed via [object].getValue(); if the initial value is needed, use [object].getDefaultValue();
-     * @param TYPE one of two valid types: jsx3.gui.TextBox.TYPETEXT, jsx3.gui.TextBox.TYPETEXTAREA. If null is passed, jsx3.gui.TextBox.DEFAULTTYPE is used
-     */
-    public TextBox(String strName, int vntLeft, String vntTop, String vntWidth, String vntHeight, String strValue, String TYPE)
     {
         super((Context) null, (String) null, (ScriptProxy) null);
         ScriptBuffer script = new ScriptBuffer();
@@ -413,11 +413,22 @@ public class TextBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getMaxLength(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getMaxLength");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getMaxLength");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -430,7 +441,7 @@ public class TextBox extends jsx3.gui.Block
     public jsx3.gui.TextBox setMaxLength(int intMaxLength)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setMaxLength", intMaxLength);
+        script.appendCall(getContextPath() + "setMaxLength", intMaxLength);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -442,11 +453,22 @@ public class TextBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getType(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -459,7 +481,7 @@ public class TextBox extends jsx3.gui.Block
     public jsx3.gui.TextBox setType(int TYPE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setType", TYPE);
+        script.appendCall(getContextPath() + "setType", TYPE);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -471,11 +493,22 @@ public class TextBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -486,11 +519,22 @@ public class TextBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getDefaultValue(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDefaultValue");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDefaultValue");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -503,7 +547,7 @@ public class TextBox extends jsx3.gui.Block
     public jsx3.gui.TextBox setValue(String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValue", strValue);
+        script.appendCall(getContextPath() + "setValue", strValue);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -517,7 +561,7 @@ public class TextBox extends jsx3.gui.Block
     public jsx3.gui.TextBox setDefaultValue(String strValue)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setDefaultValue", strValue);
+        script.appendCall(getContextPath() + "setDefaultValue", strValue);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -529,11 +573,22 @@ public class TextBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getWrap(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getWrap");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getWrap");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -545,7 +600,7 @@ public class TextBox extends jsx3.gui.Block
     public jsx3.gui.TextBox setWrap(boolean bWrap)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setWrap", bWrap);
+        script.appendCall(getContextPath() + "setWrap", bWrap);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -557,11 +612,22 @@ public class TextBox extends jsx3.gui.Block
     @SuppressWarnings("unchecked")
     public void getValidationType(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationType");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationType");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -574,7 +640,7 @@ public class TextBox extends jsx3.gui.Block
     public jsx3.gui.TextBox setValidationType(String VALIDATIONTYPE)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValidationType", VALIDATIONTYPE);
+        script.appendCall(getContextPath() + "setValidationType", VALIDATIONTYPE);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -588,11 +654,22 @@ returned by the method, getValidationType; null is returned if the expression is
     @SuppressWarnings("unchecked")
     public void getValidationExpression(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationExpression");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationExpression");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -606,7 +683,7 @@ returned by the method, getValidationType; null is returned if the expression is
     public jsx3.gui.TextBox setValidationExpression(String strValidationExpression)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setValidationExpression", strValidationExpression);
+        script.appendCall(getContextPath() + "setValidationExpression", strValidationExpression);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -618,11 +695,22 @@ returned by the method, getValidationType; null is returned if the expression is
     @SuppressWarnings("unchecked")
     public void doValidate(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = doValidate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "doValidate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -632,7 +720,7 @@ returned by the method, getValidationType; null is returned if the expression is
     public void beep()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("beep");
+        script.appendCall(getContextPath() + "beep");
         getScriptProxy().addScript(script);
     }
 
@@ -714,11 +802,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledBackgroundColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledBackgroundColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledBackgroundColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -729,11 +828,22 @@ jsx3.gui.Window, a jsx3.gui.Dialog, or the root block of a jsx3.app.Server.
     @SuppressWarnings("unchecked")
     public void getDisabledColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getDisabledColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getDisabledColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -745,11 +855,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getEnabled(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getEnabled");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getEnabled");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -760,11 +881,22 @@ STATEENABLED.
     @SuppressWarnings("unchecked")
     public void getKeyBinding(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getKeyBinding");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getKeyBinding");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -776,11 +908,22 @@ OPTIONAL.
     @SuppressWarnings("unchecked")
     public void getRequired(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getRequired");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getRequired");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -792,11 +935,22 @@ STATEVALID.
     @SuppressWarnings("unchecked")
     public void getValidationState(org.directwebremoting.proxy.Callback<Integer> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getValidationState");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getValidationState");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Integer.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -891,7 +1045,7 @@ STATEVALID.
     public void setEnabled(int intEnabled, boolean bRepaint)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setEnabled", intEnabled, bRepaint);
+        script.appendCall(getContextPath() + "setEnabled", intEnabled, bRepaint);
         getScriptProxy().addScript(script);
     }
 

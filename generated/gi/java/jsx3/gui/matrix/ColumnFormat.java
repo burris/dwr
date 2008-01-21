@@ -86,11 +86,22 @@ false is returned, the formatter will not even attempt to iterate
     @SuppressWarnings("unchecked")
     public void validate(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = validate");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "validate");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -106,7 +117,7 @@ false is returned, the formatter will not even attempt to iterate
     public void format(String objDiv, String strCDFKey, jsx3.gui.Matrix objMatrix, jsx3.gui.matrix.Column objMatrixColumn, int intRowNumber, jsx3.app.Server objServer)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("format", objDiv, strCDFKey, objMatrix, objMatrixColumn, intRowNumber, objServer);
+        script.appendCall(getContextPath() + "format", objDiv, strCDFKey, objMatrix, objMatrixColumn, intRowNumber, objServer);
         getScriptProxy().addScript(script);
     }
 

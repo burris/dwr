@@ -87,7 +87,7 @@ public class Stack extends jsx3.gui.Block
     public void doShow()
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("doShow");
+        script.appendCall(getContextPath() + "doShow");
         getScriptProxy().addScript(script);
     }
 
@@ -137,11 +137,22 @@ returns the first child that is not a menu or a toolbar button.
     @SuppressWarnings("unchecked")
     public void getActiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getActiveColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getActiveColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -154,7 +165,7 @@ returns the first child that is not a menu or a toolbar button.
     public jsx3.gui.Stack setActiveColor(String strActiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setActiveColor", strActiveColor);
+        script.appendCall(getContextPath() + "setActiveColor", strActiveColor);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -166,11 +177,22 @@ returns the first child that is not a menu or a toolbar button.
     @SuppressWarnings("unchecked")
     public void getInactiveColor(org.directwebremoting.proxy.Callback<String> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = getInactiveColor");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "getInactiveColor");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, String.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
@@ -183,7 +205,7 @@ returns the first child that is not a menu or a toolbar button.
     public jsx3.gui.Stack setInactiveColor(String strInactiveColor)
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("setInactiveColor", strInactiveColor);
+        script.appendCall(getContextPath() + "setInactiveColor", strInactiveColor);
         getScriptProxy().addScript(script);
         return this;
     }
@@ -194,11 +216,22 @@ returns the first child that is not a menu or a toolbar button.
     @SuppressWarnings("unchecked")
     public void isFront(org.directwebremoting.proxy.Callback<Boolean> callback)
     {
-        String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
-
         ScriptBuffer script = new ScriptBuffer();
-        script.appendCall("var reply = isFront");
-        script.appendCall("__System.activateCallback", key, "reply");
+        String callbackPrefix = "";
+
+        if (callback != null)
+        {
+            callbackPrefix = "var reply = ";
+        }
+
+        script.appendCall(callbackPrefix + getContextPath() + "isFront");
+
+        if (callback != null)
+        {
+            String key = org.directwebremoting.extend.CallbackHelper.saveCallback(callback, Boolean.class);
+            script.appendCall("__System.activateCallback", key, "reply");
+        }
+
         getScriptProxy().addScript(script);
     }
 
