@@ -182,8 +182,6 @@ public class DefaultScriptSession implements RealScriptSession
             throw new NullPointerException("null script");
         }
 
-        // log.debug("addScript() to " + this);
-
         // First we try to add the script to an existing conduit
         synchronized (scriptLock)
         {
@@ -191,7 +189,6 @@ public class DefaultScriptSession implements RealScriptSession
             {
                 // There are no conduits, just store it until there are
                 scripts.add(script);
-                // log.debug("- No conduits. Adding script to waiting list");
             }
             else
             {
@@ -203,7 +200,6 @@ public class DefaultScriptSession implements RealScriptSession
                     try
                     {
                         written = conduit.addScript(script);
-                        // log.debug("- Adding script to conduit (written=" + written + "): " + conduit);
                     }
                     catch (Exception ex)
                     {
@@ -215,7 +211,6 @@ public class DefaultScriptSession implements RealScriptSession
                 if (!written)
                 {
                     scripts.add(script);
-                    // log.debug("- No conduits passed it on. Adding script to waiting list");
                 }
             }
         }
@@ -232,9 +227,6 @@ public class DefaultScriptSession implements RealScriptSession
         {
             writeScripts(conduit);
             conduits.add(conduit);
-
-            // log.debug("Adding Conduit: conduit=" + conduit + " scriptsession=" + this);
-            // log.debug("-- conduits=" + conduits);
         }
     }
 
@@ -255,7 +247,6 @@ public class DefaultScriptSession implements RealScriptSession
                 {
                     if (conduit.addScript(script))
                     {
-                        // log.debug("Adding stored script to conduit: " + conduit);
                         it.remove();
                     }
                     else
@@ -289,9 +280,6 @@ public class DefaultScriptSession implements RealScriptSession
                 debug();
             }
         }
-
-        // log.debug("Removing Conduit: conduit=" + conduit + " scriptsession=" + this);
-        // log.debug("-- conduits=" + conduits);
     }
 
     /* (non-Javadoc)
@@ -352,11 +340,6 @@ public class DefaultScriptSession implements RealScriptSession
             if (age > manager.getScriptSessionTimeout())
             {
                 invalidate();
-            }
-
-            if (invalidated)
-            {
-                log.debug("ScriptSession has been invalidated.");
             }
         }
     }

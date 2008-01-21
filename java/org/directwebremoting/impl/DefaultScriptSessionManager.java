@@ -182,23 +182,12 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             RealScriptSession removed = sessionMap.remove(scriptSession.getId());
             if (!scriptSession.equals(removed))
             {
-                log.error("ScriptSession already removed from manager. scriptSession=" + scriptSession + " removed=" + removed);
+                log.error("ScriptSession already removed from manager. scriptSession=" + scriptSession.getId(), new Exception());
             }
 
-            int removeCount = 0;
             for (Set<RealScriptSession> pageSessions : pageSessionMap.values())
             {
-                boolean isRemoved = pageSessions.remove(scriptSession);
-
-                if (isRemoved)
-                {
-                    removeCount++;
-                }
-            }
-
-            if (removeCount != 1)
-            {
-                log.error("DefaultScriptSessionManager.invalidate(): removeCount=" + removeCount + " when invalidating: " + scriptSession);
+                pageSessions.remove(scriptSession);
             }
         }
 
