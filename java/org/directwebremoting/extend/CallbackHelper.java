@@ -40,19 +40,20 @@ public class CallbackHelper
     @SuppressWarnings("unchecked")
     public static <T> String saveCallback(Callback<T> callback, Class<T> type)
     {
-        ScriptSession session = WebContextFactory.get().getScriptSession();
-
         String key = createUniqueId();
 
-        // Save the callback itself
-        Map<String, Callback<T>> callbackMap = (Map<String, Callback<T>>) session.getAttribute(KEY_CALLBACK);
-        callbackMap.put(key, callback);
-        session.setAttribute(KEY_CALLBACK, callbackMap);
+        for (ScriptSession session : callback.getScriptSessions())
+        {
+            // Save the callback itself
+            Map<String, Callback<T>> callbackMap = (Map<String, Callback<T>>) session.getAttribute(KEY_CALLBACK);
+            callbackMap.put(key, callback);
+            session.setAttribute(KEY_CALLBACK, callbackMap);
 
-        // And save the type of the callback
-        Map<String, Class<T>> typeMap = (Map<String, Class<T>>) session.getAttribute(KEY_TYPE);
-        typeMap.put(key, type);
-        session.setAttribute(KEY_TYPE, typeMap);
+            // And save the type of the callback
+            Map<String, Class<T>> typeMap = (Map<String, Class<T>>) session.getAttribute(KEY_TYPE);
+            typeMap.put(key, type);
+            session.setAttribute(KEY_TYPE, typeMap);
+        }
 
         return key;
     }
