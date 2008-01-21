@@ -293,7 +293,9 @@ public class CallCenter implements Runnable
         if (calls.size() > 0)
         {
             int toDelete = random.nextInt(calls.size());
-            calls.remove(toDelete);
+            Call removed = calls.remove(toDelete);
+
+            log.info("Random Event: Caller hangs up: " + removed.getPhoneNumber());
         }
     }
 
@@ -307,6 +309,8 @@ public class CallCenter implements Runnable
             Call call = getRandomCall();
             call.setId(getNextId());
             calls.add(call);
+
+            log.info("Random Event: New caller: " + call.getName());
         }
     }
 
@@ -322,6 +326,8 @@ public class CallCenter implements Runnable
             call.setPhoneNumber(phoneNumber);
             call.setId(getNextId());
             calls.add(call);
+
+            log.info("Random Event: New caller: " + call.getPhoneNumber());
         }
     }
 
@@ -338,7 +344,7 @@ public class CallCenter implements Runnable
         Server ticketcenter = GI.getServer(sessions, "ticketcenter");
 
         // Some tweaks so GI redraws everything without needing further explanation
-        // We copy the id to jsxid, and ensure that the fields for the checkboxes are
+        // We copy the id to jsxid, and ensure that the fields for the check-boxes are
         // 0 or 1 rather than true or false. We also check that any handled caller
         // is still around and has not hung up
         CdfDocument cdfdoc = new CdfDocument("jsxroot");
@@ -374,11 +380,12 @@ public class CallCenter implements Runnable
                     session.setAttribute("handlingIdFound", Boolean.TRUE);
                 }
             }
+            cdfdoc.appendRecord(record);
         }
 
         // Convert the data into a CDF document and post to GI
-        ticketcenter.getCache().setDocument("callers", null /*cdfdoc*/);
-        //ticketcenter.getJSXByName("listCallers", Matrix.class).repaint(null);
+        ticketcenter.getCache().setDocument("callers", cdfdoc);
+        ticketcenter.getJSXByName("listCallers", Matrix.class).repaint(null);
 
         // Work out what to do if the caller we're working on has hung up
         for (ScriptSession session : sessions)
