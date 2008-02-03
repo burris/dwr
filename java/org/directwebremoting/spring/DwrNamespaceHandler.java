@@ -72,6 +72,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
         // register bean definition parsers and decorators for all dwr namespace elements
         registerBeanDefinitionParser("configuration", new ConfigurationBeanDefinitionParser());
         registerBeanDefinitionParser("controller", new ControllerBeanDefinitionParser());
+        registerBeanDefinitionParser("url-mapping", new UrlMappingBeanDefinitionParser());
 
         registerBeanDefinitionDecorator("init", new InitDefinitionDecorator());
         registerBeanDefinitionDecorator("create", new CreatorBeanDefinitionDecorator());
@@ -274,6 +275,10 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             if (!StringUtils.hasText(beanName))
             {
                 beanName = element.getAttribute("name");
+                if (!StringUtils.hasText(beanName))
+                {
+                    beanName ="dwrController"; // Offer a sensible default if no id was specified
+                }
             }
             else
             {
@@ -323,6 +328,28 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             }
             dwrControllerDefinition.addPropertyValue("configParams", params);
         }
+    }
+
+    /**
+     * Registers a new bean definition based on <dwr:url-mapping /> schema.
+     *
+     * @author Jose Noheda [jose.noheda@gmail.com]
+     */
+    protected class UrlMappingBeanDefinitionParser implements BeanDefinitionParser
+    {
+
+        /**
+         * Converts <dwr:url-mapping /> tag in the adequate DwrHandlerMapping bean definition.
+         * @param element the <dwr:url-mapping /> tag
+         * @param parserContext access to the registry
+         * @return a DwrHandlerMapping bean definition
+         */
+        public BeanDefinition parse(Element element, ParserContext parserContext) {
+            BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(DwrHandlerMapping.class);
+            parserContext.getRegistry().registerBeanDefinition("DwrAnnotationURLMapper", builder.getBeanDefinition());
+            return parserContext.getRegistry().getBeanDefinition("DwrAnnotationURLMapper");
+        }
+
     }
 
     /**
