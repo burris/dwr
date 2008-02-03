@@ -28,6 +28,12 @@
 		</xsd:annotation>
 	</xsd:element>
 
+	<xsd:element name="annotation-config">
+    	<xsd:annotation>
+    		<xsd:documentation><![CDATA[Allow DWR to scan the Spring context, detect beans annotated with @RemoteProxy & @RemoteMethod and register Creator proxies for them.]]></xsd:documentation>
+    	</xsd:annotation>
+	</xsd:element>
+
   <xsd:element name="configuration" type="configuration">
     <xsd:annotation>
       <xsd:documentation>The element that can be used to specify DWR configuration that does not relate directly to a Spring-managed bean.</xsd:documentation>

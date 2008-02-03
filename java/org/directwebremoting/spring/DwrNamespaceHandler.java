@@ -15,14 +15,15 @@
  */
 package org.directwebremoting.spring;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.create.NewCreator;
 import org.directwebremoting.filter.ExtraLatencyAjaxFilter;
 import org.springframework.beans.FatalBeanException;
@@ -36,7 +37,6 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.ChildBeanDefinition;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
@@ -53,16 +53,17 @@ import org.w3c.dom.NodeList;
 
 /**
  * The Spring namespace handler which handles all elements that are defined as
- * part of the DWR namespace. <br/>
+ * part of the DWR namespace, except <dwr:annotation-config />. <br/>
  * The DWR namespace is defined in the <code>spring-dwr-X.X.xsd</code> file. All
  * elements that are encountered in Spring configuration files are automatically
  * converted to their actual bean representation in the Spring bean registry.
  *
  * @author Erik Wiersma
  * @author Bram Smeets
+ * @author Jose Noheda
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class DwrNamespaceHandler extends NamespaceHandlerSupport
+public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
 {
     /* (non-Javadoc)
      * @see org.springframework.beans.factory.xml.NamespaceHandler#init()
@@ -84,7 +85,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
     /*
      *
      */
-    protected BeanDefinition registerSpringConfiguratorIfNecessary(BeanDefinitionRegistry registry)
+    protected static BeanDefinition registerSpringConfiguratorIfNecessary(BeanDefinitionRegistry registry)
     {
         if (!registry.containsBeanDefinition(DEFAULT_SPRING_CONFIGURATOR_ID))
         {
@@ -397,65 +398,56 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
             return definition;
         }
 
-        /**
-         *  Try getting the beanClassName from the definition and if that fails try to get it from 
-         *  the parent (and even parent BeanFactory if we have to).
-         *  @param definition 
-         *  @param registry
-         *  @return class name or null if not found
-         */
-        private String resolveBeanClassname(BeanDefinition definition, BeanDefinitionRegistry registry)
-        {
-            String beanClassName = definition.getBeanClassName();
-            if (!StringUtils.hasText(beanClassName))
-            {
-                while (definition instanceof ChildBeanDefinition)
-                {
-                    String parentName = ((ChildBeanDefinition) definition).getParentName();
-                    BeanDefinition parentDefinition = findParentDefinition(parentName, registry);
-                    if (parentDefinition == null)
-                    {
-                        if (log.isDebugEnabled())
-                        {
-                            log.debug("No parent bean named '" + parentName + "' could be found in the " + "hierarchy of BeanFactorys. Check you've defined a bean called '" + parentName + "'");
-                        }
-                        break;
-                    }
-                    beanClassName = parentDefinition.getBeanClassName();
-                    if (StringUtils.hasText(beanClassName))
-                    {
-                        // found the class name we were looking for
-                        break;
-                    }
-                    definition = parentDefinition;
-                }
-            }
+    }
 
-            return beanClassName;
+    /**
+     *  Try getting the beanClassName from the definition and if that fails try to get it from 
+     *  the parent (and even parent BeanFactory if we have to).
+     *  @param definition 
+     *  @param registry
+     *  @return class name or null if not found
+     */
+    protected static String resolveBeanClassname(BeanDefinition definition, BeanDefinitionRegistry registry)
+    {
+        String beanClassName = definition.getBeanClassName();
+        while(!StringUtils.hasText(beanClassName))
+        {
+            try
+            {
+                Method m = definition.getClass().getMethod("getParentName", new Class[0]);
+                String parentName = (String) m.invoke(definition, new Object[0]);
+                BeanDefinition parentDefinition = findParentDefinition(parentName, registry);
+                beanClassName = parentDefinition.getBeanClassName();
+                definition = parentDefinition;
+            } catch (Exception e)
+            {
+                throw new FatalBeanException("No parent bean could be found for " + definition);
+            }
+        }
+        return beanClassName;
+    }
+
+    /**
+     * 
+     */
+    private static BeanDefinition findParentDefinition(String parentName, BeanDefinitionRegistry registry)
+    {
+        if (registry != null)
+        {
+            if (registry.containsBeanDefinition(parentName))
+            {
+                return registry.getBeanDefinition(parentName);
+            }
+            else if (registry instanceof HierarchicalBeanFactory)
+            {
+                // Try to get parent definition from the parent BeanFactory. This could return null
+                BeanFactory parentBeanFactory = ((HierarchicalBeanFactory) registry).getParentBeanFactory();
+                return findParentDefinition(parentName, (BeanDefinitionRegistry) parentBeanFactory);
+            }
         }
 
-        /**
-         * 
-         */
-        private BeanDefinition findParentDefinition(String parentName, BeanDefinitionRegistry registry)
-        {
-            if (registry != null)
-            {
-                if (registry.containsBeanDefinition(parentName))
-                {
-                    return registry.getBeanDefinition(parentName);
-                }
-                else if (registry instanceof HierarchicalBeanFactory)
-                {
-                    // Try to get parent definition from the parent BeanFactory. This could return null
-                    BeanFactory parentBeanFactory = ((HierarchicalBeanFactory) registry).getParentBeanFactory();
-                    return findParentDefinition(parentName, (BeanDefinitionRegistry) parentBeanFactory);
-                }
-            }
-
-            // we've exhausted all possibilities        
-            return null;
-        }
+        // we've exhausted all possibilities        
+        return null;
     }
 
     /**
@@ -726,7 +718,7 @@ public class DwrNamespaceHandler extends NamespaceHandlerSupport
      * @return Get a list of the defined Creators
      */
     @SuppressWarnings("unchecked")
-    protected Map<String, RuntimeBeanReference> lookupCreators(BeanDefinitionRegistry registry)
+    protected static Map<String, RuntimeBeanReference> lookupCreators(BeanDefinitionRegistry registry)
     {
         BeanDefinition config = registerSpringConfiguratorIfNecessary(registry);
         return (Map<String, RuntimeBeanReference>) config.getPropertyValues().getPropertyValue("creators").getValue();
