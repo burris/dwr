@@ -18,10 +18,16 @@ package org.directwebremoting.util;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
+ * DWR has some singleton objects (well 1 to be exact) that is JDK defined
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class SharedObjects
 {
+    /**
+     * Each {@link ScheduledThreadPoolExecutor} used by an application uses a
+     * thread, so DWR tries to use only one.
+     * @return DWR's shared ScheduledThreadPoolExecutor
+     */
     public static ScheduledThreadPoolExecutor getScheduledThreadPoolExecutor()
     {
         return timer;

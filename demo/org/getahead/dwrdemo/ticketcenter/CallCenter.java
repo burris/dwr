@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
@@ -41,12 +44,13 @@ import org.directwebremoting.ServerContextFactory;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.proxy.browser.Window;
+import org.directwebremoting.util.SharedObjects;
 import org.getahead.dwrdemo.util.RandomData;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CallCenter implements Runnable
+public class CallCenter
 {
     /**
      * Create a new publish thread and start it
@@ -64,15 +68,6 @@ public class CallCenter implements Runnable
         // WebContext, which in turn requires a DWR thread. We can cache the
         // results simply by calling this in a DWR thread, as we are now.
         webContext.getScriptSessionsByPage("");
-
-        synchronized (CallCenter.class)
-        {
-            if (worker == null)
-            {
-                worker = new Thread(this, "CallCenter");
-                worker.start();
-            }
-        }
 
         // Start with some calls waiting
         addRandomKnownCall();
@@ -237,58 +232,44 @@ public class CallCenter implements Runnable
      */
     public void run()
     {
-        try
+        Runnable runnable = new Runnable()
         {
-            log.info("Starting Publisher thread");
-
-            while (!Thread.currentThread().isInterrupted())
+            public void run()
             {
-                String contextPath = serverContext.getContextPath();
-                if (contextPath != null)
+                synchronized (calls)
                 {
-                    synchronized (calls)
+                    switch (random.nextInt(5))
                     {
-                        switch (random.nextInt(5))
-                        {
-                        case 0:
-                        case 1:
-                            addRandomUnknownCall();
-                            break;
+                    case 0:
+                    case 1:
+                        addRandomUnknownCall();
+                        break;
 
-                        case 2:
-                            addRandomKnownCall();
-                            break;
+                    case 2:
+                        addRandomKnownCall();
+                        break;
 
-                        case 3:
-                            removeRandomCall();
-                            break;
+                    case 3:
+                        removeRandomCall();
+                        break;
 
-                        default:
-                            break;
-                        }
-
-                        update();
+                    default:
+                        break;
                     }
-                }
 
-                int timeToSleep = random.nextInt(10000);
-                Thread.sleep(timeToSleep);
+                    update();
+                }
             }
-        }
-        catch (InterruptedException ex)
-        {
-            // Ignore, we expect this
-        }
-        finally
-        {
-            log.info("Stopping Publisher thread");
-        }
+        };
+
+        ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
+        future = executor.schedule(runnable, 2, TimeUnit.SECONDS);
     }
 
     /**
      * 
      */
-    private void removeRandomCall()
+    protected void removeRandomCall()
     {
         if (calls.size() > 0)
         {
@@ -302,7 +283,7 @@ public class CallCenter implements Runnable
     /**
      * 
      */
-    private void addRandomKnownCall()
+    protected void addRandomKnownCall()
     {
         if (calls.size() < 10)
         {
@@ -317,7 +298,7 @@ public class CallCenter implements Runnable
     /**
      * 
      */
-    private void addRandomUnknownCall()
+    protected void addRandomUnknownCall()
     {
         if (calls.size() < 10)
         {
@@ -334,7 +315,7 @@ public class CallCenter implements Runnable
     /**
      *
      */
-    private void update()
+    protected void update()
     {
         String contextPath = serverContext.getContextPath();
         Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter.html");
@@ -468,6 +449,8 @@ public class CallCenter implements Runnable
     private String[] fields = new String[] { "textPhone", "textName", "textAddress", "textNotes" };
     private String[] elements = new String[] { "textPhone", "textName", "textAddress", "textPayment", "textNotes", "selectEvent", "selectPaymentType", "buttonBook", "buttonSupervisor", "buttonCancel" };
 
+    protected ScheduledFuture<?> future;
+
     /**
      * Get the next unique ID in a thread safe way
      * @return a unique id
@@ -490,7 +473,7 @@ public class CallCenter implements Runnable
     /**
      * The set of people in our database
      */
-    private List<Call> calls = Collections.synchronizedList(new ArrayList<Call>());
+    protected List<Call> calls = Collections.synchronizedList(new ArrayList<Call>());
 
     /**
      * We use DWRs ServerContext to find users of a given page
@@ -500,7 +483,7 @@ public class CallCenter implements Runnable
     /**
      * Used to generate random data
      */
-    private Random random = new Random();
+    protected Random random = new Random();
 
     /**
      * The log stream
