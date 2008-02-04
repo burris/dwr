@@ -19,7 +19,7 @@
  */
 if (typeof this['dwr'] == 'undefined') this.dwr = {};
 if (typeof dwr['util'] == 'undefined') dwr.util = {};
-if (typeof this['DWRUtil'] == 'undefined') this.DWRUtil = dwr.engine;
+if (typeof this['DWRUtil'] == 'undefined') this.DWRUtil = dwr.util;
 
 /** @private The flag we use to decide if we should escape html */
 dwr.util._escapeHtml = true;
@@ -364,6 +364,11 @@ dwr.util.useLoadingMessage = function(message) {
       disabledZone.style.top = "0px";
       disabledZone.style.width = "100%";
       disabledZone.style.height = "100%";
+      // IE need a background color to block click. Use an invisible background.
+      if (window.ActiveXObject) {
+        disabledZone.style.background = "white";
+        disabledZone.style.filter = "alpha(opacity=0)";
+      }
       document.body.appendChild(disabledZone);
       var messageZone = document.createElement('div');
       messageZone.setAttribute('id', 'messageZone');
@@ -374,7 +379,7 @@ dwr.util.useLoadingMessage = function(message) {
       messageZone.style.color = "white";
       messageZone.style.fontFamily = "Arial,Helvetica,sans-serif";
       messageZone.style.padding = "4px";
-      disabledZone.appendChild(messageZone);
+      document.body.appendChild(messageZone);
       var text = document.createTextNode(loadingMessage);
       messageZone.appendChild(text);
       dwr.util._disabledZoneUseCount = 1;
@@ -383,12 +388,14 @@ dwr.util.useLoadingMessage = function(message) {
       dwr.util.byId('messageZone').innerHTML = loadingMessage;
       disabledZone.style.visibility = 'visible';
       dwr.util._disabledZoneUseCount++;
+      dwr.util.byId('messageZone').style.visibility = 'visible';
     }
   });
   dwr.engine.setPostHook(function() {
     dwr.util._disabledZoneUseCount--;
     if (dwr.util._disabledZoneUseCount == 0) {
       dwr.util.byId('disabledZone').style.visibility = 'hidden';
+      dwr.util.byId('messageZone').style.visibility = 'hidden';
     }
   });
 };
