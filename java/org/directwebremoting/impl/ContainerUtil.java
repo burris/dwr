@@ -208,7 +208,17 @@ public class ContainerUtil
         //container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
         //container.addParameter(HtmlPollHandler.class.getName(), HtmlPollHandler.class.getName());
 
-        if (servletConfig.getServletContext().getServerInfo().startsWith("jetty-6"))
+        final String serverInfo = servletConfig.getServletContext().getServerInfo();
+        boolean isAsyncServer = false;
+        for (String match : ASYNC_SERVER_INFOS)
+        {
+            if (serverInfo.startsWith(match))
+            {
+                isAsyncServer = true;
+            }
+        }
+
+        if (isAsyncServer)
         {
             container.addParameter(ServerLoadMonitor.class.getName(), ThreadDroppingServerLoadMonitor.class.getName());
         }
@@ -238,6 +248,15 @@ public class ContainerUtil
         createUrlMapping(container, "/call/htmlcall/", "htmlCallHandlerUrl", HtmlCallHandler.class);
         createUrlMapping(container, "/call/htmlpoll/", "htmlPollHandlerUrl", HtmlPollHandler.class);
     }
+
+    /**
+     * We need to properly test the Grizzly string
+     */
+    private static final String[] ASYNC_SERVER_INFOS =
+    {
+        "jetty-6",
+        "Sun Java System Application Server 9.1"
+    };
 
     /**
      * Creates entries in the {@link Container} so 2 lookups are possible.
