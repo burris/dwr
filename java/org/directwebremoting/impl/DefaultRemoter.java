@@ -190,6 +190,7 @@ public class DefaultRemoter implements Remoter
 
             // Check to see if the creator is reloadable
             // If it is, then do not cache the generated Javascript
+            // See the notes on creator.isCacheable().
             String script;
             if (!creator.isCacheable())
             {

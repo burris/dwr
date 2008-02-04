@@ -58,7 +58,6 @@ public class EngineHandler extends FileHandler
         Map<String, String> replace = new HashMap<String, String>();
 
         // If we are dynamic then we might need to pre-configure some variables.
-        // TODO: Move this code into EngineHandler
         boolean streaming = true;
 
         // If the maxWaitAfterWrite time is less than half a second then we
@@ -78,18 +77,26 @@ public class EngineHandler extends FileHandler
         // Poll using XHR (to avoid IE clicking) if we close
         // the connection than 1sec after output happens.
         String pollWithXhr = streaming ? "false" : "true";
-        replace.put(PARAM_SCRIPT_POLLXHR, pollWithXhr);
+        replace.put("${pollWithXhr}", pollWithXhr);
 
+        // What is the replacement field we use to tell engine.js what we are using
+        // for script tag hack protection
         String path = request.getContextPath() + request.getServletPath();
         if (overridePath != null)
         {
             path = overridePath;
         }
-        replace.put(PARAM_DEFAULT_PATH, path);
+        replace.put("${defaultPath}", path);
 
-        replace.put(PARAM_SCRIPT_COOKIENAME, sessionCookieName);
-        replace.put(PARAM_SCRIPT_ALLOWGET, String.valueOf(allowGetForSafariButMakeForgeryEasier));
-        replace.put(PARAM_SCRIPT_TAG_PROTECTION, scriptTagProtection);
+        // Under what cookie name is the session id stored?
+        replace.put("${sessionCookieName}", sessionCookieName);
+
+        // Does engine.js do GETs for Safari
+        replace.put("${allowGetForSafariButMakeForgeryEasier}", String.valueOf(allowGetForSafariButMakeForgeryEasier));
+
+        // What is the replacement field we use to tell engine.js what we are
+        // using for script tag hack protection
+        replace.put("${scriptTagProtection}", scriptTagProtection);
 
         return replace;
     }
@@ -130,31 +137,37 @@ public class EngineHandler extends FileHandler
     }
 
     /**
-     * Does engine.js do GETs for Safari
+     * Alter the session cookie name from the default JSESSIONID.
+     * @param sessionCookieName the sessionCookieName to set
      */
-    protected static final String PARAM_SCRIPT_ALLOWGET = "${allowGetForSafariButMakeForgeryEasier}";
+    public void setSessionCookieName(String sessionCookieName)
+    {
+        this.sessionCookieName = sessionCookieName;
+    }
 
     /**
-     * Do we force polling with XHR on IE to prevent clicking
+     * Sometimes with proxies, you need to close the stream all the time to
+     * make the flush work. A value of -1 indicated that we do not do early
+     * closing after writes.
+     * @param maxWaitAfterWrite the maxWaitAfterWrite to set
      */
-    protected static final String PARAM_SCRIPT_POLLXHR = "${pollWithXhr}";
+    public void setMaxWaitAfterWrite(int maxWaitAfterWrite)
+    {
+        this.maxWaitAfterWrite = maxWaitAfterWrite;
+    }
 
     /**
-     * Under what cookie name is the session id stored?
+     * The session cookie name
      */
-    protected static final String PARAM_SCRIPT_COOKIENAME = "${sessionCookieName}";
+    private String sessionCookieName = "JSESSIONID";
 
     /**
-     * What is the replacement field we use to tell engine.js what we are using
-     * for script tag hack protection
+     * Sometimes with proxies, you need to close the stream all the time to
+     * make the flush work. A value of -1 indicated that we do not do early
+     * closing after writes.
+     * See also: org.directwebremoting.dwrp.PollHandler.maxWaitAfterWrite
      */
-    protected static final String PARAM_SCRIPT_TAG_PROTECTION = "${scriptTagProtection}";
-
-    /**
-     * What is the replacement field we use to tell engine.js what we are using
-     * for script tag hack protection
-     */
-    protected static final String PARAM_DEFAULT_PATH = "${defaultPath}";
+    private int maxWaitAfterWrite = -1;
 
     /**
      * If we need to override the default path

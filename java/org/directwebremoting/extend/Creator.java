@@ -53,6 +53,10 @@ public interface Creator
 
     /**
      * Is the class behind the Creator likely to change over time?
+     * TODO: We should probably remove this. I suspect that the reason we added
+     * this was to handle ScriptCreator's ability to change things half way
+     * through, and it feels dangerous given the number of caches around the
+     * place.
      * @return Returns the reloadable variable
      */
     boolean isCacheable();
