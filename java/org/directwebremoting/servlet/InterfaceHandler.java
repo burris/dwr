@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.util.LocalUtil;
 import org.directwebremoting.util.MimeConstants;
@@ -31,10 +30,10 @@ import org.directwebremoting.util.MimeConstants;
  * A handler for interface generation requests
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class InterfaceHandler extends CachingFileHandler implements Handler
+public class InterfaceHandler extends JavaScriptHandler
 {
     /**
-     * Setup the {@link FileHandler} defaults
+     * Setup the {@link JavaScriptHandler} defaults
      */
     public InterfaceHandler()
     {
@@ -42,10 +41,10 @@ public class InterfaceHandler extends CachingFileHandler implements Handler
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.servlet.CachingFileHandler#generate(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.directwebremoting.servlet.TemplateHandler#generateTemplate(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
-    protected String generate(HttpServletRequest request, HttpServletResponse response) throws IOException
+    protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String scriptName = request.getPathInfo();
         scriptName = scriptName.replace(interfaceHandlerUrl, "");

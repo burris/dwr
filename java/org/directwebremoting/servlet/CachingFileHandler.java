@@ -16,7 +16,9 @@
 package org.directwebremoting.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.Handler;
+import org.directwebremoting.util.CopyUtils;
 
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -51,7 +54,7 @@ public abstract class CachingFileHandler implements Handler
             output = scriptCache.get(url);
             if (output == null)
             {
-                output = generate(request, response);
+                output = generateCachableContent(request, response);
             }
             scriptCache.put(url, output);
         }
@@ -65,10 +68,35 @@ public abstract class CachingFileHandler implements Handler
     }
 
     /**
+     * Create a String which can be cached and sent as a 302
+     * @param request The HTTP request data
+     * @param response Where we write the HTTP response data
      * @return The string to output for this resource
      * @throws IOException
      */
-    protected abstract String generate(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    protected abstract String generateCachableContent(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+    /**
+     * An easy way to implement {@link #generateCachableContent(HttpServletRequest, HttpServletResponse)}
+     * is to simply <code>return {@link #readResource(String)};</code> using the
+     * path to some resource provided in dwr.jar.
+     * @param resource The fully qualified path (i.e. includes package) to a resource in dwr.jar
+     * @return The contents of the resource as a string
+     * @throws IOException If the resource can not be found or read
+     */
+    protected String readResource(String resource) throws IOException
+    {
+        InputStream raw = getClass().getResourceAsStream(resource);
+        if (raw == null)
+        {
+            throw new IOException("Failed to find resource: " + resource);
+        }
+
+        StringWriter sw = new StringWriter();
+        CopyUtils.copy(raw, sw);
+
+        return sw.toString();
+    }
 
     /**
      * Do we need to send the content for this file
@@ -108,6 +136,7 @@ public abstract class CachingFileHandler implements Handler
             modifiedSince -= modifiedSince % 1000;
         }
         String givenEtag = req.getHeader(HttpConstants.HEADER_IF_NONE);
+        String pathInfo = req.getPathInfo();
 
         // Deal with missing etags
         if (givenEtag == null)
@@ -117,7 +146,7 @@ public abstract class CachingFileHandler implements Handler
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + this + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + CONTAINER_START_TIME);
+                    log.debug("Sending 304 for " + pathInfo + " If-Modified-Since=" + modifiedSince + ", Last-Modified=" + CONTAINER_START_TIME);
                 }
                 return true;
             }
@@ -134,7 +163,7 @@ public abstract class CachingFileHandler implements Handler
                 // There is an ETag, but no If-Modified-Since
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + this + " Old ETag=" + givenEtag + ", New ETag=" + ETAG);
+                    log.debug("Sending 304 for " + pathInfo + " Old ETag=" + givenEtag + ", New ETag=" + ETAG);
                 }
                 return true;
             }
@@ -148,7 +177,7 @@ public abstract class CachingFileHandler implements Handler
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Sending 304 for " + this);
+                log.debug("Sending 304 for " + pathInfo);
             }
             return true;
         }

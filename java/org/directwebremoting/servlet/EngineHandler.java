@@ -15,10 +15,12 @@
  */
 package org.directwebremoting.servlet;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.DwrConstants;
@@ -29,23 +31,23 @@ import org.directwebremoting.util.MimeConstants;
  * A Handler that supports requests for engine.js
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class EngineHandler extends FileHandler
+public class EngineHandler extends JavaScriptHandler
 {
     /**
-     * Setup the {@link FileHandler} defaults
+     * Setup the {@link JavaScriptHandler} defaults
      */
     public EngineHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
     }
 
-    /**
-     * The URL for this Handler.
-     * @param url The URL for this Handler.
+    /* (non-Javadoc)
+     * @see org.directwebremoting.servlet.TemplateHandler#generateTemplate(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void setEngineHandlerUrl(String url)
+    @Override
+    protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        setFilePath(url);
+        return readResource(DwrConstants.PACKAGE + "/engine.js");
     }
 
     /* (non-Javadoc)
