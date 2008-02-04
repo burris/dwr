@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -127,6 +128,7 @@ public class ParseUtil
      * @return a map of parsed parameters
      * @throws ServerException
      */
+    @SuppressWarnings("unchecked")
     private Map<String, FormField> parseBasicPost(HttpServletRequest req) throws ServerException
     {
         Map<String, FormField> paramMap;
@@ -150,6 +152,19 @@ public class ParseUtil
    
                 if (line == null)
                 {
+                    if (paramMap.isEmpty())
+                    {
+                        // Normally speaking we should just bail out, but if
+                        // we are using DWR with Acegi without ActiveX on IE,
+                        // then Acegi 'fixes' the parameters for us.
+                        Enumeration<String> en = req.getParameterNames();
+                        while (en.hasMoreElements())
+                        {
+                            String name = en.nextElement();
+                            paramMap.put(name, new FormField(req.getParameter(name)));
+                        }
+                    }
+
                     break;
                 }
    
