@@ -28,7 +28,9 @@
   <target name="compile" description="Compile the sources">
     <tstamp/>
     <mkdir dir="${target.root}/classes"/>
-    <javac debug="on" includes="**/*.java" destdir="${target.root}/classes">
+    <javac debug="on" includes="**/*.java" destdir="${target.root}/classes" verbose="true">
+      <exclude name="**/package.html"/>
+      <exclude name="**/package-info.java"/>
       <src path="${source.root}/java"/>
       <src path="${source.root}/java5"/>
       <src path="${source.root}/generated/gi/java"/>
@@ -155,8 +157,38 @@
   </target>
 
   <!--=======================================================================-->
-  <target name="unpack" depends="war" description="Extracts the war file">
+  <target name="unpack" depends="war" description="Extracts the war file, including un-jaring dwr.jar for fast update">
+    <delete dir="${target.war}"/>
     <unwar src="${target.root}/dwr.war" dest="${target.war}"/>
+    <unjar src="${target.war}/WEB-INF/lib/dwr.jar" dest="${target.war}/WEB-INF/classes"/>
+    <delete file="${target.war}/WEB-INF/lib/dwr.jar"/>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="fast-unpack" depends="compile" description="Extracts the war file">
+    <copy todir="${target.war}">
+      <fileset dir="${source.root}/web">
+        <exclude name="**/*.iml"/>
+        <exclude name="**/*.ipr"/>
+        <exclude name="**/*.iws"/>
+        <exclude name="WEB-INF/classes/**"/>
+      </fileset>
+    </copy>
+    <copy todir="${target.war}/WEB-INF/classes">
+      <fileset dir="${target.root}/classes"/>
+      <fileset dir="${target.root}/demo-classes"/>
+      <fileset dir="${source.root}/demo"/>
+    </copy>
+  </target>
+
+  <!--=======================================================================-->
+  <target name="tomcat-reload" depends="fast-unpack" description="Asks tomcat to re-load a DWR context">
+    <taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask">
+      <classpath>
+        <pathelement path="${tomcat.home}/lib/catalina-ant.jar"/>
+      </classpath>
+    </taskdef>
+    <reload url="${tomcat.manager.url}" username="${tomcat.username}" password="${tomcat.password}" path="${tomcat.context}"/>
   </target>
 
   <!--=======================================================================-->
