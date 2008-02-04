@@ -23,7 +23,7 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 
 /**
- * Used by the default webapp landing page to check basic functionallity
+ * Used by the default webapp landing page to check basic functionality
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class Intro
