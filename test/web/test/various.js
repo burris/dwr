@@ -39,6 +39,13 @@ function testXss() {
   assertFalse(dwr.util.containsXssRiskyCharacters("dd"));
 }
 
+function testAreIdentical() {
+  var data = [ 1, 2, 3, 4 ];
+  Test.areIdentical(data, data, function(reply) {
+    assertTrue(reply);
+  });
+}
+
 function testError1() {
   var counter = 0;
   var exceptionHandler = function(message, ex) {
