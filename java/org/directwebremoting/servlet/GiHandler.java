@@ -15,28 +15,34 @@
  */
 package org.directwebremoting.servlet;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.util.MimeConstants;
 
 /**
  * A Handler that supports requests for util.js
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class GiHandler extends FileHandler
+public class GiHandler extends JavaScriptHandler
 {
     /**
-     * Setup the {@link FileHandler} defaults
+     * Setup the {@link JavaScriptHandler} defaults
      */
     public GiHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
     }
 
-    /**
-     * The URL for this Handler.
-     * @param url The URL for this Handler.
+    /* (non-Javadoc)
+     * @see org.directwebremoting.servlet.TemplateHandler#generateTemplate(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void setGiHandlerUrl(String url)
+    @Override
+    protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        setFilePath(url);
+        return readResource(DwrConstants.PACKAGE + "/gi.js");
     }
 }

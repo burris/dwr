@@ -15,27 +15,33 @@
  */
 package org.directwebremoting.servlet;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.util.MimeConstants;
 
 /**
  * A Handler that supports requests for auth.js
   */
-public class AuthHandler extends FileHandler
+public class AuthHandler extends JavaScriptHandler
 {
     /**
-     * Setup the {@link FileHandler} defaults
+     * Setup the {@link JavaScriptHandler} defaults
      */
     public AuthHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
     }
 
-    /**
-     * The URL for this Handler.
-     * @param url The URL for this Handler.
+    /* (non-Javadoc)
+     * @see org.directwebremoting.servlet.TemplateHandler#generateTemplate(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void setAuthHandlerUrl(String url)
+    @Override
+    protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        setFilePath(url);
+        return readResource(DwrConstants.PACKAGE + "/auth.js");
     }
 }

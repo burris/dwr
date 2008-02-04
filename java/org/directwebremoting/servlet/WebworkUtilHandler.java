@@ -15,28 +15,34 @@
  */
 package org.directwebremoting.servlet;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.util.MimeConstants;
 
 /**
  * A Handler that supports requests for DWRActionUtil.js
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class WebworkUtilHandler extends FileHandler
+public class WebworkUtilHandler extends JavaScriptHandler
 {
     /**
-     * Setup the {@link FileHandler} defaults
+     * Setup the {@link JavaScriptHandler} defaults
      */
     public WebworkUtilHandler()
     {
         setMimeType(MimeConstants.MIME_JS);
     }
 
-    /**
-     * The URL for this Handler.
-     * @param url The URL for this Handler.
+    /* (non-Javadoc)
+     * @see org.directwebremoting.servlet.TemplateHandler#generateTemplate(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void setWebWorkUtilHandlerUrl(String url)
+    @Override
+    protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        setFilePath(url);
+        return readResource(DwrConstants.PACKAGE + "/webwork/DWRActionUtil.js");
     }
 }
