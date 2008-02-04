@@ -35,7 +35,7 @@ import org.directwebremoting.util.JavascriptUtil;
 public class EnginePrivate extends ScriptProxy
 {
     /**
-     * Call the dwr.engine._remoteHandleResponse() in the browser
+     * Call the dwr.engine.remote.handleResponse() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The identifier of the call that we are handling a response for
@@ -46,7 +46,7 @@ public class EnginePrivate extends ScriptProxy
     public static void remoteHandleCallback(ScriptConduit conduit, String batchId, String callId, Object data) throws IOException, MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.engine._remoteHandleCallback(\'")
+        script.appendScript("dwr.engine.remote.handleCallback(\'")
               .appendScript(batchId)
               .appendScript("\',\'")
               .appendScript(callId)
@@ -58,7 +58,7 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Call the dwr.engine._remoteHandleException() in the browser
+     * Call the dwr.engine.remote.handleException() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The id of the call we are replying to
@@ -70,7 +70,7 @@ public class EnginePrivate extends ScriptProxy
         try
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine._remoteHandleException(\'")
+            script.appendScript("dwr.engine.remote.handleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -83,7 +83,7 @@ public class EnginePrivate extends ScriptProxy
         catch (MarshallException mex)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine._remoteHandleException(\'")
+            script.appendScript("dwr.engine.remote.handleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -96,7 +96,7 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Call the dwr.engine._remoteHandleException() in the browser
+     * Call the dwr.engine.remote.handleException() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The id of the call we are replying to
@@ -108,7 +108,7 @@ public class EnginePrivate extends ScriptProxy
         try
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine._remoteHandleException(\'")
+            script.appendScript("dwr.engine.remote.handleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -121,7 +121,7 @@ public class EnginePrivate extends ScriptProxy
         catch (MarshallException mex)
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine._remoteHandleException(\'")
+            script.appendScript("dwr.engine.remote.handleException(\'")
                   .appendScript(batchId)
                   .appendScript("\',\'")
                   .appendScript(callId)
@@ -134,10 +134,10 @@ public class EnginePrivate extends ScriptProxy
     }
 
     /**
-     * Call the dwr.engine._remoteHandleServerException() in the browser
+     * Call the dwr.engine.remote.handleServerException() in the browser
      * @param batchId The identifier of the batch that we are handling a response for
-     * @param ex The execption from which we make a reply
-     * @return The string that calls dwr.engine._remoteHandleServerException()
+     * @param ex The exception from which we make a reply
+     * @return The script to send to the browser
      */
     public static String getRemoteHandleBatchExceptionScript(String batchId, Exception ex)
     {
@@ -151,16 +151,16 @@ public class EnginePrivate extends ScriptProxy
         }
 
         reply.append(ProtocolConstants.SCRIPT_CALL_REPLY).append("\r\n");
-        reply.append("if (window.dwr) dwr.engine._remoteHandleBatchException(").append(params).append(");\r\n");
-        reply.append("else if (window.parent.dwr) window.parent.dwr.engine._remoteHandleBatchException(").append(params).append(");\r\n");
+        reply.append("if (window.dwr) dwr.engine.remote.handleBatchException(").append(params).append(");\r\n");
+        reply.append("else if (window.parent.dwr) window.parent.dwr.engine.remote.handleBatchException(").append(params).append(");\r\n");
 
         return reply.toString();
     }
 
     /**
-     * Call the dwr.engine._remotePollCometDisabled() in the browser
+     * Call the dwr.engine.remote.pollCometDisabled() in the browser
      * @param batchId The identifier of the batch that we are handling a response for
-     * @return The string that calls dwr.engine._remoteHandleServerException()
+     * @return The script to send to the browser
      */
     public static String getRemotePollCometDisabledScript(String batchId)
     {
@@ -173,8 +173,8 @@ public class EnginePrivate extends ScriptProxy
         }
 
         reply.append(ProtocolConstants.SCRIPT_CALL_REPLY).append("\r\n");
-        reply.append("if (window.dwr) dwr.engine._remotePollCometDisabled(").append(params).append(");\r\n");
-        reply.append("else if (window.parent.dwr) window.parent.dwr.engine._remotePollCometDisabled(").append(params).append(");\r\n");
+        reply.append("if (window.dwr) dwr.engine.remote.pollCometDisabled(").append(params).append(");\r\n");
+        reply.append("else if (window.parent.dwr) window.parent.dwr.engine.remote.pollCometDisabled(").append(params).append(");\r\n");
 
         return reply.toString();
     }
@@ -188,7 +188,7 @@ public class EnginePrivate extends ScriptProxy
     public static String xmlStringToJavascriptDom(String xml)
     {
         String xmlout = JavascriptUtil.escapeJavaScript(xml);
-        return "dwr.engine._unserializeDocument(\"" + xmlout + "\")";
+        return "dwr.engine.serialize.toDom(\"" + xmlout + "\")";
     }
 
     /**
@@ -222,7 +222,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteBeginIFrameResponse(String batchId, boolean useWindowParent)
     {
-        String script = "dwr.engine._remoteBeginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
+        String script = "dwr.engine.transport.iframe.remote.beginIFrameResponse(this.frameElement"+(batchId == null?"":", '" + batchId+"'") + ");";
         if (useWindowParent)
         {
             script = addWindowParent(script);
@@ -241,7 +241,7 @@ public class EnginePrivate extends ScriptProxy
      */
     public static String remoteEndIFrameResponse(String batchId, boolean useWindowParent)
     {
-        String script = "dwr.engine._remoteEndIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
+        String script = "dwr.engine.transport.iframe.remote.endIFrameResponse("+(batchId == null?"":"'" + batchId+"'")+");";
         if (useWindowParent)
         {
             script = addWindowParent(script);
@@ -269,7 +269,7 @@ public class EnginePrivate extends ScriptProxy
      */
     private static String addWindowParent(String script)
     {
-        return "try { window.parent." + script + " } catch(ex) { if (ex.message != 'Can\\'t execute code from a freed script') { throw ex; }}";
+        return "try { window.parent." + script + " } catch(ex) { if (!(ex.number && ex.number == -2146823277)) { throw ex; }}";
     }
 
     /**
