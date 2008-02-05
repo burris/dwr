@@ -17,13 +17,13 @@ package jsx3.xml;
 
 import org.directwebremoting.convert.BaseV20Converter;
 import org.directwebremoting.extend.Converter;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
+import org.directwebremoting.util.JavascriptUtil;
 
 /**
  * An implementation of Converter for DOM objects.
@@ -66,8 +66,9 @@ public class CdfDocumentConverter extends BaseV20Converter implements Converter
             }
 
             CdfDocument document = (CdfDocument) data;
+            String xmlout = JavascriptUtil.escapeJavaScript(document.toXml());
 
-            String script = EnginePrivate.xmlStringToJavascriptDom(document.toXml());
+            String script = "dwr.gi._loadXml(\"" + xmlout + "\")";
             OutboundVariable ov = new NonNestedOutboundVariable(script);
 
             outctx.put(data, ov);

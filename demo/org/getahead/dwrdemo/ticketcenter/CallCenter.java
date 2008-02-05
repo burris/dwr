@@ -74,6 +74,43 @@ public class CallCenter
         addRandomUnknownCall();
         addRandomUnknownCall();
         addRandomUnknownCall();
+
+        Runnable runnable = new UpdateRunnable();
+        ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
+        future = executor.scheduleAtFixedRate(runnable, 2, 2, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Called once every couple of seconds to take some random action
+     */
+    protected class UpdateRunnable implements Runnable
+    {
+        public void run()
+        {
+            synchronized (calls)
+            {
+                switch (random.nextInt(5))
+                {
+                case 0:
+                case 1:
+                    addRandomUnknownCall();
+                    break;
+
+                case 2:
+                    addRandomKnownCall();
+                    break;
+
+                case 3:
+                    removeRandomCall();
+                    break;
+
+                default:
+                    break;
+                }
+
+                update();
+            }
+        }
     }
 
     /**
@@ -225,45 +262,6 @@ public class CallCenter
             }
         }
         return reply;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
-    public void run()
-    {
-        Runnable runnable = new Runnable()
-        {
-            public void run()
-            {
-                synchronized (calls)
-                {
-                    switch (random.nextInt(5))
-                    {
-                    case 0:
-                    case 1:
-                        addRandomUnknownCall();
-                        break;
-
-                    case 2:
-                        addRandomKnownCall();
-                        break;
-
-                    case 3:
-                        removeRandomCall();
-                        break;
-
-                    default:
-                        break;
-                    }
-
-                    update();
-                }
-            }
-        };
-
-        ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
-        future = executor.schedule(runnable, 2, TimeUnit.SECONDS);
     }
 
     /**

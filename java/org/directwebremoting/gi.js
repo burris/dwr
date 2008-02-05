@@ -17,19 +17,38 @@
 /**
  * Declare an object to which we can add real functions.
  */
-if (typeof this['dwr'] == 'undefined') this.dwr = {};
-if (typeof dwr['gi'] == 'undefined') dwr.gi = {};
+if (typeof this['dwr'] == 'undefined') {
+  this.dwr = {};
+}
+if (typeof dwr['gi'] == 'undefined') {
+  dwr.gi = {};
+}
 
 /**
  * Convert a javascript object into a CDF document with the given jsxid
- * @param data The data that we want to publish in a CDF document
- * @param jsxid The jsxid of the returned document
+ * @param {Object} data The data that we want to publish in a CDF document
+ * @param {String} jsxid The jsxid of the returned document
  */
 dwr.gi.toCdfDocument = function(data, jsxid) {
   var cdfstr = dwr.gi._toCdfDocumentString(data, jsxid);
   var cdf = new jsx3.xml.Document();
   cdf.loadXML(cdfstr);
   return cdf;
+};
+
+/**
+ * Convert an XML String into a JSX3 Document.
+ * This method just calls jsx3.xml.Document.loadXML(), however since this method
+ * is static it can be called as a one-off without setup, which is useful when
+ * using pseudo-json.
+ * @private
+ * @param {String} xmlString The string serialization of the XML
+ * @return {jsx3.xml.Document} A JSX3 in-memory model of the XML
+ */
+dwr.gi._loadXml = function(xmlString) {
+  var doc = new jsx3.xml.Document();
+  doc.loadXML(xmlString);
+  return doc;
 };
 
 /**
