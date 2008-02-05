@@ -22,7 +22,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
 /**
  * Launch Jetty embedded.
  */
-public class JettyLauncher
+public class JettyTestLauncher
 {
     /**
      * Sets up and runs server.
@@ -38,7 +38,7 @@ public class JettyLauncher
         server.addConnector(connector);
         server.setStopAtShutdown(true);
 
-        server.addHandler(new WebAppContext("web","/dwr"));
+        server.addHandler(new WebAppContext("test/web","/dwr-test"));
 
         server.start();
         server.join();
