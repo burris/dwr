@@ -534,11 +534,15 @@ if (typeof this['dwr'] == 'undefined') {
       // with DWR so we handle them differently.
       try {
         var handlers = batch.handlers[callId];
-        batch.handlers[callId] = null;
         if (!handlers) {
           dwr.engine._debug("Warning: Missing handlers. callId=" + callId, true);
         }
-        else if (typeof handlers.callback == "function") handlers.callback(reply);
+        else {
+          batch.handlers[callId] = null;
+          if (typeof handlers.callback == "function") {
+            handlers.callback(reply);
+          }
+        }
       }
       catch (ex) {
         dwr.engine._handleError(batch, ex);
@@ -554,13 +558,28 @@ if (typeof this['dwr'] == 'undefined') {
      */
     handleException:function(batchId, callId, ex) {
       var batch = dwr.engine._batches[batchId];
-      if (batch == null) { dwr.engine._debug("Warning: null batch in remoteHandleException", true); return; }
+      if (batch == null) {
+        dwr.engine._debug("Warning: null batch in remoteHandleException", true);
+        return;
+      }
+
       var handlers = batch.handlers[callId];
       batch.handlers[callId] = null;
-      if (handlers == null) { dwr.engine._debug("Warning: null handlers in remoteHandleException", true); return; }
-      if (ex.message == undefined) ex.message = "";
-      if (typeof handlers.exceptionHandler == "function") handlers.exceptionHandler(ex.message, ex);
-      else if (typeof batch.errorHandler == "function") batch.errorHandler(ex.message, ex);
+      if (handlers == null) {
+        dwr.engine._debug("Warning: null handlers in remoteHandleException", true);
+        return;
+      }
+
+      if (ex.message == undefined) {
+        ex.message = ""; 
+      }
+
+      if (typeof handlers.exceptionHandler == "function") {
+        handlers.exceptionHandler(ex.message, ex);
+      }
+      else if (typeof batch.errorHandler == "function") {
+        batch.errorHandler(ex.message, ex);
+      }
     },
 
     /**
@@ -1387,17 +1406,71 @@ if (typeof this['dwr'] == 'undefined') {
     create:function() {
       var batch = {
         map:{ callCount:0 },
-        charsProcessed:0, paramCount:0,
-        parameters:{}, headers:{},
-        isPoll:false, handlers:{}, preHooks:[], postHooks:[],
+        charsProcessed:0,
+        paramCount:0,
+        parameters:{},
+        headers:{},
+        isPoll:false,
+        handlers:{},
+        preHooks:[],
+        postHooks:[],
         async:dwr.engine._async,
         timeout:dwr.engine._timeout,
         errorHandler:dwr.engine._errorHandler,
         warningHandler:dwr.engine._warningHandler,
         textHtmlHandler:dwr.engine._textHtmlHandler
       };
-      if (dwr.engine._preHook) batch.preHooks.push(dwr.engine._preHook);
-      if (dwr.engine._postHook) batch.postHooks.push(dwr.engine._postHook);
+
+      if (dwr.engine._preHook) {
+        batch.preHooks.push(dwr.engine._preHook);
+      }
+      if (dwr.engine._postHook) {
+        batch.postHooks.push(dwr.engine._postHook);
+      }
+
+      dwr.engine.batch.populateHeadersAndParameters(batch);
+      return batch;
+    },
+
+    /**
+     * Generate a new batch for polling
+     * @private
+     * @see dwr.engine.batch.create()
+     */
+    createPoll:function() {
+      var batch = {
+        map:{ callCount:1, id:0 /* TODO: do we need id? */ },
+        async:true,
+        charsProcessed:0,
+        paramCount:0,
+        parameters:{},
+        headers:{},
+        isPoll:true,
+        handlers:[{
+          callback:function(pause) {
+            dwr.engine._pollRetries = 0;
+            setTimeout("dwr.engine._poll()", pause);
+          }
+        }],
+        preHooks:[],
+        postHooks:[],
+        timeout:0,
+        path:dwr.engine._defaultPath,
+        errorHandler:dwr.engine._pollErrorHandler,
+        warningHandler:dwr.engine._pollErrorHandler,
+        textHtmlHandler:dwr.engine._textHtmlHandler
+      };
+
+      dwr.engine.batch.populateHeadersAndParameters(batch);
+      return batch;
+    },
+
+    /**
+     * Copy the global headers and parameters into this batch object
+     * @private
+     * @param {Object} batch The destination
+     */
+    populateHeadersAndParameters:function(batch) {
       var propname, data;
       if (dwr.engine._headers) {
         for (propname in dwr.engine._headers) {
@@ -1411,36 +1484,11 @@ if (typeof this['dwr'] == 'undefined') {
           if (typeof data != "function") batch.parameters[propname] = data;
         }
       }
-      return batch;
-    },
-
-    /**
-     * Generate a new batch for polling
-     * @private
-     * @see dwr.engine.batch.create()
-     */
-    createPoll:function() {
-      var batch = dwr.engine.batch.create();
-      batch.map.id = 0; // TODO: Do we need this??
-      batch.map.callCount = 1;
-      batch.isPoll = true;
-      batch.async = true;
-      batch.timeout = 0;
-      batch.path = (overridePath) ? overridePath : dwr.engine._defaultPath;
-      batch.preHooks = [];
-      batch.postHooks = [];
-      batch.errorHandler = dwr.engine._pollErrorHandler;
-      batch.warningHandler = dwr.engine._pollErrorHandler;
-      batch.handlers[0] = {
-        callback:function(pause) {
-          dwr.engine._pollRetries = 0;
-          setTimeout("dwr.engine._poll()", pause);
-        }
-      };
     },
 
     /**
      * Augment this batch with a new call
+     * @private
      * @param {Object} batch
      * @param {String} scriptName
      * @param {String} methodName
