@@ -24,6 +24,22 @@ import org.directwebremoting.Security;
  */
 public class Call
 {
+    private Date callStarted = new Date();
+
+    private String notes = "";
+
+    private boolean supervisorAlert = false;
+
+    private String name;
+
+    private String address;
+
+    private String phoneNumber;
+
+    private int id;
+
+    private String handlerId;
+
     /**
      * @return the callStarted
      */
@@ -71,22 +87,6 @@ public class Call
     public void setSupervisorAlert(boolean supervisorAlert)
     {
         this.supervisorAlert = supervisorAlert;
-    }
-
-    /**
-     * @return the isHandled
-     */
-    public boolean isHandled()
-    {
-        return isHandled;
-    }
-
-    /**
-     * @param isHandled the isHandled to set
-     */
-    public void setHandled(boolean isHandled)
-    {
-        this.isHandled = isHandled;
     }
 
     /**
@@ -153,21 +153,21 @@ public class Call
         this.phoneNumber = phoneNumber;
     }
 
-    private Date callStarted = new Date();
+    /**
+     * @return the handlerId
+     */
+    public String getHandlerId()
+    {
+        return handlerId;
+    }
 
-    private String notes = "";
-
-    private boolean supervisorAlert = false;
-
-    private boolean isHandled = false;
-
-    private String name;
-
-    private String address;
-
-    private String phoneNumber;
-
-    private int id;
+    /**
+     * @param handlerId the handlerIdId to set
+     */
+    public void setHandlerId(String handlerId)
+    {
+        this.handlerId = handlerId;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
