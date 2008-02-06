@@ -37,6 +37,19 @@ public interface ServerContext
     Collection<ScriptSession> getScriptSessionsByPage(String url);
 
     /**
+     * You can request access to a specific {@link ScriptSession} if you know
+     * it's ID.
+     * <p>Take care with this method because it allows actions from one browser
+     * to affect another which could be a bad thing. It is certainly a VERY BAD
+     * idea to let session id's from one browser escape into another.
+     * <p>Consider that it is entirely possible that the ScriptSession may
+     * timeout while you are holding a reference to it.
+     * @param sessionId The script session ID to lookup
+     * @return The ScriptSession for the given ID, or null if it does not exist
+     */
+    ScriptSession getScriptSessionById(String sessionId);
+
+    /**
      * Get a list of all the ScriptSessions known to this server at the given
      * time.
      * Note that the list of known sessions is continually changing so it is

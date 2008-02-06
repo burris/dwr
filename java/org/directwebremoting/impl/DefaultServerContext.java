@@ -56,19 +56,27 @@ public class DefaultServerContext implements ServerContext
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ServerContext#getContainer()
-     */
-    public Container getContainer()
-    {
-        return container;
-    }
-
-    /* (non-Javadoc)
      * @see org.directwebremoting.ServerContext#getScriptSessionsByPage(java.lang.String)
      */
     public Collection<ScriptSession> getScriptSessionsByPage(String url)
     {
         return getScriptSessionManager().getScriptSessionsByPage(url);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ServerContext#getScriptSessionById(java.lang.String)
+     */
+    public ScriptSession getScriptSessionById(String sessionId)
+    {
+        return getScriptSessionManager().getScriptSession(sessionId);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.ServerContext#getContainer()
+     */
+    public Container getContainer()
+    {
+        return container;
     }
 
     /* (non-Javadoc)

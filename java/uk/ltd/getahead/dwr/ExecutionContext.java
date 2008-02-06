@@ -137,6 +137,14 @@ public class ExecutionContext implements WebContext
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.ServerContext#getScriptSessionById(java.lang.String)
+     */
+    public ScriptSession getScriptSessionById(String sessionId)
+    {
+        throw new UnsupportedOperationException("Use WebContextFactory.get().getScriptSessionById()");
+    }
+
+    /* (non-Javadoc)
      * @see uk.ltd.getahead.dwr.WebContext#getContainer()
      */
     public Container getContainer()

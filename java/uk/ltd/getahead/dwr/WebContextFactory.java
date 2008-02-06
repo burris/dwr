@@ -129,6 +129,14 @@ public class WebContextFactory
         }
 
         /* (non-Javadoc)
+         * @see org.directwebremoting.ServerContext#getScriptSessionById(java.lang.String)
+         */
+        public ScriptSession getScriptSessionById(String sessionId)
+        {
+            return proxy.getScriptSessionById(sessionId);
+        }
+
+        /* (non-Javadoc)
          * @see org.directwebremoting.WebContext#getServletConfig()
          */
         public ServletConfig getServletConfig()
