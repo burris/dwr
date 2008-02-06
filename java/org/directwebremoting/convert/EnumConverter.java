@@ -39,11 +39,15 @@ public class EnumConverter extends BaseV20Converter implements Converter
     {
         String value = LocalUtil.decode(data.getValue());
 
-        Object[] values;
         try
         {
-            Method getter = paramType.getMethod("values");
-            values = (Object[]) getter.invoke(paramType, (Object[]) null);
+            Method getter = paramType.getMethod("valueOf", String.class);
+            Object reply = getter.invoke(paramType, value);
+            if (reply == null)
+            {
+                throw new MarshallException(paramType);
+            }
+            return reply;
         }
         catch (NoSuchMethodException ex)
         {
@@ -55,16 +59,6 @@ public class EnumConverter extends BaseV20Converter implements Converter
         {
             throw new MarshallException(paramType, ex);
         }
-
-        for (Object en : values)
-        {
-            if (value.equals(en.toString()))
-            {
-                return en;
-            }
-        }
-
-        throw new MarshallException(paramType);
     }
 
     /* (non-Javadoc)
@@ -72,6 +66,6 @@ public class EnumConverter extends BaseV20Converter implements Converter
      */
     public OutboundVariable convertOutbound(Object data, OutboundContext outctx)
     {
-        return new NonNestedOutboundVariable('\'' + data.toString() + '\'');
+        return new NonNestedOutboundVariable('\'' + ((Enum<?>) data).name() + '\'');
     }
 }
