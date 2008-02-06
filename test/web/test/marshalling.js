@@ -347,22 +347,6 @@ function setSettings() {
   starttime = new Date();
   failcount = 0;
 
-  // Set the method
-  var method = dwr.util.getValue("method");
-  if (method == "iframe") {
-    dwr.engine.setMethod(dwr.engine.IFrame);
-  }
-  else if (method == "xhr") {
-    dwr.engine.setMethod(dwr.engine.XMLHttpRequest);
-  }
-  else {
-    dwr.engine.setMethod(dwr.engine.ScriptTag);
-  }
-
-  // Set the verb
-  var verb = dwr.util.getValue("verb");
-  dwr.engine.setVerb(verb);
-
   // Are we in ordered mode
   var ordered = dwr.util.getValue("ordered");
   dwr.engine.setOrdered(ordered == "Yes");
@@ -378,42 +362,19 @@ function setSettings() {
 
 function sendBatch(start, size, rate) {
   var incr = size;
-  var test, callback, param;
+  var test, param;
   var numele;
 
   if (size == 0) {
     // otherwise we never progress
     incr = 1;
-
-    test = tests[start];
-    callback = function(data) { testResults(data, start); };
-    exceptionHandler = function(data) { exceptionHandler(data, start); };
-    param = test.data;
-
-    numele = dwr.util.byId("t" + start + "-num");
-    numele.style.backgroundColor = "#ff8";
-
-    Test[test.code](param, { callback:callback, exceptionHandler:exceptionHandler });
+    runTest(start);
   }
   else {
     dwr.engine.beginBatch();
-
     for (var i = start; i < start + size && i < tests.length; i++) {
-      test = tests[i];
-
-      numele = dwr.util.byId("t" + i + "-num");
-      numele.style.backgroundColor = "#ff8";
-
-      // These 2 do the same thing, the latter is faster but incomprehensible
-      // callback = new Function("data", "testResults(data, " + i + ");");
-      callback = new function(index) {
-        return function(d) { testResults(d, index); };
-      }(i);
-
-      param = test.data;
-      Test[test.code](param, callback);
+      runTest(i);
     }
-
     dwr.engine.endBatch();
   }
 
@@ -422,6 +383,20 @@ function sendBatch(start, size, rate) {
   if (start + incr < tests.length) {
     setTimeout("sendBatch(" + (start + incr) + ", " + size + ", " + rate + ")", rate);
   }
+}
+
+function runTest(num) {
+  var numele = dwr.util.byId("t" + num + "-num");
+  numele.style.backgroundColor = "#ff8";
+
+  var test = tests[num];
+
+  Test[test.code](test.data, {
+    callback:function(data) { testResults(data, num); },
+    exceptionHandler:function(data) { exceptionHandler(data, num); }
+  });
+
+  dwr.engine._debug("Sending test " + num + ": " + test.code + "/" + test.data);
 }
 
 function checkTidyUp(index) {
@@ -435,6 +410,7 @@ function checkTidyUp(index) {
 }
 
 function testResults(data, index) {
+  dwr.engine._debug("Receive test " + index + ": " + data);
   var test = tests[index];
 
   if (test == null) {
@@ -490,17 +466,6 @@ function contentFailure() {
   failures.innerHTML += "Unknown Test: text/html content found.<br/>";
   failcount++;
   failreport.innerHTML = failcount;
-}
-
-function runTest(num) {
-  var numele = dwr.util.byId("t" + num + "-num");
-  numele.style.backgroundColor = "#ff8";
-  var callback = function(data) {
-    testResults(data, num);
-  };
-  var method = tests[num].code;
-  var param = tests[num].data;
-  Test[method](param, { callback:callback });
 }
 
 function init() {
