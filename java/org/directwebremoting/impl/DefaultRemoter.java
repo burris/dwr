@@ -429,7 +429,7 @@ public class DefaultRemoter implements Remoter
         }
         catch (SecurityException ex)
         {
-            log.warn("Security Exception: ", ex);
+            log.debug("Security Exception: ", ex);
 
             // If we are in live mode, then we don't even say what went wrong
             if (debug)
@@ -446,7 +446,7 @@ public class DefaultRemoter implements Remoter
             // Allow Jetty RequestRetry exception to propagate to container
             Continuation.rethrowIfContinuation(ex);
 
-            log.warn("Method execution failed: ", ex.getTargetException());
+            log.debug("Method execution failed: ", ex.getTargetException());
             return new Reply(call.getCallId(), null, ex.getTargetException());
         }
         catch (Exception ex)
@@ -454,7 +454,7 @@ public class DefaultRemoter implements Remoter
             // Allow Jetty RequestRetry exception to propagate to container
             Continuation.rethrowIfContinuation(ex);
 
-            log.warn("Method execution failed: ", ex);
+            log.debug("Method execution failed: ", ex);
             return new Reply(call.getCallId(), null, ex);
         }
     }
