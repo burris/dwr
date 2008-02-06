@@ -631,7 +631,15 @@ if (typeof this['dwr'] == 'undefined') {
     /**
      * ActiveX objects to use when we want to convert an xml string into a DOM object
      */
-    domDocument:["Msxml2.DOMDocument.6.0", "Msxml2.DOMDocument.5.0", "Msxml2.DOMDocument.4.0", "Msxml2.DOMDocument.3.0", "MSXML2.DOMDocument", "MSXML.DOMDocument", "Microsoft.XMLDOM"],
+    domDocument:[
+      "Msxml2.DOMDocument.6.0",
+      "Msxml2.DOMDocument.5.0",
+      "Msxml2.DOMDocument.4.0",
+      "Msxml2.DOMDocument.3.0",
+      "MSXML2.DOMDocument",
+      "MSXML.DOMDocument",
+      "Microsoft.XMLDOM"
+    ],
 
     /**
      * Convert a text representation of XML into a DOM tree
@@ -726,9 +734,6 @@ if (typeof this['dwr'] == 'undefined') {
      * @see dwr.engine.serialize.convert() for parameter details
      */
     convertArray:function(batch, referto, data, name) {
-      var ref = dwr.engine.serialize.lookup(referto, data, name);
-      if (ref) return ref;
-
       var reply = "Array:[";
       for (var i = 0; i < data.length; i++) {
         if (i != 0) reply += ",";
@@ -749,9 +754,6 @@ if (typeof this['dwr'] == 'undefined') {
      * @see dwr.engine.serialize.convert() for parameter details
      */
     convertObject:function(batch, referto, data, name) {
-      var ref = dwr.engine.serialize.lookup(referto, data, name);
-      if (ref) return ref;
-
       // treat objects as an associative arrays
       var reply = "Object_" + dwr.engine.serialize.getObjectClassName(data) + ":{";
       var element;
@@ -778,9 +780,6 @@ if (typeof this['dwr'] == 'undefined') {
      * @see dwr.engine.serialize.convert() for parameter details
      */
     convertXml:function(batch, referto, data, name) {
-      var ref = dwr.engine.serialize.lookup(referto, data, name);
-      if (ref) return ref;
-
       var output;
       if (window.XMLSerializer) output = new XMLSerializer().serializeToString(data);
       else if (data.toXml) output = data.toXml;
@@ -803,7 +802,9 @@ if (typeof this['dwr'] == 'undefined') {
           break;
         }
       }
-      if (lookup) return "reference:" + lookup.name;
+      if (lookup) {
+        return "reference:" + lookup.name;
+      }
       referto.push({ data:data, name:name });
       return null;
     },
@@ -811,7 +812,15 @@ if (typeof this['dwr'] == 'undefined') {
     /**
      * The names of classes that need special treatment
      */
-    errorClasses:{ "Error":Error, "EvalError":EvalError, "RangeError":RangeError, "ReferenceError":ReferenceError, "SyntaxError":SyntaxError, "TypeError":TypeError, "URIError":URIError },
+    errorClasses:{
+      "Error":Error,
+      "EvalError":EvalError,
+      "RangeError":RangeError,
+      "ReferenceError":ReferenceError,
+      "SyntaxError":SyntaxError,
+      "TypeError":TypeError,
+      "URIError":URIError
+    },
 
     /**
      * Returns the classname of supplied argument obj. Similar to typeof, but
@@ -1050,7 +1059,7 @@ if (typeof this['dwr'] == 'undefined') {
             var contentType = req.getResponseHeader("Content-Type");
             if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
               if (contentType.match(/^text\/html/) && typeof batch.textHtmlHandler == "function") {
-                batch.textHtmlHandler();
+                batch.textHtmlHandler({ status:status, responseText:reply, contentType:contentType });
               }
               else {
                 dwr.engine._handleWarning(batch, { name:"dwr.engine.invalidMimeType", message:"Invalid content type: '" + contentType + "'" });
