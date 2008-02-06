@@ -29,11 +29,12 @@ public class ${type.name} <#if type.superClass??>extends ${type.superClass.fullN
     /**
      * All reverse ajax proxies need context to work from
      * @param scriptProxy The place we are writing scripts to
-     * @param context The script that got us to where we are now
+     * @param extension The string to add to the parent to fetch this object
+     * @param parent The script that got us to where we are now
      */
-    public ${type.name}(Context context, String extension, ScriptProxy scriptProxy)
+    public ${type.name}(Context parent, String extension, ScriptProxy scriptProxy)
     {
-        super(context, extension, scriptProxy);
+        super(parent, extension, scriptProxy);
     }
 
     <#list type.constructors as constructor>
