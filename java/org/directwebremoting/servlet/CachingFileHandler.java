@@ -163,7 +163,7 @@ public abstract class CachingFileHandler implements Handler
                 // There is an ETag, but no If-Modified-Since
                 if (log.isDebugEnabled())
                 {
-                    log.debug("Sending 304 for " + pathInfo + " Old ETag=" + givenEtag + ", New ETag=" + ETAG);
+                    log.debug("Sending 304 for " + pathInfo + ", If-Modified-Since=-1, Old ETag=" + givenEtag + ", New ETag=" + ETAG);
                 }
                 return true;
             }
@@ -173,15 +173,16 @@ public abstract class CachingFileHandler implements Handler
         }
 
         // Do both values indicate that we are in-date?
-        if (ETAG.equals(givenEtag) && modifiedSince <= CONTAINER_START_TIME)
+        if (ETAG.equals(givenEtag) && modifiedSince < CONTAINER_START_TIME)
         {
             if (log.isDebugEnabled())
             {
-                log.debug("Sending 304 for " + pathInfo);
+                log.debug("Sending 304 for " + pathInfo + ", If-Modified-Since=" + modifiedSince + ", Container Start=" + CONTAINER_START_TIME + ", Old ETag=" + givenEtag + ", New ETag=" + ETAG);
             }
             return true;
         }
 
+        log.debug("Sending content for " + pathInfo + ", If-Modified-Since=" + modifiedSince + ", Container Start=" + CONTAINER_START_TIME + ", Old ETag=" + givenEtag + ", New ETag=" + ETAG);
         return false;
     }
 
