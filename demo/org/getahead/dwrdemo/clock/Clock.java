@@ -49,7 +49,7 @@ public class Clock
                     setClockDisplay(new Date().toString());
                 }
             }
-        }, 120, 120, TimeUnit.SECONDS);
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
     /**

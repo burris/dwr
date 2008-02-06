@@ -24,34 +24,7 @@ a number of browsers.</p>
 <input type="button" value="Start / Stop" onclick="Clock.toggle();"/>
 
 <p></p>
-<div style="font-size:200%;" id="clockDisplay"></div>
+<h1 id="clockDisplay"></h1>
 
 </body>
 </html>
-
-<!--
-I can see this would need some explanation.
-
-Reverse Ajax has a problem - calls to getScriptSessionsForPage need to be able to know that index.html resolves to the same thing as index.htm (for example), but the only way they can do this is to know the "welcome-files" setting in web.xml. This is all the responsibility of the PageNormalizer
-That's OK - it can parse web.xml to read the information, but to do that we need to know the ServletContext, and that isn't available to you if you are starting from nothing.
-In essence, how does a PageNormalizer that does not know anything about the web, get in contact with a ServletContext.
-
-There are 2 options:
-
-1. Access PageNormalizer from a DWR thread before you access it from outside of DWR. That way it can use WebContext.get().getServletContext() and cache the result for later use
-2. Set the ServletContext manually with DefaultPageNormalizer.getServletContext().
-
-Take a look at the source to Publisher.java - it has the same problem. From the constructor:
-
-WebContext webContext = WebContextFactory.get();
-ServletContext servletContext = webContext.getServletContext();
-
-serverContext = ServerContextFactory.get(servletContext);
-
-// A bit nasty: the call to serverContext.getScriptSessionsByPage()
-// below could fail because the system might need to read web.xml which
-// means it needs a ServletContext, which is only available using
-// WebContext, which in turn requires a DWR thread. We can cache the
-// results simply by calling this in a DWR thread, as we are now.
-webContext.getScriptSessionsByPage("");
--->
