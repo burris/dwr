@@ -28,7 +28,7 @@
   <target name="compile" description="Compile the sources">
     <tstamp/>
     <mkdir dir="${target.root}/classes"/>
-    <javac debug="on" includes="**/*.java" destdir="${target.root}/classes" verbose="true">
+    <javac debug="on" includes="**/*.java" destdir="${target.root}/classes">
       <exclude name="**/package.html"/>
       <exclude name="**/package-info.java"/>
       <src path="${source.root}/java"/>
