@@ -22,9 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.directwebremoting.extend.Alarm;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.impl.BasicAlarm;
 import org.directwebremoting.util.DebuggingPrintWriter;
 
 /**

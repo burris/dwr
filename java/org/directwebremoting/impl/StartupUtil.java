@@ -17,11 +17,10 @@ package org.directwebremoting.impl;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
 import org.directwebremoting.HubFactory;
 import org.directwebremoting.ServerContextFactory;
@@ -29,6 +28,7 @@ import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.HubFactory.HubBuilder;
 import org.directwebremoting.ServerContextFactory.ServerContextBuilder;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
+import org.directwebremoting.extend.ContainerConfigurationException;
 import org.directwebremoting.util.FakeServletConfig;
 import org.directwebremoting.util.FakeServletContext;
 import org.directwebremoting.util.VersionUtil;
@@ -45,9 +45,9 @@ public class StartupUtil
      * to get DWR setup. Callers of this method should clean up after themselves
      * by calling {@link #outOfContainerDestroy(Container)}
      * @return A new initialized container.
-     * @throws ServletException If the setup fails.
+     * @throws ContainerConfigurationException If we can't use a bean
      */
-    public static Container outOfContainerInit() throws ServletException
+    public static Container outOfContainerInit() throws ContainerConfigurationException
     {
         try
         {
@@ -67,13 +67,13 @@ public class StartupUtil
 
             return container;
         }
-        catch (ServletException ex)
+        catch (ContainerConfigurationException ex)
         {
             throw ex;
         }
         catch (Exception ex)
         {
-            throw new ServletException(ex);
+            throw new ContainerConfigurationException(ex);
         }
     }
 

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.dwrp;
+package org.directwebremoting.impl;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.directwebremoting.extend.Alarm;
+import org.directwebremoting.extend.Sleeper;
 import org.directwebremoting.util.SharedObjects;
 
 /**

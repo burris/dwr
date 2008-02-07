@@ -25,12 +25,11 @@ import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.ServerContextFactory;
@@ -44,6 +43,8 @@ import org.directwebremoting.dwrp.PlainCallMarshaller;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.AjaxFilterManager;
 import org.directwebremoting.extend.Configurator;
+import org.directwebremoting.extend.ContainerAbstraction;
+import org.directwebremoting.extend.ContainerConfigurationException;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
@@ -90,9 +91,9 @@ public class ContainerUtil
      * {@link #setupDefaultContainer(DefaultContainer, ServletConfig)}.
      * @param servletConfig The source of init parameters
      * @return A setup implementation of DefaultContainer
-     * @throws ServletException If the specified class could not be found or instantiated
+     * @throws ContainerConfigurationException If the specified class could not be found or instantiated
      */
-    public static Container createAndSetupDefaultContainer(ServletConfig servletConfig) throws ServletException
+    public static Container createAndSetupDefaultContainer(ServletConfig servletConfig) throws ContainerConfigurationException
     {
         Container container;
         
@@ -118,7 +119,7 @@ public class ContainerUtil
         }
         catch (Exception ex)
         {
-            throw new ServletException(ex);
+            throw new ContainerConfigurationException(ex);
         }
 
         return container;
@@ -135,12 +136,12 @@ public class ContainerUtil
      * this method does not call any setup methods.
      * @param servletConfig The source of init parameters
      * @return An un'setup' implementation of DefaultContainer
-     * @throws ServletException If the specified class could not be found
+     * @throws ContainerConfigurationException If the specified class could not be found
      * @see ServletConfig#getInitParameter(String)
      * @deprecated Use {@link #createAndSetupDefaultContainer(ServletConfig)}
      */
     @Deprecated
-    public static DefaultContainer createDefaultContainer(ServletConfig servletConfig) throws ServletException
+    public static DefaultContainer createDefaultContainer(ServletConfig servletConfig) throws ContainerConfigurationException
     {
         try
         {
@@ -156,7 +157,7 @@ public class ContainerUtil
         }
         catch (Exception ex)
         {
-            throw new ServletException(ex);
+            throw new ContainerConfigurationException(ex);
         }
     }
 
@@ -167,26 +168,64 @@ public class ContainerUtil
      * calling {@link DefaultContainer#setupFinished()}.
      * @param container The container to configure
      * @param servletConfig The source of init parameters
-     * @throws InstantiationException If we can't instantiate a bean
-     * @throws IllegalAccessException If we have access problems creating a bean
-     * @deprecated Use {@link #createAndSetupDefaultContainer(ServletConfig)}
+     * @throws ContainerConfigurationException If we can't use a bean
      */
-    @Deprecated
-    public static void setupDefaultContainer(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
+    public static void setupDefaultContainer(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
     {
         setupDefaults(container, servletConfig);
         setupFromServletConfig(container, servletConfig);
+        resolveContainerAbstraction(container, servletConfig);
         container.setupFinished();
+    }
+
+    /**
+     * We need to decide which {@link ContainerAbstraction} should be the
+     * default for this {@link Container}, also we should prepare the default
+     * {@link ServerLoadMonitor}.
+     * @param container The container to configure
+     * @param servletConfig Information about the environment
+     * @throws ContainerConfigurationException If we can't use a bean
+     */
+    @SuppressWarnings("unchecked")
+    public static void resolveContainerAbstraction(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
+    {
+        String abstractionImplNames = container.getParameter(ContainerAbstraction.class.getName());
+        for (String abstractionImplName : abstractionImplNames.split(" "))
+        {
+            try
+            {
+                Class<ContainerAbstraction> abstractionImpl = (Class<ContainerAbstraction>) Class.forName(abstractionImplName);
+                ContainerAbstraction abstraction = abstractionImpl.newInstance();
+                if (abstraction.isNativeEnvironment(servletConfig))
+                {
+                    container.addParameter(ContainerAbstraction.class.getName(), abstractionImplName);
+
+                    String loadMonitorImplName = container.getParameter(ServerLoadMonitor.class.getName());
+                    if (loadMonitorImplName == null)
+                    {
+                        Class<? extends ServerLoadMonitor> loadMonitorImpl = abstraction.getServerLoadMonitorImplementation();
+                        container.addParameter(ServerLoadMonitor.class.getName(), loadMonitorImpl);
+                    }
+
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ContainerConfigurationException("Exception while loading ContainerAbstraction called : " + abstractionImplName, ex);
+            }
+        }
+
+        throw new ContainerConfigurationException("None of the configured ContainerAbstractions claims isNativeEnvironment=true. Implementations tested: " + abstractionImplNames);
     }
 
     /**
      * Take a DefaultContainer and setup the default beans
      * @param container The container to configure
      * @param servletConfig The source of init parameters
-     * @throws InstantiationException If we can't instantiate a bean
-     * @throws IllegalAccessException If we have access problems creating a bean
+     * @throws ContainerConfigurationException If we can't use a bean
      */
-    public static void setupDefaults(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
+    public static void setupDefaults(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
     {
         container.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         container.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
@@ -204,28 +243,10 @@ public class ContainerUtil
         container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
         container.addParameter(DownloadManager.class.getName(), InMemoryDownloadManager.class.getName());
 
-        // TODO: remove these once we are sure they are not needed
-        //container.addParameter(PlainPollHandler.class.getName(), PlainPollHandler.class.getName());
-        //container.addParameter(HtmlPollHandler.class.getName(), HtmlPollHandler.class.getName());
-
-        final String serverInfo = servletConfig.getServletContext().getServerInfo();
-        boolean isAsyncServer = false;
-        for (String match : ASYNC_SERVER_INFOS)
-        {
-            if (serverInfo.startsWith(match))
-            {
-                isAsyncServer = true;
-            }
-        }
-
-        if (isAsyncServer)
-        {
-            container.addParameter(ServerLoadMonitor.class.getName(), ThreadDroppingServerLoadMonitor.class.getName());
-        }
-        else
-        {
-            container.addParameter(ServerLoadMonitor.class.getName(), DefaultServerLoadMonitor.class.getName());
-        }
+        String abstractions = JettyContainerAbstraction.class.getName() + " " +
+                              GrizzlyContainerAbstraction.class.getName() + " " +
+                              ServletSpecContainerAbstraction.class.getName();
+        container.addParameter(ContainerAbstraction.class.getName(), abstractions);
 
         // Mapping handlers to URLs
         createUrlMapping(container, "/index.html", "indexHandlerUrl", IndexHandler.class);
@@ -250,15 +271,6 @@ public class ContainerUtil
     }
 
     /**
-     * We need to properly test the Grizzly string
-     */
-    private static final String[] ASYNC_SERVER_INFOS =
-    {
-        "jetty-6",
-        "Sun Java System Application Server 9.1"
-    };
-
-    /**
      * Creates entries in the {@link Container} so 2 lookups are possible.
      * <ul>
      * <li>You can find a {@link Handler} for a URL. Used by {@link UrlProcessor}
@@ -268,10 +280,9 @@ public class ContainerUtil
      * @param url The URL of the new {@link Handler}
      * @param propertyName The property name (for injection and lookup)
      * @param handler The class of Handler
-     * @throws InstantiationException From {@link DefaultContainer#addParameter(String, Object)}
-     * @throws IllegalAccessException From {@link DefaultContainer#addParameter(String, Object)}
+     * @throws ContainerConfigurationException From {@link DefaultContainer#addParameter(String, Object)}
      */
-    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class<?> handler) throws InstantiationException, IllegalAccessException
+    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class<?> handler) throws ContainerConfigurationException
     {
         container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
         container.addParameter(propertyName, url);
@@ -281,11 +292,10 @@ public class ContainerUtil
      * Take a DefaultContainer and setup the default beans
      * @param container The container to configure
      * @param servletConfig The servlet configuration (null to ignore)
-     * @throws InstantiationException If we can't instantiate a bean
-     * @throws IllegalAccessException If we have access problems creating a bean
+     * @throws ContainerConfigurationException If we can't use a bean
      */
     @SuppressWarnings("unchecked")
-    public static void setupFromServletConfig(DefaultContainer container, ServletConfig servletConfig) throws InstantiationException, IllegalAccessException
+    public static void setupFromServletConfig(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
     {
         Enumeration<String> en = servletConfig.getInitParameterNames();
         while (en.hasMoreElements())

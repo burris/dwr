@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
+import org.directwebremoting.extend.ContainerConfigurationException;
 import org.directwebremoting.impl.DefaultContainer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
@@ -55,7 +56,7 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
      */
     @SuppressWarnings("unchecked")
     @Override
-    public void addParameter(String askFor, Object valueParam) throws InstantiationException, IllegalAccessException
+    public void addParameter(String askFor, Object valueParam) throws ContainerConfigurationException
     {
         try
         {
@@ -79,7 +80,7 @@ public class SpringContainer extends DefaultContainer implements Container, Bean
             else if (beansOfType.size() > 1)
             {
                 // TODO: handle multiple declarations
-                throw new InstantiationException("multiple beans of type '" + clz.getName() + "' were found in the spring configuration");
+                throw new ContainerConfigurationException("multiple beans of type '" + clz.getName() + "' were found in the spring configuration");
             }
             else
             {

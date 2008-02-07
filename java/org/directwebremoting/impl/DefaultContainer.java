@@ -28,6 +28,7 @@ import javax.servlet.Servlet;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.directwebremoting.Container;
+import org.directwebremoting.extend.ContainerConfigurationException;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -44,14 +45,13 @@ public class DefaultContainer extends AbstractContainer implements Container
      * Set the class that should be used to implement the given interface
      * @param askFor The interface to implement
      * @param valueParam The new implementation
-     * @throws IllegalAccessException If the specified beans could not be accessed
-     * @throws InstantiationException If the specified beans could not be created
+     * @throws ContainerConfigurationException If the specified beans could not be used
      */
-    public void addParameter(String askFor, Object valueParam) throws InstantiationException, IllegalAccessException
+    public void addParameter(String askFor, Object valueParam) throws ContainerConfigurationException
     {
         Object value = valueParam;
 
-        // Maybe the value is a classname that needs instansiating
+        // Maybe the value is a classname that needs instantiating
         if (value instanceof String)
         {
             try
@@ -63,9 +63,17 @@ public class DefaultContainer extends AbstractContainer implements Container
             {
                 // it's not a classname, leave it
             }
+            catch (InstantiationException ex)
+            {
+                throw new ContainerConfigurationException("Unable to instantiate " + value);
+            }
+            catch (IllegalAccessException ex)
+            {
+                throw new ContainerConfigurationException("Unable to access " + value);
+            }
         }
 
-        // If we have an instansiated value object and askFor is an interface
+        // If we have an instantiated value object and askFor is an interface
         // then we can check that one implements the other
         if (!(value instanceof String))
         {
@@ -96,6 +104,17 @@ public class DefaultContainer extends AbstractContainer implements Container
         }
 
         beans.put(askFor, value);
+    }
+
+    /**
+     * Retrieve a previously set parameter
+     * @param name The parameter name to retrieve
+     * @return The value of the specified parameter, or null if one is not set
+     */
+    public String getParameter(String name)
+    {
+        Object value = beans.get(name);
+        return (value == null) ? null : value.toString();
     }
 
     /**
@@ -153,7 +172,7 @@ public class DefaultContainer extends AbstractContainer implements Container
                                 }
                                 catch (IllegalArgumentException ex)
                                 {
-                                    // Ignore - this was a specuative convert anyway
+                                    // Ignore - this was a speculative convert anyway
                                 }
 
                                 continue methods;
@@ -181,7 +200,7 @@ public class DefaultContainer extends AbstractContainer implements Container
 
     /**
      * A helper to do the reflection.
-     * This helper throws away all exceptions, prefering to log.
+     * This helper throws away all exceptions, preferring to log.
      * @param setter The method to invoke
      * @param bean The object to invoke the method on
      * @param value The value to assign to the property using the setter method

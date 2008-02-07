@@ -13,26 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.dwrp;
+package org.directwebremoting.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.extend.Sleeper;
 import org.directwebremoting.util.Continuation;
 
 /**
- * A Sleeper that works with Grizzly Continuations
- * @author Jeanfrancois Arcand [jeanfrancois dot arcand at sun dot com]
+ * A Sleeper that works with Jetty Continuations
+ * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class GrizzlyContinuationSleeper implements Sleeper
+public class JettyContinuationSleeper implements Sleeper
 {
     /**
      * @param request The request into which we store this as an attribute
      */
-    public GrizzlyContinuationSleeper(HttpServletRequest request)
+    public JettyContinuationSleeper(HttpServletRequest request)
     {
         continuation = new Continuation(request);
+
+        // At this point JettyContinuationSleeper is fully initialized so it is
+        // safe to allow other classes to see and use us.
+        //noinspection ThisEscapedInObjectConstruction
+        request.setAttribute(ATTRIBUTE_JETTY_CONDUIT, this);
+    }
+
+    /**
+     * Is this a restarted continuation?
+     * @param request The request on which a Sleeper might be stored
+     * @return true if this request is from a restarted Continuation
+     */
+    public static boolean isRestart(HttpServletRequest request)
+    {
+        return request.getAttribute(ATTRIBUTE_JETTY_CONDUIT) != null;
+    }
+
+    /**
+     * Act on a restarted continuation by executing the onAwakening action
+     * @param request The request on which the Sleeper is stored
+     */
+    public static void restart(HttpServletRequest request)
+    {
+        JettyContinuationSleeper sleeper = (JettyContinuationSleeper) request.getAttribute(ATTRIBUTE_JETTY_CONDUIT);
+        if (sleeper == null)
+        {
+            throw new IllegalStateException("No JettyContinuationSleeper in HttpServletRequest");
+        }
+
+        request.removeAttribute(ATTRIBUTE_JETTY_CONDUIT);
+        sleeper.onAwakening.run();
     }
 
     /* (non-Javadoc)
@@ -44,7 +76,10 @@ public class GrizzlyContinuationSleeper implements Sleeper
 
         try
         {
-            continuation.suspend(-1);
+            // JETTY: throws a RuntimeException that must propagate to the container!
+            // The docs say that a value of 0 should suspend forever, but that
+            // appears not to happen (at least in 6.1.1) so we suspend for BigNum
+            continuation.suspend(Integer.MAX_VALUE);
         }
         catch (Exception ex)
         {
@@ -56,7 +91,6 @@ public class GrizzlyContinuationSleeper implements Sleeper
         }
     }
 
-    
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.PollHandler.Sleeper#wakeUp()
      */
@@ -74,17 +108,7 @@ public class GrizzlyContinuationSleeper implements Sleeper
                 {
                     try
                     {
-                        /*
-                         * Flush bytes if any first as before resuming the 
-                         * as Grizzly Comet isn't allowing writes once the
-                         * continuation is resumed. 
-                         *
-                         * This can be achieved
-                         * by using Grizzly CometHandler, which isn't exposed
-                         * with DWR.
-                         */
-                        onAwakening.run();
-                        continuation.resume();                      
+                        continuation.resume();
                     }
                     catch (Exception ex)
                     {
@@ -96,16 +120,16 @@ public class GrizzlyContinuationSleeper implements Sleeper
             }
         }
     }
-    
+
     /**
      * If continuations fail, we proxy to a Thread Wait version
      */
-    protected ThreadWaitSleeper proxy = null;
+    private ThreadWaitSleeper proxy = null;
 
     /**
      * What we do when we are woken up
      */
-    protected Runnable onAwakening;
+    private Runnable onAwakening;
 
     /**
      * The continuation object
@@ -121,7 +145,9 @@ public class GrizzlyContinuationSleeper implements Sleeper
      * We remember the notify conduit so we can reuse it
      */
     public static final String ATTRIBUTE_JETTY_CONDUIT = "org.directwebremoting.dwrp.notifyConduit";
-   
-    private static final Log log = LogFactory.getLog(GrizzlyContinuationSleeper.class);
-}
 
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(JettyContinuationSleeper.class);
+}

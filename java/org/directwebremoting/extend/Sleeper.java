@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.dwrp;
+package org.directwebremoting.extend;
 
 import java.io.Serializable;
 
@@ -34,7 +34,7 @@ import java.io.Serializable;
  * up.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-interface Sleeper extends Serializable
+public interface Sleeper extends Serializable
 {
     /**
      * 'halt' the current execution in some way.

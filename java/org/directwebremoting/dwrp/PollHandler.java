@@ -22,11 +22,12 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.extend.Alarm;
+import org.directwebremoting.extend.ContainerAbstraction;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Handler;
@@ -36,7 +37,11 @@ import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.ServerLoadMonitor;
-import org.directwebremoting.util.Continuation;
+import org.directwebremoting.extend.Sleeper;
+import org.directwebremoting.impl.JettyContinuationSleeper;
+import org.directwebremoting.impl.OutputAlarm;
+import org.directwebremoting.impl.ShutdownAlarm;
+import org.directwebremoting.impl.TimedAlarm;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -63,14 +68,27 @@ public class PollHandler implements Handler
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        // If we are a restarted jetty continuation then we need to finish off
+        // If you're new to understanding this file, you may wish to skip this
+        // step and come back to it later ;-)
+        // So Jetty does something a bit weird with Ajax Continuations. You
+        // suspend a request (which works via an exception) while keeping hold
+        // of a continuation object. There are methods on this continuation
+        // object to restart the request. Also you can write to the output at
+        // any time the request is suspended. When the continuation is
+        // restarted, rather than restart the thread from where is was
+        // suspended, it starts it from the beginning again. Since we are able
+        // to write to the response outside of the servlet thread, there is no
+        // need for us to do anything if we have been restarted. So we ignore
+        // all Jetty continuation restarts.
         if (JettyContinuationSleeper.isRestart(request))
         {
             JettyContinuationSleeper.restart(request);
             return;
         }
 
-        // The information that we can extract from the input parameters
+        // A PollBatch is the information that we expect from the request.
+        // if the parse fails we can do little more than tell the browser that
+        // something went wrong.
         final PollBatch batch;
         try
         {
@@ -109,21 +127,13 @@ public class PollHandler implements Handler
             return;
         }
 
-        // If we are going to be doing any waiting then check for other threads
-        // from the same browser that are already waiting, and send them on
-        // their way
-        final long maxConnectedTime = serverLoadMonitor.getConnectedTime();
-        if (maxConnectedTime > 0)
-        {
-            // Make other threads from the same browser stop waiting and continue
-            // First we check to see if there is already a connection from the
-            // current browser to this servlet
-            Sleeper otherThread = (Sleeper) request.getSession().getAttribute(ATTRIBUTE_SLEEPER);
-            if (otherThread != null)
-            {
-                otherThread.wakeUp();
-            }
-        }
+        // So we've done the parsing and checking this is where we start work
+
+        // A script conduit is some route from a ScriptSession back to the page
+        // that belongs to the session. There may be zero or many of these
+        // conduits (although if there are more than 2, something is strange)
+        // All scripts destined for a page go to a ScriptSession and then out
+        // via a ScriptConduit.
 
         // Create a conduit depending on the type of request (from the URL)
         final BaseScriptConduit conduit = createScriptConduit(batch, response);
@@ -132,20 +142,7 @@ public class PollHandler implements Handler
         scriptSession.addScriptConduit(conduit);
 
         // So we're going to go to sleep. How do we wake up?
-        final Sleeper sleeper;
-        // If this is Jetty then we can use Continuations
-        if (Continuation.isJetty())
-        {
-            sleeper = new JettyContinuationSleeper(request);
-        }
-        else if (Continuation.isGrizzly())
-        {
-            sleeper = new GrizzlyContinuationSleeper(request);
-        }
-        else
-        {
-            sleeper = new ThreadWaitSleeper();
-        }
+        Sleeper sleeper = containerAbstraction.createSleeper(request);
 
         // There are various reasons why we want to wake up and carry on ...
         final List<Alarm> alarms = new ArrayList<Alarm>();
@@ -162,6 +159,7 @@ public class PollHandler implements Handler
         }
 
         // Set the system up to resume anyway after maxConnectedTime
+        long maxConnectedTime = serverLoadMonitor.getConnectedTime();
         alarms.add(new TimedAlarm(maxConnectedTime));
 
         // We also need to wake-up if the server is being shut down
@@ -176,19 +174,11 @@ public class PollHandler implements Handler
             alarm.setAlarmAction(sleeper);
         }
 
-        // Allow other threads to notice more than one poll thread and to send
-        // this one on it's way
-        final HttpSession session = request.getSession();
-        session.setAttribute(ATTRIBUTE_SLEEPER, sleeper);
-
         // We need to do something sensible when we wake up ...
         Runnable onAwakening = new Runnable()
         {
             public void run()
             {
-                // There is no point in letting other threads try to move us on
-                session.removeAttribute(ATTRIBUTE_SLEEPER);
-
                 // Cancel all the alarms
                 for (Alarm alarm : alarms)
                 {
@@ -334,6 +324,14 @@ public class PollHandler implements Handler
     }
 
     /**
+     * @param containerAbstraction the containerAbstraction to set
+     */
+    public void setContainerAbstraction(ContainerAbstraction containerAbstraction)
+    {
+        this.containerAbstraction = containerAbstraction;
+    }
+
+    /**
      * Sometimes with proxies, you need to close the stream all the time to
      * make the flush work. A value of -1 indicated that we do not do early
      * closing after writes.
@@ -409,9 +407,9 @@ public class PollHandler implements Handler
     protected ScriptSessionManager scriptSessionManager = null;
 
     /**
-     * We remember people that are in a long poll so we can kick them out
+     * How we abstract away container specific logic
      */
-    private static final String ATTRIBUTE_SLEEPER = "org.directwebremoting.dwrp.sleeper";
+    protected ContainerAbstraction containerAbstraction = null;
 
     /**
      * The log stream

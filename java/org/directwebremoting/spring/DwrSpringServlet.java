@@ -26,14 +26,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -92,10 +91,7 @@ public class DwrSpringServlet extends HttpServlet
 
             container = new SpringContainer();
             container.setBeanFactory(webappContext);
-            ContainerUtil.setupDefaults(container, servletConfig);
-            ContainerUtil.setupFromServletConfig(container, servletConfig);
-
-            container.setupFinished();
+            ContainerUtil.setupDefaultContainer(container, servletConfig);
 
             StartupUtil.initContainerBeans(servletConfig, servletContext, container);
             webContextBuilder = container.getBean(WebContextBuilder.class);
@@ -120,14 +116,6 @@ public class DwrSpringServlet extends HttpServlet
             ContainerUtil.configure(container, configurators);
 
             ContainerUtil.publishContainer(container, servletConfig);
-        }
-        catch (InstantiationException ex)
-        {
-            throw new BeanCreationException("Failed to instansiate", ex);
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new BeanCreationException("Access error", ex);
         }
         catch (Exception ex)
         {

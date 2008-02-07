@@ -1,4 +1,4 @@
-package org.directwebremoting.dwrp;
+package org.directwebremoting.extend;
 
 /**
  * An alarm is something that goes off at some point in the future.

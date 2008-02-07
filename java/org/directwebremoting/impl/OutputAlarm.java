@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.dwrp;
+package org.directwebremoting.impl;
 
 import java.io.IOException;
 import java.util.concurrent.ScheduledFuture;
@@ -24,8 +24,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
+import org.directwebremoting.extend.Alarm;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptConduit;
+import org.directwebremoting.extend.Sleeper;
 import org.directwebremoting.util.SharedObjects;
 
 /**

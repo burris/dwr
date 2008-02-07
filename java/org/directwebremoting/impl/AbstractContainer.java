@@ -20,6 +20,8 @@ import org.directwebremoting.extend.InitializingBean;
 
 /**
  * An implementation of some of the simpler methods from {@link Container}
+ * This class has nothing whatsoever to do with
+ * {@link org.directwebremoting.extend.ContainerAbstraction}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public abstract class AbstractContainer implements Container

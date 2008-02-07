@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.dwrp;
+package org.directwebremoting.impl;
+
+import org.directwebremoting.extend.Sleeper;
 
 /**
  * The simplest type of Sleeper that just uses {@link #wait()} and
