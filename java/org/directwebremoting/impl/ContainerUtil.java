@@ -204,7 +204,7 @@ public class ContainerUtil
                     if (loadMonitorImplName == null)
                     {
                         Class<? extends ServerLoadMonitor> loadMonitorImpl = abstraction.getServerLoadMonitorImplementation();
-                        container.addParameter(ServerLoadMonitor.class.getName(), loadMonitorImpl);
+                        container.addParameter(ServerLoadMonitor.class.getName(), loadMonitorImpl.getName());
                     }
 
                     return;
