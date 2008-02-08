@@ -105,7 +105,7 @@ public class PollHandler implements Handler
         // Check to see that the page and script session id are valid
         RealWebContext webContext = (RealWebContext) WebContextFactory.get();
         String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
-        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId(), true);
+        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId());
 
         final RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
 

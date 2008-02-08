@@ -602,6 +602,17 @@ if (typeof this['dwr'] == 'undefined') {
     },
 
     /**
+     * Called by the server when we need to set a new script session id
+     * @param {Object} newSessionId The new script session id to be used from now
+     */
+    handleNewScriptSession:function(newSessionId) {
+      if (dwr.engine._scriptSessionId != null) {
+        dwr.engine._debug("Server side script session id timed out. New session automatically created");
+      }
+      dwr.engine._scriptSessionId = newSessionId;
+    },
+
+    /**
      * Called by the server: Reverse ajax should not be used
      * @private
      * @param {Object} ex
@@ -1754,8 +1765,7 @@ if (typeof this['dwr'] == 'undefined') {
   catch(ex) { }
 
   // Fetch the scriptSessionId from the server
-  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function(data) {
-    dwr.engine._scriptSessionId = data;
+  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function() {
     dwr.engine._ordered = false;
   });
 

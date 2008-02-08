@@ -32,8 +32,6 @@ import org.directwebremoting.event.MessageEvent;
 import org.directwebremoting.event.MessageListener;
 import org.directwebremoting.extend.CallbackHelper;
 import org.directwebremoting.extend.ConverterManager;
-import org.directwebremoting.extend.RealWebContext;
-import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.io.RawData;
 
 /**
@@ -45,19 +43,11 @@ public class System
 {
     /**
      * A method designed to be called on page load so the client knows about
-     * the http and script sessions.
-     * @return The newly created scriptSessionId
+     * the http and script sessions. This method doesn't actually do anything
+     * however it does allow DWR's script session checking code to work
      */
-    public String pageLoaded()
+    public void pageLoaded()
     {
-        RealWebContext webContext = (RealWebContext) WebContextFactory.get();
-
-        // Create a script session and tell the client about the id
-        ScriptSessionManager scriptSessionManager = webContext.getContainer().getBean(ScriptSessionManager.class);
-        String scriptSessionId = scriptSessionManager.createScriptSession(webContext);
-
-        log.debug("scriptSession created: " + scriptSessionId);
-        return scriptSessionId;
     }
 
     /**

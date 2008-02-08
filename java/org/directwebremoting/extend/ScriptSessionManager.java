@@ -56,9 +56,10 @@ public interface ScriptSessionManager
     /**
      * When a new client page-loads, we create a script session id and this
      * method allows us to control their creation
+     * @param url The URL including 'http://', up to (but not including) '?' or '#'
      * @return The new script session id
      */
-    String createScriptSession(RealWebContext webContext);
+    String createScriptSession(String url);
 
     /**
      * Locate the given script session on a page
