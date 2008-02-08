@@ -25,10 +25,19 @@ import org.directwebremoting.WebContext;
 public interface RealWebContext extends WebContext
 {
     /**
-     * Fill in the page details from the servlet request
+     * Fill in the page details from the servlet request.
+     * <p>This method should be used by anything that parses a batch, and then
+     * allows either uses a {@link WebContext} or allows other things to use a
+     * WebContext.
+     * <p><strong>Caution<strong> Following this call, the passed
+     * scriptSessionId may be wrong. scriptSessionIds can become invalid due to
+     * server re-start, a timeout, or a back-button.
+     * <p>It seems wrong to throw a security exception, because it could
+     * be totally innocent. So this method will create a new script session and
+     * insert a script into the script session so that the page becomes synced
+     * with the new ID at the earliest possible opportunity.
      * @param page The URL of the current page
      * @param scriptSessionId The session id passed in by the browser
-     * @param checkScriptId Are we allowed a blank script session id?
      */
-    void checkPageInformation(String page, String scriptSessionId, boolean checkScriptId);
+    void checkPageInformation(String page, String scriptSessionId);
 }

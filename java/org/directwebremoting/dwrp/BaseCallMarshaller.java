@@ -80,7 +80,6 @@ public abstract class BaseCallMarshaller implements Marshaller
             throw new SecurityException("GET Disalowed");
         }
 
-        // TODO: Maybe we should push this out into BaseCallMarshaller?
         if (crossDomainSessionSecurity)
         {
             checkNotCsrfAttack(request, batch);
@@ -89,47 +88,12 @@ public abstract class BaseCallMarshaller implements Marshaller
         // Save the batch so marshallException can get at a batch id
         request.setAttribute(ATTRIBUTE_BATCH, batch);
 
-        // Are we calling __System.pageLoaded?
-        boolean checkScriptId = true;
-        Calls calls = batch.getCalls();
-        if (calls.getCallCount() == 1)
-        {
-            Call call = calls.getCall(0);
-            if (isPageLoadedMethod(call.getScriptName(), call.getMethodName()))
-            {
-                checkScriptId = false;
-            }
-        }
-
         String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
-        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId(), checkScriptId);
+        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId());
 
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);
         return marshallInbound(batch);
-    }
-
-    /**
-     * Security check: The pageLoaded may be called without a valid
-     * scriptSessionId. This helps us check that someone is calling that method.
-     * @param scriptName The object that the users wants to call a method on
-     * @param methodName The method a remote user wants to call
-     * @return true iff the method is the pageLoaded method on this class
-     */
-    @SuppressWarnings({"RedundantIfStatement"})
-    private static boolean isPageLoadedMethod(String scriptName, String methodName)
-    {
-        if (!"__System".equals(scriptName))
-        {
-            return false;
-        }
-
-        if (!"pageLoaded".equals(methodName))
-        {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -460,7 +424,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             }
             catch (MarshallException ex)
             {
-                EnginePrivate.remoteHandleMarshallException(conduit, batchId, callId, ex);
+                EnginePrivate.remoteHandleException(conduit, batchId, callId, ex);
                 log.warn("--MarshallException: batchId=" + batchId + " class=" + ex.getConversionType().getName(), ex);
             }
             catch (Exception ex)

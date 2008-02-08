@@ -28,8 +28,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
@@ -61,28 +63,44 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.RealWebContext#checkPageInformation(java.lang.String, java.lang.String, boolean)
      */
-    public void checkPageInformation(String sentPage, String sentScriptId, boolean checkScriptId)
+    public void checkPageInformation(String sentPage, String sentScriptId)
     {
-        if (checkScriptId)
+        ScriptSessionManager scriptSessionManager = getScriptSessionManager();
+        RealScriptSession scriptSession = scriptSessionManager.getScriptSession(sentScriptId);
+        if (scriptSession == null)
         {
-            ScriptSessionManager manager = getScriptSessionManager();
-            RealScriptSession scriptSession = manager.getScriptSession(sentScriptId);
-            if (scriptSession == null)
-            {
-                log.error("Invalid ScriptSessionId: " + sentScriptId);
-                throw new SecurityException("Invalid ScriptSessionId");
-            }
+            // Force creation of a new scriptSessionId
+            // The script session id is no longer valid. This could be down
+            // to a server re-start, a timeout, or a back-button.
+            // It seems wrong to throw a security exception, because it
+            // could be totally innocent. So we just call a browser method
+            // to accept a new script session id.
 
-            String storedPage = scriptSession.getPage();
-            if (!storedPage.equals(sentPage))
-            {
-                log.error("Invalid Page: Passed page=" + sentPage + ", but page in script session=" + storedPage);
-                throw new SecurityException("Invalid Page");
-            }
+            // This information is going to get copied into the ScriptSession
+            // so we need to set it here. It makes a mockery of the test later
+            // on though...
+            String newSessionId = scriptSessionManager.createScriptSession(sentPage);
+            scriptSession = scriptSessionManager.getScriptSession(newSessionId);
+
+            ScriptBuffer handleNewSession = EnginePrivate.remoteHandleNewScriptSession(newSessionId);
+            scriptSession.addScript(handleNewSession);
+
+            log.debug("ScriptSession re-sync: " + sentScriptId + " has become " + newSessionId);
+            this.scriptSessionId = newSessionId;
+        }
+        else
+        {
+            this.scriptSessionId = sentScriptId;
+        }
+
+        String storedPage = scriptSession.getPage();
+        if (!storedPage.equals(sentPage))
+        {
+            log.error("Invalid Page: Passed page=" + sentPage + ", but page in script session=" + storedPage);
+            throw new SecurityException("Invalid Page");
         }
 
         this.page = sentPage;
-        this.scriptSessionId = sentScriptId;
     }
 
     /* (non-Javadoc)
@@ -101,7 +119,10 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
         ScriptSessionManager manager = getScriptSessionManager();
 
         RealScriptSession scriptSession = manager.getScriptSession(scriptSessionId);
-        manager.setPageForScriptSession(scriptSession, page, request.getRequestedSessionId());
+        if (scriptSession == null)
+        {
+            throw new SecurityException("Expected script session to exist");
+        }
 
         return scriptSession;
     }

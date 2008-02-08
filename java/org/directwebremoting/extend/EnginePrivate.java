@@ -46,57 +46,12 @@ public class EnginePrivate extends ScriptProxy
     public static void remoteHandleCallback(ScriptConduit conduit, String batchId, String callId, Object data) throws IOException, MarshallException
     {
         ScriptBuffer script = new ScriptBuffer();
-        script.appendScript("dwr.engine.remote.handleCallback(\'")
-              .appendScript(batchId)
-              .appendScript("\',\'")
-              .appendScript(callId)
-              .appendScript("\',")
-              .appendData(data)
-              .appendScript(");");
-
+        script.appendCall("dwr.engine.remote.handleCallback", batchId, callId, data);
         conduit.addScript(script);
     }
 
     /**
-     * Call the dwr.engine.remote.handleException() in the browser
-     * @param conduit The browser pipe to write to
-     * @param batchId The identifier of the batch that we are handling a response for
-     * @param callId The id of the call we are replying to
-     * @param ex The exception to throw on the remote end
-     * @throws IOException If writing fails.
-     */
-    public static void remoteHandleMarshallException(ScriptConduit conduit, String batchId, String callId, MarshallException ex) throws IOException
-    {
-        try
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine.remote.handleException(\'")
-                  .appendScript(batchId)
-                  .appendScript("\',\'")
-                  .appendScript(callId)
-                  .appendScript("\',")
-                  .appendData(ex)
-                  .appendScript(");");
-
-            conduit.addScript(script);
-        }
-        catch (MarshallException mex)
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine.remote.handleException(\'")
-                  .appendScript(batchId)
-                  .appendScript("\',\'")
-                  .appendScript(callId)
-                  .appendScript("\',")
-                  .appendData(ex)
-                  .appendScript(");");
-
-            addScriptWithoutException(conduit, script);
-        }
-    }
-
-    /**
-     * Call the dwr.engine.remote.handleException() in the browser
+     * Call dwr.engine.remote.handleException() in the browser
      * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The id of the call we are replying to
@@ -108,29 +63,25 @@ public class EnginePrivate extends ScriptProxy
         try
         {
             ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine.remote.handleException(\'")
-                  .appendScript(batchId)
-                  .appendScript("\',\'")
-                  .appendScript(callId)
-                  .appendScript("\',")
-                  .appendData(ex)
-                  .appendScript(");");
-
+            script.appendCall("dwr.engine.remote.handleException", batchId, callId, ex);
             conduit.addScript(script);
         }
         catch (MarshallException mex)
         {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendScript("dwr.engine.remote.handleException(\'")
-                  .appendScript(batchId)
-                  .appendScript("\',\'")
-                  .appendScript(callId)
-                  .appendScript("\',")
-                  .appendData(ex)
-                  .appendScript(");");
-
-            addScriptWithoutException(conduit, script);
+            log.warn("This exception can't happen. Really.", ex);
         }
+    }
+
+    /**
+     * Call dwr.engine.remote.handleNewScriptSession() in the browser
+     * @param newSessionId The new script session id for the browser to reuse
+     * @return A script buffer containing the appropriate code
+     */
+    public static ScriptBuffer remoteHandleNewScriptSession(String newSessionId)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("dwr.engine.remote.handleNewScriptSession", newSessionId);
+        return script;
     }
 
     /**
@@ -270,26 +221,6 @@ public class EnginePrivate extends ScriptProxy
     private static String addWindowParent(String script)
     {
         return "try { window.parent." + script + " } catch(ex) { if (!(ex.number && ex.number == -2146823277)) { throw ex; }}";
-    }
-
-    /**
-     * Calling {@link ScriptConduit#addScript(ScriptBuffer)} throws a
-     * {@link MarshallException} which we want to ignore since it almost
-     * certainly can't happen for real.
-     * @param conduit The browser pipe to write to
-     * @param script The buffer to add to the current {@link ScriptConduit}
-     * @throws IOException If the write process fails
-     */
-    private static void addScriptWithoutException(ScriptConduit conduit, ScriptBuffer script) throws IOException
-    {
-        try
-        {
-            conduit.addScript(script);
-        }
-        catch (MarshallException ex)
-        {
-            log.warn("This exception can't happen", ex);
-        }
     }
 
     /**

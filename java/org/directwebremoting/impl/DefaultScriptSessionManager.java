@@ -34,7 +34,6 @@ import org.directwebremoting.event.ScriptSessionEvent;
 import org.directwebremoting.event.ScriptSessionListener;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
-import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.SharedObjects;
@@ -85,7 +84,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             scriptSession = sessionMap.get(id);
             if (scriptSession == null)
             {
-                throw new SecurityException("Attempt to fix script session");
+                return null;
             }
 
             scriptSession.updateLastAccessedTime();
@@ -154,19 +153,16 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.ScriptSessionManager#createScriptSession(org.directwebremoting.extend.RealWebContext)
      */
-    public String createScriptSession(RealWebContext webContext)
+    public String createScriptSession(String page)
     {
         String id = generator.generateId(16);
 
-        String page = webContext.getCurrentPage();
         DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page);
 
         synchronized (sessionLock)
         {
             sessionMap.put(id, scriptSession);
         }
-
-        webContext.checkPageInformation(page, id, true);
 
         return id;
     }
