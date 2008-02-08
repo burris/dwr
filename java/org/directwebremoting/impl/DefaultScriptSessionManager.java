@@ -99,9 +99,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#setPageForScriptSession(org.directwebremoting.extend.RealScriptSession, java.lang.String)
      */
-    public void setPageForScriptSession(RealScriptSession scriptSession, String url)
+    public void setPageForScriptSession(RealScriptSession scriptSession, String page, String httpSessionId)
     {
-        String normalizedPage = pageNormalizer.normalizePage(url);
+        String normalizedPage = pageNormalizer.normalizePage(page);
         synchronized (sessionLock)
         {
             Set<RealScriptSession> pageSessions = pageSessionMap.get(normalizedPage);
@@ -113,6 +113,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
 
             pageSessions.add(scriptSession);
         }
+
+        scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, httpSessionId);
+        scriptSession.setAttribute(ATTRIBUTE_PAGE, page);
     }
 
     /* (non-Javadoc)
@@ -327,6 +330,18 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             }
         }
     }
+
+    /**
+     * Use of this attribute is currently discouraged, we may make this public
+     * in a later release. Until then, it may change or be removed without warning.
+     */
+    public static final String ATTRIBUTE_HTTPSESSIONID = "org.directwebremoting.ScriptSession.HttpSessionId";
+
+    /**
+     * Use of this attribute is currently discouraged, we may make this public
+     * in a later release. Until then, it may change or be removed without warning.
+     */
+    public static final String ATTRIBUTE_PAGE = "org.directwebremoting.ScriptSession.Page";
 
     /**
      * The list of current {@link ScriptSessionListener}s

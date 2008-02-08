@@ -64,8 +64,9 @@ public interface ScriptSessionManager
      * Locate the given script session on a page
      * @param scriptSession The session to locate on a page
      * @param url The URL including 'http://', up to (but not including) '?' or '#'
+     * @param httpSessionId The HTTP session identifier from the browser
      */
-    void setPageForScriptSession(RealScriptSession scriptSession, String url);
+    void setPageForScriptSession(RealScriptSession scriptSession, String url, String httpSessionId);
 
     /**
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire

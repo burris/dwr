@@ -101,7 +101,7 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
         ScriptSessionManager manager = getScriptSessionManager();
 
         RealScriptSession scriptSession = manager.getScriptSession(scriptSessionId);
-        manager.setPageForScriptSession(scriptSession, page);
+        manager.setPageForScriptSession(scriptSession, page, request.getRequestedSessionId());
 
         return scriptSession;
     }
