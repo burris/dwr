@@ -39,6 +39,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -156,6 +157,15 @@ public class DwrController extends AbstractController implements BeanNameAware, 
      */
     public void afterPropertiesSet() throws Exception
     {
+        ApplicationContext parent = getApplicationContext().getParent(); 
+        if (parent != null)
+        {
+            Object parentConfigurator = parent.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID);
+            if ((parentConfigurator != null) && (!configurators.contains(parentConfigurator)))
+            {
+                configurators.add((Configurator) parentConfigurator);
+            }
+        }
         ServletContext servletContext = getServletContext();
 
         if (logger.isDebugEnabled())
