@@ -44,10 +44,12 @@ dwr.util._shouldEscapeHtml = function(options) {
  * @see TODO
  */
 dwr.util.escapeHtml = function(original) {
-  var div = document.createElement('div');
+  if (!dwr.util._escapeDiv) {
+    dwr.util._escapeDiv = document.createElement('div');
+  }
   var text = document.createTextNode(original);
-  div.appendChild(text);
-  return div.innerHTML;
+  dwr.util._escapeDiv.appendChild(text);
+  return dwr.util._escapeDiv.innerHTML;
 };
 
 /**
@@ -55,9 +57,11 @@ dwr.util.escapeHtml = function(original) {
  * @see TODO
  */
 dwr.util.unescapeHtml = function(original) {
-  var div = document.createElement('div');
-  div.innerHTML = original.replace(/<\/?[^>]+>/gi, '');
-  return div.childNodes[0] ? div.childNodes[0].nodeValue : '';
+  if (!dwr.util._escapeDiv) {
+    dwr.util._escapeDiv = document.createElement('div');
+  }
+  dwr.util._escapeDiv.innerHTML = original.replace(/<\/?[^>]+>/gi, '');
+  return dwr.util._escapeDiv.childNodes[0] ? dwr.util._escapeDiv.childNodes[0].nodeValue : '';
 };
 
 /**
