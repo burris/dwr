@@ -46,6 +46,7 @@ public class DwrHandlerMapping extends SimpleUrlHandlerMapping {
 		mappings.put("/util.js", handler);
 		mappings.put("/interface/**", handler);
 		mappings.put("/call/**", handler);
+		mappings.put("/test/**", handler);
 		if (log.isDebugEnabled())
 		{
 			log.debug("[engine.js] mapped to dwrController");
