@@ -152,7 +152,7 @@
       <xsd:element name="filter" type="filter" minOccurs="0" maxOccurs="unbounded"/>
       <xsd:element name="latencyfilter" type="latencyfilter" minOccurs="0" maxOccurs="1"/>
     </xsd:sequence>
-    <xsd:attribute name="javascript" type="xsd:string" use="required"/>
+    <xsd:attribute name="javascript" type="xsd:string" />
   </xsd:complexType>
 
   <xsd:complexType name="creator">

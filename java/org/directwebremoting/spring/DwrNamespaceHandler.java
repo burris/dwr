@@ -82,9 +82,6 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
         registerBeanDefinitionDecorator("remote", new RemoteBeanDefinitionDecorator());
     }
 
-    /*
-     *
-     */
     protected static BeanDefinition registerSpringConfiguratorIfNecessary(BeanDefinitionRegistry registry)
     {
         if (!registry.containsBeanDefinition(DEFAULT_SPRING_CONFIGURATOR_ID))
@@ -206,9 +203,6 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
         lookupCreators(registry).put(javascript, new RuntimeBeanReference(creatorConfigName));
     }
 
-    /**
-     * 
-     */
     protected class ConfigurationBeanDefinitionParser implements BeanDefinitionParser
     {
         /* (non-Javadoc)
@@ -248,9 +242,6 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
         }
     }
 
-    /**
-     *
-     */
     protected static class ControllerBeanDefinitionParser implements BeanDefinitionParser
     {
         /* (non-Javadoc)
@@ -353,9 +344,6 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
 
     }
 
-    /**
-     * 
-     */
     protected class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator
     {
         /**
@@ -389,6 +377,14 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
                 name = name.substring(name.indexOf(".") + 1);
             }
             beanCreator.addPropertyValue("beanId", name);
+            if (!StringUtils.hasText(javascript))
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("No javascript name provided. Remoting using bean id [" + name + "]");
+                }
+                javascript = StringUtils.capitalize(name);
+            }
             beanCreator.addPropertyValue("javascript", javascript);
 
             BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
