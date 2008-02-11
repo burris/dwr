@@ -287,7 +287,10 @@ if (typeof this['dwr'] == 'undefined') {
 
   /** How many times have we re-tried to poll? */
   dwr.engine._pollRetries = 0;
-  dwr.engine._maxPollRetries = 0;
+  dwr.engine._maxPollRetries = 10;
+
+  /** The intervals between successive retries in seconds */
+  dwr.engine._retryIntervals = [ 2, 5, 10, 60, 300 ];
 
   /** Do we do a document.reload if we get a text/html reply? */
   dwr.engine._textHtmlHandler = null;
@@ -411,7 +414,9 @@ if (typeof this['dwr'] == 'undefined') {
    * @param {Object} overridePath
    */
   dwr.engine._poll = function(overridePath) {
-    if (!dwr.engine._activeReverseAjax) return;
+    if (!dwr.engine._activeReverseAjax) {
+      return;
+    }
     var batch = dwr.engine.batch.createPoll();
     dwr.engine.transport.send(batch);
   };
@@ -422,22 +427,33 @@ if (typeof this['dwr'] == 'undefined') {
    * @param {Object} ex
    */
   dwr.engine._pollErrorHandler = function(msg, ex) {
-    // if anything goes wrong then just silently try again (up to 3x) after 10s
-    dwr.engine._pollRetries++;
-    dwr.engine._debug("Reverse Ajax poll failed (pollRetries=" + dwr.engine._pollRetries + "): " + ex.name + " : " + ex.message);
-    if (dwr.engine._pollRetries < dwr.engine._maxPollRetries) {
-      setTimeout("dwr.engine._poll()", 10000);
-    }
-    else {
+    if (dwr.engine._pollRetries > dwr.engine._maxPollRetries) {
       dwr.engine._activeReverseAjax = false;
+      dwr.engine._debug("Reverse Ajax poll failed (retries=" + dwr.engine._pollRetries + "). Giving Up: " + ex.name + " : " + ex.message);
       dwr.engine._debug("Giving up.");
+      return;
     }
+
+    var index = dwr.engine._pollRetries;
+    if (index >= dwr.engine._retryIntervals.length) {
+      index = dwr.engine._retryIntervals.length - 1;
+    }
+
+    dwr.engine._debug("Reverse Ajax poll failed (retries=" + dwr.engine._pollRetries + "). Trying again in " + dwr.engine._retryIntervals[index] + "s: " + ex.name + " : " + ex.message);
+    setTimeout("dwr.engine._poll()", 1000 * dwr.engine._retryIntervals[index]);
+
+    dwr.engine._pollRetries++;
   };
 
   /** @private This is a hack to make the context be this window */
   dwr.engine._eval = function(script) {
-    if (script == null) return null;
-    if (script == "") { dwr.engine._debug("Warning: blank script", true); return null; }
+    if (script == null) {
+      return null;
+    }
+    if (script == "") {
+      dwr.engine._debug("Warning: blank script", true);
+      return null;
+    }
     // dwr.engine._debug("Exec: [" + script + "]", true);
     return eval(script);
   };
@@ -540,7 +556,7 @@ if (typeof this['dwr'] == 'undefined') {
         else {
           batch.handlers[callId] = null;
           if (typeof handlers.callback == "function") {
-            handlers.callback(reply);
+            handlers.callback.call(handlers.callbackScope, reply, handlers.callbackArgs);
           }
         }
       }
@@ -575,7 +591,7 @@ if (typeof this['dwr'] == 'undefined') {
       }
 
       if (typeof handlers.exceptionHandler == "function") {
-        handlers.exceptionHandler(ex.message, ex);
+        handlers.exceptionHandler.call(handlers.exceptionScope, ex.message, ex, handlers.exceptionArgs);
       }
       else if (typeof batch.errorHandler == "function") {
         batch.errorHandler(ex.message, ex);
@@ -1526,7 +1542,11 @@ if (typeof this['dwr'] == 'undefined') {
       dwr.engine.batch.merge(batch, callData);
       batch.handlers[batch.map.callCount] = {
         exceptionHandler:callData.exceptionHandler,
-        callback:callData.callback
+        exceptionArgs:callData.exceptionArgs || callData.args || null,
+        exceptionScope:callData.exceptionScope || callData.scope || window,
+        callback:callData.callbackHandler || callData.callback,
+        callbackArgs:callData.callbackArgs || callData.args || null,      
+        callbackScope:callData.callbackScope || callData.scope || window          
       };
 
       // Copy to the map the things that need serializing
