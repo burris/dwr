@@ -73,7 +73,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     /* (non-Javadoc)
      * @see org.directwebremoting.ScriptSessionManager#getScriptSession(java.lang.String)
      */
-    public RealScriptSession getScriptSession(String id)
+    public RealScriptSession getScriptSession(String id, String page, String httpSessionId)
     {
         maybeCheckTimeouts();
 
@@ -87,34 +87,90 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                 return null;
             }
 
+            associateScriptSessionAndPage(scriptSession, page);
+            associateScriptSessionAndHttpSession(scriptSession, httpSessionId);
+
             scriptSession.updateLastAccessedTime();
         }
 
-        // See notes on synchronization in invalidate()
-        fireScriptSessionCreatedEvent(scriptSession);
         return scriptSession;
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.ScriptSessionManager#setPageForScriptSession(org.directwebremoting.extend.RealScriptSession, java.lang.String)
+     * @see org.directwebremoting.extend.ScriptSessionManager#createScriptSession(org.directwebremoting.extend.RealWebContext)
      */
-    public void setPageForScriptSession(RealScriptSession scriptSession, String page, String httpSessionId)
+    public RealScriptSession createScriptSession(String page, String httpSessionId)
     {
-        String normalizedPage = pageNormalizer.normalizePage(page);
+        String id = generator.generateId(16);
+
+        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page);
+
         synchronized (sessionLock)
         {
-            Set<RealScriptSession> pageSessions = pageSessionMap.get(normalizedPage);
-            if (pageSessions == null)
-            {
-                pageSessions = new HashSet<RealScriptSession>();
-                pageSessionMap.put(normalizedPage, pageSessions);
-            }
+            sessionMap.put(id, scriptSession);
 
-            pageSessions.add(scriptSession);
+            associateScriptSessionAndPage(scriptSession, page);
+            associateScriptSessionAndHttpSession(scriptSession, httpSessionId);
         }
 
+        // See notes on synchronization in invalidate()
+        fireScriptSessionCreatedEvent(scriptSession);
+
+        return scriptSession;
+    }
+
+    /**
+     * @param scriptSession
+     * @param httpSessionId
+     */
+    private void associateScriptSessionAndHttpSession(RealScriptSession scriptSession, String httpSessionId)
+    {
         scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, httpSessionId);
-        scriptSession.setAttribute(ATTRIBUTE_PAGE, page);
+    }
+
+    /**
+     * @param scriptSession
+     */
+    private void disassociateScriptSessionAndHttpSession(RealScriptSession scriptSession)
+    {
+        scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, null);
+    }
+
+    /**
+     * 
+     * @param scriptSession
+     * @param page
+     */
+    protected void associateScriptSessionAndPage(RealScriptSession scriptSession, String page)
+    {
+        if (page == null)
+        {
+            return;
+        }
+
+        String normalizedPage = pageNormalizer.normalizePage(page);
+
+        Set<RealScriptSession> pageSessions = pageSessionMap.get(normalizedPage);
+        if (pageSessions == null)
+        {
+            pageSessions = new HashSet<RealScriptSession>();
+            pageSessionMap.put(normalizedPage, pageSessions);
+        }
+
+        pageSessions.add(scriptSession);
+
+        scriptSession.setAttribute(ATTRIBUTE_PAGE, normalizedPage);
+    }
+
+    /**
+     * @param scriptSession
+     */
+    protected void disassociateScriptSessionAndPage(RealScriptSession scriptSession)
+    {
+        for (Set<RealScriptSession> pageSessions : pageSessionMap.values())
+        {
+            pageSessions.remove(scriptSession);
+        }
     }
 
     /* (non-Javadoc)
@@ -150,23 +206,6 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.ScriptSessionManager#createScriptSession(org.directwebremoting.extend.RealWebContext)
-     */
-    public String createScriptSession(String page)
-    {
-        String id = generator.generateId(16);
-
-        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page);
-
-        synchronized (sessionLock)
-        {
-            sessionMap.put(id, scriptSession);
-        }
-
-        return id;
-    }
-
     /**
      * Remove the given session from the list of sessions that we manage, and
      * leave it for the GC vultures to pluck.
@@ -184,10 +223,8 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
                 log.debug("ScriptSession already removed from manager. scriptSession=" + scriptSession.getId(), new Exception());
             }
 
-            for (Set<RealScriptSession> pageSessions : pageSessionMap.values())
-            {
-                pageSessions.remove(scriptSession);
-            }
+            disassociateScriptSessionAndPage(scriptSession);
+            disassociateScriptSessionAndHttpSession(scriptSession);
         }
 
         // Are there any risks from doing this outside the locks?

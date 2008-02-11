@@ -66,41 +66,47 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
     public void checkPageInformation(String sentPage, String sentScriptId)
     {
         ScriptSessionManager scriptSessionManager = getScriptSessionManager();
-        RealScriptSession scriptSession = scriptSessionManager.getScriptSession(sentScriptId);
+
+        // Get the httpSessionId if it exists, but don't create one if it doesn't
+        String httpSessionId = null;
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession != null)
+        {
+            httpSessionId = httpSession.getId();
+        }
+
+        // Check validity to the script session id. It could be invalid due to
+        // to a server re-start, a timeout, a back-button, just because the user
+        // is new to this page, or because someone is hacking
+        RealScriptSession scriptSession = scriptSessionManager.getScriptSession(sentScriptId, sentPage, httpSessionId);
         if (scriptSession == null)
         {
-            // Force creation of a new scriptSessionId
-            // The script session id is no longer valid. This could be down
-            // to a server re-start, a timeout, or a back-button.
-            // It seems wrong to throw a security exception, because it
-            // could be totally innocent. So we just call a browser method
-            // to accept a new script session id.
+            // Force creation of a new script session
+            scriptSession = scriptSessionManager.createScriptSession(sentPage, httpSessionId);
+            String newSessionId = scriptSession.getId();
 
-            // This information is going to get copied into the ScriptSession
-            // so we need to set it here. It makes a mockery of the test later
-            // on though...
-            String newSessionId = scriptSessionManager.createScriptSession(sentPage);
-            scriptSession = scriptSessionManager.getScriptSession(newSessionId);
-
+            // Inject a (new) script session id into the page
             ScriptBuffer handleNewSession = EnginePrivate.remoteHandleNewScriptSession(newSessionId);
             scriptSession.addScript(handleNewSession);
 
+            // Use the new script session id not the one passed in
             log.debug("ScriptSession re-sync: " + sentScriptId + " has become " + newSessionId);
             this.scriptSessionId = newSessionId;
+            this.page = sentPage;
         }
         else
         {
+            String storedPage = scriptSession.getPage();
+            if (!storedPage.equals(sentPage))
+            {
+                log.error("Invalid Page: Passed page=" + sentPage + ", but page in script session=" + storedPage);
+                throw new SecurityException("Invalid Page");
+            }
+
+            // The passed script session id passed the test, use it
             this.scriptSessionId = sentScriptId;
+            this.page = sentPage;
         }
-
-        String storedPage = scriptSession.getPage();
-        if (!storedPage.equals(sentPage))
-        {
-            log.error("Invalid Page: Passed page=" + sentPage + ", but page in script session=" + storedPage);
-            throw new SecurityException("Invalid Page");
-        }
-
-        this.page = sentPage;
     }
 
     /* (non-Javadoc)
@@ -118,7 +124,7 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
     {
         ScriptSessionManager manager = getScriptSessionManager();
 
-        RealScriptSession scriptSession = manager.getScriptSession(scriptSessionId);
+        RealScriptSession scriptSession = manager.getScriptSession(scriptSessionId, null, null);
         if (scriptSession == null)
         {
             throw new SecurityException("Expected script session to exist");

@@ -68,7 +68,11 @@ public class DefaultServerContext implements ServerContext
      */
     public ScriptSession getScriptSessionById(String sessionId)
     {
-        return getScriptSessionManager().getScriptSession(sessionId);
+        // ScriptSessionManager().getScriptSession() can take a page and
+        // httpSessionId so it can associate them, but we will have already done
+        // that if we can as a result of work done creating a WebContext. For
+        // use in a ServerContext we won't know, so we can pass in null
+        return getScriptSessionManager().getScriptSession(sessionId, null, null);
     }
 
     /* (non-Javadoc)

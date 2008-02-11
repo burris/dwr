@@ -46,28 +46,22 @@ public interface ScriptSessionManager
     Collection<ScriptSession> getScriptSessionsByPage(String url);
 
     /**
-     * For a given script session id, either create a new ScriptSession object
-     * or retrieve an existing one if one exists.
+      * For a given script session id, return the related ScriptSession object
+     * or null if the id is not known.
      * @param id The id to get a ScriptSession object for
-     * @return A ScriptSession.
+     * @param url The URL including 'http://', up to (but not including) '?' or '#' (or null if not known)
+     * @param httpSessionId The session ID (or null if not known)
+     * @return A ScriptSession to match the ID, or null if a match is not found.
      */
-    RealScriptSession getScriptSession(String id);
+    RealScriptSession getScriptSession(String id, String url, String httpSessionId);
 
     /**
-     * When a new client page-loads, we create a script session id and this
-     * method allows us to control their creation
+     * When a new client page-loads, we create a script session.
      * @param url The URL including 'http://', up to (but not including) '?' or '#'
+     * @param httpSessionId The session ID (or null if not known)
      * @return The new script session id
      */
-    String createScriptSession(String url);
-
-    /**
-     * Locate the given script session on a page
-     * @param scriptSession The session to locate on a page
-     * @param url The URL including 'http://', up to (but not including) '?' or '#'
-     * @param httpSessionId The HTTP session identifier from the browser
-     */
-    void setPageForScriptSession(RealScriptSession scriptSession, String url, String httpSessionId);
+    RealScriptSession createScriptSession(String url, String httpSessionId);
 
     /**
      * Accessor for the time (in milliseconds) when unused ScriptSessions will expire
