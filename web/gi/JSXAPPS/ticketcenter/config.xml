@@ -36,6 +36,6 @@
   </record>
   <record jsxid="bodyhotkeys" type="boolean">false</record>
   <record jsxid="default_locale" type="string"/>
-  <record jsxid="onload" type="string">dwr.engine.setActiveReverseAjax(true);</record>
+  <record jsxid="onload" type="string">dwr.engine.setActiveReverseAjax(true);CallCenter.load();</record>
   <record jsxid="onunload" type="string">CallCenter.cancelHandling();</record>
 </data>

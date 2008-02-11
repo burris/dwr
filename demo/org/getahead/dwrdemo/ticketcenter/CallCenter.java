@@ -95,7 +95,7 @@ public class CallCenter
                         break;
                     }
     
-                    update();
+                    updateAll();
                 }
             }
             catch (Exception ex)
@@ -103,6 +103,17 @@ public class CallCenter
                 log.warn("Random event failure", ex);
             }
         }
+    }
+
+    /**
+     * Called when the page first loads to ensure we have an up-to-date screen
+     */
+    public void load()
+    {
+        ScriptSession session = WebContextFactory.get().getScriptSession();
+        deselect(session);
+
+        update(Collections.singleton(session));
     }
 
     /**
@@ -138,7 +149,7 @@ public class CallCenter
             call.setSupervisorAlert(true);
 
             deselect(session);
-            update();
+            updateAll();
         }
     }
 
@@ -172,7 +183,7 @@ public class CallCenter
             log.debug("Properly we should book a ticket for " + fromWeb.getPhoneNumber());
 
             deselect(session);
-            update();
+            updateAll();
         }
     }
 
@@ -204,7 +215,7 @@ public class CallCenter
             call.setHandlerId(null);
 
             deselect(session);
-            update();
+            updateAll();
         }
     }
 
@@ -243,7 +254,7 @@ public class CallCenter
                 call.setHandlerId(session.getId());
 
                 select(session, call);
-                update();
+                updateAll();
             }
         }
     }
@@ -294,7 +305,7 @@ public class CallCenter
                     }
                 }
 
-                update();
+                updateAll();
             }
 
             // log.info("Random Event: Caller hangs up: " + removed.getPhoneNumber());
@@ -341,13 +352,21 @@ public class CallCenter
     /**
      *
      */
-    protected void update()
+    protected void updateAll()
     {
         ServerContext serverContext = ServerContextFactory.get();
         String contextPath = serverContext.getContextPath();
 
         Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter.html");
 
+        update(sessions);
+    }
+
+    /**
+     * @param sessions
+     */
+    protected void update(Collection<ScriptSession> sessions)
+    {
         Server ticketcenter = GI.getServer(sessions, "ticketcenter");
 
         // Some tweaks so GI redraws everything without needing further explanation
@@ -360,31 +379,23 @@ public class CallCenter
         {
             Record record = new Record("" + call.getId());
 
-            record.setAttribute("phoneNumber", call.getPhoneNumber());
-
-            String name = call.getName();
-            if (name == null || name.equals(""))
-            {
-                name = "?";
-            }
-            record.setAttribute("name", name);
-
             long timePlain = now.getTime() - call.getCallStarted().getTime();
             int time = 10000 * Math.round(timePlain / 10000);
             record.setAttribute("time", "" + time);
 
-            String handled = call.getHandlerId() != null ? "JSXAPPS/ticketcenter/images/configure.png" : "";
-            record.setAttribute("handled", handled);
-
-            String supervisorAlert = call.isSupervisorAlert() ? "JSXAPPS/ticketcenter/images/irkickflash.png" : "";
-            record.setAttribute("supervisorAlert", supervisorAlert);
+            record.setAttribute("phoneNumber", call.getPhoneNumber());
+            record.setAttribute("name", call.getName());
+            record.setAttribute("handled", "" + (call.getHandlerId() != null));
+            record.setAttribute("supervisorAlert", "" + call.isSupervisorAlert());
 
             cdfdoc.appendRecord(record);
         }
 
         // Convert the data into a CDF document and post to GI
         ticketcenter.getCache().setDocument("callers", cdfdoc);
-        ticketcenter.getJSXByName("listCallers", Matrix.class).repaint(null);
+        Matrix matrix = ticketcenter.getJSXByName("listCallers", Matrix.class);
+        matrix.setXSLParam("jsx_1", "" + new Date().getTime()).ignoreReturn();
+        matrix.repaint(null);
     }
 
     /**

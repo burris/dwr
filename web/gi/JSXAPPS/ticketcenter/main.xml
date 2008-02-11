@@ -17,28 +17,57 @@
         <events jsxselect="CallCenter.beginHandling(getSelectedId());"/>
         <xslparameters jsx_rowbg1="#ffffff" jsx_rowbg2="#efefff"/>
         <object type="jsx3.gui.Matrix.Column">
-          <variants jsxwidth="80"/>
-          <strings jsxname="columnTime" jsxtext="Waiting" jsxpadding="2" jsxcellpadding="2" jsxpath="time" jsxformathandler="@time,m:ss" jsxvaluetemplate="@empty" jsxsortdatatype="number" jsxsortpath="timePlain"/>
+          <variants jsxwidth="50"/>
+          <strings jsxname="columnTime" jsxtext="Wait" jsxpadding="2" jsxcellpadding="2" jsxpath="time" jsxformathandler="@time,m:ss" jsxvaluetemplate="@empty" jsxsortdatatype="number" jsxsortpath="timePlain"/>
           <dynamics jsxborder="@No jsxborder" jsxbg="@Bevel TopDown" jsxbgcolor="@Solid Disabled"/>
         </object>
+        <!--
         <object type="jsx3.gui.Matrix.Column">
-          <variants jsxwidth="148"/>
+          <variants jsxwidth="80"/>
+          <strings jsxname="columnTime2" jsxtext="Test" jsxpadding="2" jsxcellpadding="2" jsxpath="time2" jsxvaluetemplate="&lt;xsl:template xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+&lt;xsl:if test=&quot;@jsxcellstyle&quot;&gt;
+  &lt;xsl:attribute name=&quot;style&quot;&gt;&lt;xsl:value-of select=&quot;@jsxcellstyle&quot;/&gt;&lt;/xsl:attribute&gt;
+&lt;/xsl:if&gt;
+[&lt;xsl:value-of select=&quot;$jsx_1&quot;/&gt;]
+&lt;xsl:text&gt; &lt;/xsl:text&gt;
+&lt;/xsl:template&gt;"/>
+          <dynamics jsxborder="@No jsxborder" jsxbg="@Bevel TopDown" jsxbgcolor="@Solid Disabled"/>
+        </object>
+        -->
+        <object type="jsx3.gui.Matrix.Column">
+          <variants jsxwidth="170"/>
           <strings jsxname="columnCallers" jsxtext="Number" jsxpadding="2" jsxcellpadding="2" jsxpath="phoneNumber"/>
           <dynamics jsxborder="@No jsxborder" jsxbgcolor="@Solid Disabled" jsxbg="@Bevel TopDown"/>
         </object>
         <object type="jsx3.gui.Matrix.Column">
-          <variants jsxwidth="197"/>
+          <variants jsxwidth="150"/>
           <strings jsxname="columnName" jsxtext="Name" jsxpadding="2" jsxcellpadding="3" jsxpath="name"/>
           <dynamics jsxborder="@No jsxborder" jsxbg="@Bevel TopDown" jsxbgcolor="@Solid Disabled"/>
         </object>
         <object type="jsx3.gui.Matrix.Column">
-          <variants jsxwidth="24"/>
-          <strings jsxname="columnHandled" jsxtext="H" jsxvaluetemplate="@image" jsxpadding="3" jsxcellpadding="1" jsxpath="handled"/>
+          <variants/>
+          <strings jsxname="columnHandled" jsxwidth="20" jsxtext="H" jsxpadding="3" jsxcellpadding="1" jsxpath="handled" jsxvaluetemplate="&lt;xsl:template xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+&lt;xsl:if test=&quot;@jsxcellstyle&quot;&gt;
+  &lt;xsl:attribute name=&quot;style&quot;&gt;&lt;xsl:value-of select=&quot;@jsxcellstyle&quot;/&gt;&lt;/xsl:attribute&gt;
+&lt;/xsl:if&gt;
+&lt;xsl:if test=&quot;{0} = 'true'&quot;&gt;
+  &lt;img src=&quot;JSXAPPS/ticketcenter/images/configure.png&quot;/&gt;
+&lt;/xsl:if&gt;
+&lt;xsl:text&gt; &lt;/xsl:text&gt;
+&lt;/xsl:template&gt;"/>
           <dynamics jsxborder="@No jsxborder" jsxbg="@Bevel TopDown" jsxbgcolor="@Solid Disabled"/>
         </object>
         <object type="jsx3.gui.Matrix.Column">
           <variants/>
-          <strings jsxname="columnSupervisorAlert" jsxwidth="20" jsxtext="S" jsxvaluetemplate="@image" jsxpadding="3" jsxcellpadding="1" jsxpath="supervisorAlert"/>
+          <strings jsxname="columnSupervisorAlert" jsxwidth="20" jsxtext="S" jsxpadding="3" jsxcellpadding="1" jsxpath="supervisorAlert" jsxvaluetemplate="&lt;xsl:template xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+&lt;xsl:if test=&quot;@jsxcellstyle&quot;&gt;
+  &lt;xsl:attribute name=&quot;style&quot;&gt;&lt;xsl:value-of select=&quot;@jsxcellstyle&quot;/&gt;&lt;/xsl:attribute&gt;
+&lt;/xsl:if&gt;
+&lt;xsl:if test=&quot;{0} = 'true'&quot;&gt;
+  &lt;img src=&quot;JSXAPPS/ticketcenter/images/irkickflash.png&quot;/&gt;
+&lt;/xsl:if&gt;
+&lt;xsl:text&gt; &lt;/xsl:text&gt;
+&lt;/xsl:template&gt;"/>
           <dynamics jsxborder="@No jsxborder" jsxbg="@Bevel TopDown" jsxbgcolor="@Solid Disabled"/>
         </object>
       </object>

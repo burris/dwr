@@ -15,6 +15,7 @@
  */
 package jsx3.lang;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.proxy.io.Context;
 
@@ -33,5 +34,19 @@ public class Object extends Context
     public Object(Context parent, String extension, ScriptProxy scriptProxy)
     {
         super(parent, extension, scriptProxy);
+    }
+
+    /**
+     * If we need to execute a (drapgen generated) function that looks like a
+     * setter, but that returns some data we have a problem because DWR assumes
+     * that it is a getter and doesn't add the final ScriptBuffer, so this
+     * temporary function will do just that.
+     * This is a bit of a nasty hack that I hope we can get rid of
+     */
+    public void ignoreReturn()
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendScript(getContextPath().replaceFirst(".$", ";"));
+        getScriptProxy().addScript(script);
     }
 }
