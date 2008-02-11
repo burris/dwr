@@ -27,9 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.event.EventListenerList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptSession;
+import org.directwebremoting.ServerContext;
 import org.directwebremoting.event.ScriptSessionEvent;
 import org.directwebremoting.event.ScriptSessionListener;
 import org.directwebremoting.extend.PageNormalizer;
@@ -66,7 +65,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
         executor.schedule(runnable, 60, TimeUnit.SECONDS);
 
-        // maybe we need be able to cancel the executor?
+        // Maybe we need be able to cancel the executor?
         // ScheduledFuture<?> future = executor.schedule...
     }
 
@@ -90,7 +89,11 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             associateScriptSessionAndPage(scriptSession, page);
             associateScriptSessionAndHttpSession(scriptSession, httpSessionId);
 
-            scriptSession.updateLastAccessedTime();
+            // Maybe we should update the access time of the ScriptSession?
+            //  scriptSession.updateLastAccessedTime();
+            // Since this call could come from outside of a call from the
+            // browser, it's not really an indication that this session is still
+            // alive, so we don't.
         }
 
         return scriptSession;
@@ -120,26 +123,41 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /**
-     * @param scriptSession
-     * @param httpSessionId
+     * Link a script session and an http session in some way
+     * Exactly what we should do here is still something of a mystery. We don't
+     * really have much experience on the best way to handle this, so currently
+     * we're just setting a script session attribute that points at the
+     * http session id, and not exposing it.
+     * <p>This method is an ideal point to override and do something better.
+     * @param scriptSession The script session to be linked to an http session
+     * @param httpSessionId The http session from the browser with the given scriptSession
      */
-    private void associateScriptSessionAndHttpSession(RealScriptSession scriptSession, String httpSessionId)
+    protected void associateScriptSessionAndHttpSession(RealScriptSession scriptSession, String httpSessionId)
     {
         scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, httpSessionId);
     }
 
     /**
-     * @param scriptSession
+     * Unlink any http sessions from this script session
+     * @see #associateScriptSessionAndHttpSession(RealScriptSession, String)
+     * @param scriptSession The script session to be unlinked
      */
-    private void disassociateScriptSessionAndHttpSession(RealScriptSession scriptSession)
+    protected void disassociateScriptSessionAndHttpSession(RealScriptSession scriptSession)
     {
-        scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, null);
+        // Officially we should perhaps do something like this:
+        //  scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, null);
+        // We don't because the session is about to be invalidated, so there
+        // isn't much point, and secondly because scriptSession.setAttribute()
+        // causes a check on checkNotInvalidated() which in turn ...
+        // So we avoid the infinite loop by doing nothing
     }
 
     /**
-     * 
-     * @param scriptSession
-     * @param page
+     * Link a script session to a web page.
+     * <p>This allows people to call {@link ServerContext#getScriptSessionsByPage(String)}
+     * <p>This method is an ideal point to override and do something better.
+     * @param scriptSession The script session to be linked to a page
+     * @param page The page (un-normalized) to be linked to
      */
     protected void associateScriptSessionAndPage(RealScriptSession scriptSession, String page)
     {
@@ -163,7 +181,9 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     }
 
     /**
-     * @param scriptSession
+     * Unlink any pages from this script session
+     * @see #associateScriptSessionAndPage(RealScriptSession, String)
+     * @param scriptSession The script session to be unlinked
      */
     protected void disassociateScriptSessionAndPage(RealScriptSession scriptSession)
     {
@@ -217,11 +237,13 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         // It feels like a deadlock risk to do so
         synchronized (sessionLock)
         {
-            RealScriptSession removed = sessionMap.remove(scriptSession.getId());
-            if (!scriptSession.equals(removed))
-            {
-                log.debug("ScriptSession already removed from manager. scriptSession=" + scriptSession.getId(), new Exception());
-            }
+            // Due to the way systems get a number of script sessions for a page
+            // and the perform a number of actions on them, we may get a number
+            // of invalidation checks, and therefore calls to invalidate().
+            // We could protect ourselves from this by having a
+            // 'hasBeenInvalidated' flag, but we're taking the simple option
+            // here of just allowing multiple invalidations.
+            sessionMap.remove(scriptSession.getId());
 
             disassociateScriptSessionAndPage(scriptSession);
             disassociateScriptSessionAndHttpSession(scriptSession);
@@ -429,9 +451,4 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      * <p>GuardedBy("sessionLock")
      */
     private Map<String, Set<RealScriptSession>> pageSessionMap = new HashMap<String, Set<RealScriptSession>>();
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(DefaultScriptSessionManager.class);
 }

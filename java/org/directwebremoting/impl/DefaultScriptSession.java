@@ -283,15 +283,6 @@ public class DefaultScriptSession implements RealScriptSession
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.extend.RealScriptSession#getScriptLock()
-     */
-    @Deprecated
-    public Object getScriptLock()
-    {
-        return scriptLock;
-    }
-
-    /* (non-Javadoc)
      * @see org.directwebremoting.extend.RealScriptSession#hasWaitingScripts()
      */
     public boolean hasWaitingScripts()
@@ -310,10 +301,10 @@ public class DefaultScriptSession implements RealScriptSession
         return page;
     }
 
-    /**
-     * Called whenever a browser accesses this data using DWR
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#updateLastAccessedTime()
      */
-    protected void updateLastAccessedTime()
+    public void updateLastAccessedTime()
     {
         // It's a bad idea to call native methods with locks held
         long temp = System.currentTimeMillis();

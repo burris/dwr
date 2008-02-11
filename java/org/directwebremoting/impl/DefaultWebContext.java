@@ -96,6 +96,10 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
         }
         else
         {
+            // This could be called from a poll or an rpc call, so this is a
+            // good place to update the session access time
+            scriptSession.updateLastAccessedTime();
+
             String storedPage = scriptSession.getPage();
             if (!storedPage.equals(sentPage))
             {

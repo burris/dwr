@@ -62,12 +62,8 @@ public interface RealScriptSession extends ScriptSession
     boolean hasWaitingScripts();
 
     /**
-     * Accessor for an object that we use to announce to people that might be
-     * waiting on output from this ScriptSession that there is some output
-     * ready for action.
-     * @return The mutex object used by the script session
-     * @deprecated
+     * Called whenever a browser accesses this ScriptSession to ensure that the
+     * session does not timeout before it should.
      */
-    @Deprecated
-    Object getScriptLock();
+    void updateLastAccessedTime();
 }
