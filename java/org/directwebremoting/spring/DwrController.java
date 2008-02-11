@@ -39,6 +39,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
@@ -160,10 +161,19 @@ public class DwrController extends AbstractController implements BeanNameAware, 
         ApplicationContext parent = getApplicationContext().getParent(); 
         if (parent != null)
         {
-            Object parentConfigurator = parent.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID);
-            if ((parentConfigurator != null) && (!configurators.contains(parentConfigurator)))
+            try
             {
-                configurators.add((Configurator) parentConfigurator);
+                Object parentConfigurator = parent.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID);
+                if ((parentConfigurator != null) && (!configurators.contains(parentConfigurator)))
+                {
+                    configurators.add((Configurator) parentConfigurator);
+                }
+            } catch (RuntimeException rex)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("Could not detect dwr configuration in parent context");
+                }
             }
         }
         ServletContext servletContext = getServletContext();
