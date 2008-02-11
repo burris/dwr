@@ -202,7 +202,7 @@ dwr.auth._replayBatch = function() {
     var batch = dwr.auth._batch;
     dwr.auth._batch = null;
     dwr.engine._batches[dwr.engine._batches.length] = batch;
-    dwr.engine._sendData(batch);
+    dwr.engine.transport.send(batch);
   };
   // give dwr some time to finish the old batch processing
   setTimeout( caller, 200);

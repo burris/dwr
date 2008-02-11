@@ -1701,7 +1701,7 @@ if (typeof this['dwr'] == 'undefined') {
       dwr.engine.transport.remove(batch);
 
       // TODO: co-locate all the functions that work on a set of batches
-      if (batch.map && batch.map.batchId) {
+      if (batch.map && (batch.map.batchId || batch.map.batchId == 0)) {
         delete dwr.engine._batches[batch.map.batchId];
         dwr.engine._batchesLength--;
       }
@@ -1711,7 +1711,7 @@ if (typeof this['dwr'] == 'undefined') {
       // gets turned off, we still process *waiting* batches in an ordered way.
       if (dwr.engine._batchQueue.length != 0) {
         var sendbatch = dwr.engine._batchQueue.shift();
-        dwr.engine._sendData(sendbatch);
+        dwr.engine.transport.send(sendbatch);
       }
     }
   };

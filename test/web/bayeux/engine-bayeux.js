@@ -11,8 +11,7 @@ dojo.connect(cometd, "finishInit",
 dojox.io.cometd.init("/dwr-test/bayeux");
 
 /** @private Actually send the block of data in the batch object. */
-dwr.engine._sendData = function(batch) {
-
+dwr.engine.transport.send = function(batch) {
 
   batch.map.batchId = dwr.engine._nextBatchId;
   dwr.engine._nextBatchId++;

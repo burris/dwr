@@ -1,9 +1,9 @@
 
-dwr.bayeux = { _origSendData: dwr.engine._sendData };
+dwr.bayeux = { _origSendData: dwr.engine.transport.send };
 
 dojo.require("dojox.cometd");
 
-dwr.engine._sendData = function(batch) {
+dwr.engine.transport.send = function(batch) {
   batch.map.batchId = dwr.engine._nextBatchId;
   dwr.engine._nextBatchId++;
   dwr.engine._batches[batch.map.batchId] = batch;
