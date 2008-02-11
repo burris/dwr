@@ -27,14 +27,15 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.event.SessionProgressListener;
 import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
@@ -226,12 +227,13 @@ public class ParseUtil
             DiskFileItemFactory itemFactory = new DiskFileItemFactory(DEFAULT_SIZE_THRESHOLD, location);
 
             ServletFileUpload fileUploader = new ServletFileUpload(itemFactory);
-            fileUploader.setProgressListener(new ProgressListener()
+            HttpSession session = req.getSession(false);
+            if (session != null)
             {
-                public void update(long bytesRead, long contentLength, int items)
-                {
-                }
-            });
+                fileUploader.setProgressListener(new SessionProgressListener(session));
+                session.setAttribute(SessionProgressListener.CANCEL_UPLOAD, null);
+                session.setAttribute(PROGRESS_LISTENER, fileUploader.getProgressListener());
+            }
 
             List<FileItem> fileItems = fileUploader.parseRequest(req);
             for (FileItem fileItem : fileItems)
@@ -358,4 +360,11 @@ public class ParseUtil
      * The threshold, in bytes, below which items will be retained in memory and above which they will be stored as a file
      */
     private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
+
+    /**
+     * The name of the attribute that stores the progress of an upload in a session.
+     */
+    public static final String PROGRESS_LISTENER = "PROGRESS_LISTENER"; 
+
+
 }
