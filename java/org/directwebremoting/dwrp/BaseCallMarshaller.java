@@ -359,7 +359,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         // Get the output stream and setup the mime type
         response.setContentType(getOutboundMimeType());
         PrintWriter out;
-        if (log.isDebugEnabled())
+        if (debugScriptOutput && log.isDebugEnabled())
         {
             // This might be considered evil - altering the program flow
             // depending on the log status, however DebuggingPrintWriter is
@@ -582,6 +582,15 @@ public abstract class BaseCallMarshaller implements Marshaller
     }
 
     /**
+     * Do we debug all the scripts that we output?
+     * @param debugScriptOutput true to debug all of the output scripts (verbose)
+     */
+    public void setDebugScriptOutput(boolean debugScriptOutput)
+    {
+        this.debugScriptOutput = debugScriptOutput;
+    }
+
+    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
      * of BaseCallMarshaller, however there is nowhere sensible to store them
@@ -620,6 +629,11 @@ public abstract class BaseCallMarshaller implements Marshaller
          */
         private final PrintWriter out;
     }
+
+    /**
+     * Do we debug all the scripts that we output?
+     */
+    protected boolean debugScriptOutput = false;
 
     /**
      * Are we outputting in JSON mode?

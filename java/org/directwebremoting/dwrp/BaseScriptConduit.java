@@ -57,7 +57,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
         response.setContentType(getOutboundMimeType());
         out = response.getWriter();
 
-        if (log.isDebugEnabled())
+        if (debugScriptOutput && log.isDebugEnabled())
         {
             // This might be considered evil - altering the program flow
             // depending on the log status, however DebuggingPrintWriter is
@@ -148,12 +148,26 @@ public abstract class BaseScriptConduit extends ScriptConduit
     }
 
     /**
+     * Do we debug all the scripts that we output?
+     * @param debugScriptOutput true to debug all of the output scripts (verbose)
+     */
+    public void setDebugScriptOutput(boolean debugScriptOutput)
+    {
+        this.debugScriptOutput = debugScriptOutput;
+    }
+
+    /**
      * @return The Alarm that goes off if something is badly broken
      */
     public Alarm getErrorAlarm()
     {
         return alarm;
     }
+
+    /**
+     * Do we debug all the scripts that we output?
+     */
+    protected boolean debugScriptOutput = false;
 
     /**
      * Are we outputting in JSON mode?

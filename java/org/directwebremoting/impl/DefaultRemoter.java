@@ -370,14 +370,18 @@ public class DefaultRemoter implements Remoter
             }
 
             // Some debug
-            log.info("Exec: " + call.getScriptName() + "." + call.getMethodName() + "()");
             if (log.isDebugEnabled())
             {
                 StringBuffer buffer = new StringBuffer();
+                buffer.append("Exec: ")
+                      .append(call.getScriptName())
+                      .append(".")
+                      .append(call.getMethodName())
+                      .append("()");
 
                 if (create)
                 {
-                    buffer.append("--Object created, ");
+                    buffer.append(" Object created, ");
                     if (!scope.equals(Creator.PAGE))
                     {
                         buffer.append(" stored in ");
@@ -390,7 +394,7 @@ public class DefaultRemoter implements Remoter
                 }
                 else
                 {
-                    buffer.append("--Object found in ");
+                    buffer.append(" Object found in ");
                     buffer.append(scope);
                 }
                 buffer.append(". ");
