@@ -34,7 +34,7 @@ import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.StartupUtil;
 import org.directwebremoting.servlet.UrlProcessor;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
@@ -76,6 +76,16 @@ public class DwrSpringServlet extends HttpServlet
         this.includeDefaultConfig = includeDefaultConfig;
     }
 
+    /**
+     * Use provided application context rather than the default.
+     *
+     * @param applicationContext
+     */
+    public void setApplicationContext(ApplicationContext applicationContext)
+    {
+        this.applicationContext = applicationContext;
+    }
+
     /* (non-Javadoc)
      * @see javax.servlet.GenericServlet#init(javax.servlet.ServletConfig)
      */
@@ -87,10 +97,10 @@ public class DwrSpringServlet extends HttpServlet
 
         try
         {
-            WebApplicationContext webappContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+            ApplicationContext appContext = getApplicationContext(servletContext);
 
             container = new SpringContainer();
-            container.setBeanFactory(webappContext);
+            container.setBeanFactory(appContext);
             ContainerUtil.setupDefaultContainer(container, servletConfig);
 
             StartupUtil.initContainerBeans(servletConfig, servletContext, container);
@@ -100,7 +110,7 @@ public class DwrSpringServlet extends HttpServlet
             // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
             try
             {
-                configurators.add((Configurator) webappContext.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
+                configurators.add((Configurator) appContext.getBean(DwrNamespaceHandler.DEFAULT_SPRING_CONFIGURATOR_ID));
             }
             catch (NoSuchBeanDefinitionException ex)
             {
@@ -126,6 +136,18 @@ public class DwrSpringServlet extends HttpServlet
         {
             webContextBuilder.unset();
         }
+    }
+
+    /**
+     * Allow easy override when retrieving the application context. 
+     *
+     * @param servletContext
+     * @return the default application context.
+     */
+    protected ApplicationContext getApplicationContext(ServletContext servletContext) { 
+        return this.applicationContext == null 
+                ? WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext)
+                : this.applicationContext;
     }
 
     /* (non-Javadoc)
@@ -155,6 +177,12 @@ public class DwrSpringServlet extends HttpServlet
             webContextBuilder.unset();
         }
     }
+
+    /**
+     * The application context that has the configuration. If null,
+     * the default application context will be used.
+     */
+    private ApplicationContext applicationContext = null;
 
     /**
      * DWRs IoC container (that passes stuff to Spring in this case)
