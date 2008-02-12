@@ -120,11 +120,13 @@ public class CallCenter
      */
     public void alertSupervisor(Call fromWeb)
     {
+        // This is the ScriptSession of the agent that wishes to alert a supervisor
         ScriptSession session = WebContextFactory.get().getScriptSession();
         Window window = new Window(session);
-        int handlingId = getHandlingId(session);
 
-        if (handlingId == -1)
+        // We store the ID of the call we are working on in the ScriptSession
+        Object handlingId = session.getAttribute("handlingId");
+        if (handlingId == null)
         {
             window.alert("No call found");
             return;
@@ -132,6 +134,7 @@ public class CallCenter
 
         synchronized (calls)
         {
+            // Check to see that the caller has not hung up since the last update
             Call call = findCaller(handlingId);
             if (call == null)
             {
@@ -139,15 +142,20 @@ public class CallCenter
                 return;
             }
 
+            // The user isn't handling this call any more
             session.removeAttribute("handlingId");
 
+            // Update the server details from those passed in
             call.setName(fromWeb.getName());
             call.setAddress(fromWeb.getAddress());
             call.setNotes(fromWeb.getNotes());
             call.setHandlerId(null);
             call.setSupervisorAlert(true);
 
+            // Update the screen of the current user
             deselect(session);
+
+            // Update everyone else's screen
             updateAll();
         }
     }
@@ -159,9 +167,9 @@ public class CallCenter
     {
         ScriptSession session = WebContextFactory.get().getScriptSession();
         Window window = new Window(session);
-        int handlingId = getHandlingId(session);
 
-        if (handlingId == -1)
+        Object handlingId = session.getAttribute("handlingId");
+        if (handlingId == null)
         {
             window.alert("No call found");
             return;
@@ -193,9 +201,9 @@ public class CallCenter
     {
         ScriptSession session = WebContextFactory.get().getScriptSession();
         Window window = new Window(session);
-        int handlingId = getHandlingId(session);
 
-        if (handlingId == -1)
+        Object handlingId = session.getAttribute("handlingId");
+        if (handlingId == null)
         {
             window.alert("That caller hung up, please select another");
             return;
@@ -221,13 +229,13 @@ public class CallCenter
     /**
      * 
      */
-    public void beginHandling(int id)
+    public void beginHandling(String id)
     {
         ScriptSession session = WebContextFactory.get().getScriptSession();
         Window window = new Window(session);
-        int handlingId = getHandlingId(session);
 
-        if (handlingId != -1)
+        Object handlingId = session.getAttribute("handlingId");
+        if (handlingId != null)
         {
             window.alert("Please finish handling the current call before selecting another");
             return;
@@ -261,18 +269,29 @@ public class CallCenter
     /**
      * 
      */
-    private Call findCaller(int id)
+    private Call findCaller(Object attribute)
     {
-        // We could optimize this, but since there are less than 20 people
-        // in the queue ...
-        for (Call call : calls)
+        try
         {
-            if (call.getId() == id)
+            int id = Integer.parseInt(attribute.toString());
+
+            // We could optimize this, but since there are less than 20 people
+            // in the queue ...
+            for (Call call : calls)
             {
-                return call;
+                if (call.getId() == id)
+                {
+                    return call;
+                }
             }
+
+            return null;
         }
-        return null;
+        catch (NumberFormatException ex)
+        {
+            log.warn("Illegal number format: " + attribute.toString(), ex);
+            return null;
+        }
     }
 
     /**
@@ -427,28 +446,6 @@ public class CallCenter
 
         LayoutGrid layoutForm = ticketcenter.getJSXByName("layoutForm", LayoutGrid.class);
         layoutForm.setBackgroundColor(enabled ? "#FFF" : "#EEE", true);
-    }
-
-    /**
-     * Who is the given user looking after?
-     */
-    private int getHandlingId(ScriptSession session)
-    {
-        Object attribute = session.getAttribute("handlingId");
-        if (attribute == null)
-        {
-            return -1;
-        }
-
-        try
-        {
-            return Integer.parseInt(attribute.toString());
-        }
-        catch (NumberFormatException ex)
-        {
-            log.warn("Illegal number format: " + attribute.toString(), ex);
-            return -1;
-        }
     }
 
     /**

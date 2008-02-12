@@ -44,25 +44,28 @@ Reverse Ajax. Data from DWR is published into GI with DWR's GI integration.</p>
   <h2>Creating the table</h2>
   <p>As is usual for General Interface the UI is loaded through a simple div
   that points to the UI XMl file:</p>
+
 <pre>
-  &lt;div style="width:800px; height:350px;" id="gidemo" class="customize"&gt;
-    &lt;script
-        type="text/javascript"
-        src="JSX/js/JSX30.js"
-        jsxapppath="JSXAPPS/ticketcenter"
-        jsxlt="true"> &lt;/script&gt;
-  &lt;/div&gt;
+&lt;div style="width:800px; height:350px;" id="gidemo" class="customize"&gt;
+  &lt;script
+      type="text/javascript"
+      src="JSX/js/JSX30.js"
+      jsxapppath="JSXAPPS/ticketcenter"
+      jsxlt="true"> &lt;/script&gt;
+&lt;/div&gt;
 </pre>
+
   <p>This starts the UI widgets loading, meanwhile on the server there is a
   loop running that simulates the running of a call-center, with calls being
   setup and closed down. The CallCenter class simulates this using a simple
   Call JavaBean to record the state of each call:</p>
+
 <pre>
 public class Call {
   private Date callStarted = new Date();
   private String notes = "";
   private boolean supervisorAlert = false;
-  private boolean isHandled = false;
+  private String handlerId;
   private String name;
   private String address;
   private String phoneNumber;
@@ -70,63 +73,119 @@ public class Call {
   // Insert getters, setters, equals, etc.
 }
 </pre>
-  <p>The majority of the calls to the server are very simple - there are 4
+
+  <p>The majority of the calls to the server are very simple - there are 5
   basic business methods:</p>
-<pre>
-public String beginHandling(int callId)
-public String cancelHandling(int callId)
-public String completeHandling(int callId, Call call)
-public String alertSupervisor(int callId, Call call)
-</pre>
-  <p>Each of these methods does some simple checking and alters a list of
+
+  <ul>
+    <li><code>load()</code> called when the browser page first loads</li>
+    <li><code>beginHandling(int callId)</code> called when a call is selected from the call list</li>
+    <li><code>cancelHandling()</code> called when the cancel button is clicked to stop handling a call</li>
+    <li><code>completeHandling(Call call)</code> for when the agent has finished booking a ticket</li>
+    <li><code>alertSupervisor(Call call)</code> used to alert agents that supervisor attention is needed</li>
+  </ul>
+
+  <p>Each of these methods does some simple checking and may alter the list of
   current outstanding calls. Whenever a change happens, the we update the
   browsers with the list of outstanding calls:</p>
+
+  <p>The <code>alertSupervisor()</code> function is fairly typical. It looks
+  like this:</p>
+
 <pre>
-Collection&lt;ScriptSession&gt; sessions = serverContext.getScriptSessionsByPage("/gi/ticketcenter.html");
-ScriptProxy proxy = new ScriptProxy(sessions);
-proxy.addFunctionCall("updateCallers", calls, new Date());
-</pre>
-  <p>Or in other words, tell everyone connected to "/gi/ticketcenter.html" to
-  call the <code>updateCallers</code> function passing it an array of callers
-  and the server's current time (so the clients can work out how long each call
-  has been waiting.</p>
-  <p>Finally the updateCallers routine in the browsers looks like this. We loop
-  over all the calls adding some hints to the GI matrix component and checking
-  that if we are handling a call that has hung-up we tell the user about it.</p>
-<pre>
-function updateCallers(callers, now) {
-  // Some tweaks so GI redraws everything without needing further explanation
-  // We copy the id to jsxid, and ensure that the fields for the checkboxes are
-  // 0 or 1 rather than true or false. We also check that any handled caller
-  // is still around and has not hung up
-  var caller;
-  var handlingIdFound = false;
-  for (var i = 0; i &lt; callers.length; i++) {
-    caller = callers[i];
-    caller.timePlain = now - caller.callStarted;
-    caller.time = 10000 * Math.round(caller.timePlain / 10000);
-    caller.jsxid = caller.id;
-    caller.handled = caller.handled ? "JSXAPPS/ticketcenter/images/configure.png" : "";
-    caller.supervisorAlert = caller.supervisorAlert ? "JSXAPPS/ticketcenter/images/irkickflash.png" : "";
-    callerCache[caller.id] = caller;
-    if (!caller.name) caller.name = "?";
-    if (caller.id == handlingId) {
-      caller.handled = "JSXAPPS/ticketcenter/images/next.png";
-      handlingIdFound = true;
+public void alertSupervisor(Call fromWeb)
+{
+    <span class="comment">// This is the ScriptSession of the agent that wishes to alert a supervisor</span>
+    <strong>ScriptSession</strong> session = WebContextFactory.get().getScriptSession();
+    Window window = new Window(session);
+
+    <span class="comment">// We store the ID of the call we are working on in the ScriptSession</span>
+    Object handlingId = session.getAttribute("handlingId");
+    if (handlingId == null)
+    {
+        <strong>window.alert("No call found");</strong>
+        return;
     }
-  }
 
-  // Convert the data into a CDF document and post to GI
-  var cdf = dwr.gi.toCdfDocument(callers, "jsxroot");
-  ticketcenter.getCache().setDocument("callers", cdf);
-  ticketcenter.getJSXByName('listCallers').repaint();
+    synchronized (calls)
+    {
+        <span class="comment">// Check to see that the caller has not hung up since the last update</span>
+        Call call = findCaller(handlingId);
+        if (call == null)
+        {
+            window.alert("That caller hung up, please select another");
+            return;
+        }
 
-  // Work out what to do if the caller we're working on has hung up
-  if (!handlingIdFound && handlingId != null) {
-    alert("It appears that this caller has hung up. Please select another.");
-    deselect();
-  }
+        <span class="comment">// The user isn't handling this call any more</span>
+        session.removeAttribute("handlingId");
+
+        <span class="comment">// Update the server details from those passed in</span>
+        call.setName(fromWeb.getName());
+        call.setAddress(fromWeb.getAddress());
+        call.setNotes(fromWeb.getNotes());
+        call.setHandlerId(null);
+        call.setSupervisorAlert(true);
+
+        <span class="comment">// Update the screen of the current user</span>
+        <strong>deselect(session);</strong>
+
+        <span class="comment">// Update everyone else's screen</span>
+        <strong>updateAll();</strong>
+    }
 }
+</pre>
+
+  <p>A <strong>ScriptSession</strong> is like an HttpSession, but linked to a
+  web page and not a web browser. It's also a route to getting messages to that
+  page.</p>
+  
+  <p>The <strong>Window</strong> class is one of a number of APIs that mirror
+  functionallity on in a browser. When we call
+  <code>window.alert("Hello, World");</code> DWR generates the JavaScript code
+  to make this happen on the client, and sends it there. We will see further
+  examples of this type of thing with the GI API in a bit.</p>
+
+  <p>The <strong>deselect()</strong> method updates the form on the right hand
+  side to remove the details of the call that we have just been handling. The
+  important lines just clear the form fields:</p>
+
+<pre>
+Server ticketcenter = GI.getServer(session, "ticketcenter");
+
+ticketcenter.getJSXByName("textPhone", TextBox.class).setValue("");
+ticketcenter.getJSXByName("textName", TextBox.class).setValue("");
+ticketcenter.getJSXByName("textNotes", TextBox.class).setValue("");
+ticketcenter.getJSXByName("selectEvent", Select.class).setValue(null);
+</pre>
+
+  <p>The <code>GI</code> class is a key start point for manipulating a GI
+  interface. It gives you access to the Server object defined by the namespace
+  of your application. From here you can access any of your GI widgets to
+  customize them.</p>
+
+  <p>The <strong>updateAll()</strong> method is responsible for altering
+  everyone else's list of calls (which has now changed). All we need to do is
+  to create a CDF document, place it into the cache and tell the table widget
+  to update itself.</p>
+
+<pre>
+<span class="comment">// Get the script sessions for everyone on the same page</span>
+ServerContext serverContext = ServerContextFactory.get();
+String page = serverContext.getContextPath() + "/gi/ticketcenter.html";
+Collection&lt;ScriptSession&gt; sessions = serverContext.getScriptSessionsByPage(page);
+
+<span class="comment">// Populate a CDF document with data about our calls</span>
+CdfDocument cdfdoc = new CdfDocument("jsxroot");
+for (Call call : calls)
+{
+    cdfdoc.appendRecord(new Record(call));
+}
+
+<span class="comment">// Put the CDF doc into the client side cache, and repaint the table</span>
+Server tc = GI.getServer(sessions, "ticketcenter");
+tc.getCache().setDocument("callers", cdfdoc);
+tc.getJSXByName("listCallers", Matrix.class).repaint(null);
 </pre>
 </div>
 
