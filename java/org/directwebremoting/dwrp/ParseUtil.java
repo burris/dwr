@@ -16,26 +16,18 @@
 package org.directwebremoting.dwrp;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.event.SessionProgressListener;
 import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.util.LocalUtil;
@@ -105,9 +97,9 @@ public class ParseUtil
     {
         Map<String, FormField> paramMap;
 
-        if (ServletFileUpload.isMultipartContent(req))
+        if (isMultipartContent(req))
         {
-            paramMap = parseMultipartPost(req);
+            paramMap = UPLOADER.parseRequest(req);
         }
         else
         {
@@ -121,6 +113,33 @@ public class ParseUtil
         }
         
         return paramMap;
+    }
+
+    /**
+     * Utility method that determines whether the request contains multipart
+     * content.
+     * @param request The servlet request to be evaluated. Must be non-null.
+     * @return true if the request is multipart, false otherwise.
+     */
+    public static final boolean isMultipartContent(HttpServletRequest request)
+    {
+        if (!"post".equals(request.getMethod().toLowerCase()))
+        {
+            return false;
+        }
+
+        String contentType = request.getContentType();
+        if (contentType == null)
+        {
+            return false;
+        }
+
+        if (contentType.toLowerCase().startsWith("multipart/"))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -209,52 +228,6 @@ public class ParseUtil
             }
         }
         return paramMap;
-    }
-
-    /**
-     * Parse a multipart request using commons file-upload.
-     * @param req
-     * @return A map of FileItems. Strings and files can be determined by isFormField()
-     * @throws ServerException
-     */
-    @SuppressWarnings("unchecked")
-    private Map<String, FormField> parseMultipartPost(HttpServletRequest req) throws ServerException
-    {
-        try
-        {
-            Map<String, FormField> map = new HashMap<String, FormField>();
-            File location = new File(System.getProperty("java.io.tmpdir"));
-            DiskFileItemFactory itemFactory = new DiskFileItemFactory(DEFAULT_SIZE_THRESHOLD, location);
-
-            ServletFileUpload fileUploader = new ServletFileUpload(itemFactory);
-            HttpSession session = req.getSession(false);
-            if (session != null)
-            {
-                fileUploader.setProgressListener(new SessionProgressListener(session));
-                session.setAttribute(SessionProgressListener.CANCEL_UPLOAD, null);
-                session.setAttribute(PROGRESS_LISTENER, fileUploader.getProgressListener());
-            }
-
-            List<FileItem> fileItems = fileUploader.parseRequest(req);
-            for (FileItem fileItem : fileItems)
-            {
-                FormField formField;
-                if (fileItem.isFormField())
-                {
-                    formField = new FormField(fileItem.getString());
-                }
-                else
-                {
-                    formField = new FormField(fileItem.getName(), fileItem.getContentType(), fileItem.get());
-                }
-                map.put(fileItem.getFieldName(), formField);
-            }
-            return map;
-        }
-        catch (FileUploadException e)
-        {
-            throw new ServerException(Messages.getString("ParseUtil.InputReadFailed"), e);
-        }
     }
 
     /**
@@ -352,19 +325,37 @@ public class ParseUtil
     }
 
     /**
+     * What implementation of FileUpload are we using?
+     */
+    private static final FileUpload UPLOADER;
+
+    /**
      * The log stream
      */
     private static final Log log = LogFactory.getLog(ParseUtil.class);
-    
-    /**
-     * The threshold, in bytes, below which items will be retained in memory and above which they will be stored as a file
-     */
-    private static final int DEFAULT_SIZE_THRESHOLD = 256 * 1024;
 
     /**
-     * The name of the attribute that stores the progress of an upload in a session.
+     * Work out which is the correct implementation of FileUpload
      */
-    public static final String PROGRESS_LISTENER = "PROGRESS_LISTENER"; 
+    static
+    {
+        FileUpload test;
+        try
+        {
+            test = new CommonsFileUpload();
+            log.debug("Using commons-file-upload.");
+        }
+        catch (NoClassDefFoundError ex)
+        {
+            test = new UnsupportedFileUpload();
+            log.debug("Failed to find commons-file-upload. File upload is not supported.");
+        }
+        catch (Exception ex)
+        {
+            test = new UnsupportedFileUpload();
+            log.debug("Failed to start commons-file-upload. File upload is not supported.");
+        }
 
-
+        UPLOADER = test;
+    }
 }
