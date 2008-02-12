@@ -18,7 +18,6 @@ package org.getahead.dwrdemo.ticketcenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -367,35 +366,17 @@ public class CallCenter
      */
     protected void update(Collection<ScriptSession> sessions)
     {
-        Server ticketcenter = GI.getServer(sessions, "ticketcenter");
-
-        // Some tweaks so GI redraws everything without needing further explanation
-        // We copy the id to jsxid, and ensure that the fields for the check-boxes are
-        // 0 or 1 rather than true or false. We also check that any handled caller
-        // is still around and has not hung up
+        // Populate a CDF document with data about our calls
         CdfDocument cdfdoc = new CdfDocument("jsxroot");
-        Date now = new Date();
         for (Call call : calls)
         {
-            Record record = new Record("" + call.getId());
-
-            long timePlain = now.getTime() - call.getCallStarted().getTime();
-            int time = 10000 * Math.round(timePlain / 10000);
-            record.setAttribute("time", "" + time);
-
-            record.setAttribute("phoneNumber", call.getPhoneNumber());
-            record.setAttribute("name", call.getName());
-            record.setAttribute("handled", "" + (call.getHandlerId() != null));
-            record.setAttribute("supervisorAlert", "" + call.isSupervisorAlert());
-
-            cdfdoc.appendRecord(record);
+            cdfdoc.appendRecord(new Record(call));
         }
 
-        // Convert the data into a CDF document and post to GI
-        ticketcenter.getCache().setDocument("callers", cdfdoc);
-        Matrix matrix = ticketcenter.getJSXByName("listCallers", Matrix.class);
-        matrix.setXSLParam("jsx_1", "" + new Date().getTime()).ignoreReturn();
-        matrix.repaint(null);
+        // Put the CDF doc into the client side cache, and repaint the table
+        Server tc = GI.getServer(sessions, "ticketcenter");
+        tc.getCache().setDocument("callers", cdfdoc);
+        tc.getJSXByName("listCallers", Matrix.class).repaint(null);
     }
 
     /**

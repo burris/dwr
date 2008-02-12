@@ -19,6 +19,13 @@ public abstract class Node implements Iterable<Record>
     }
 
     /**
+     * You should not be directly creating Nodes
+     */
+    protected Node()
+    {
+    }
+
+    /**
      * A <code>NodeList</code> that contains all children of this node. If 
      * there are no children, this is a <code>NodeList</code> containing no 
      * nodes.
@@ -214,20 +221,20 @@ public abstract class Node implements Iterable<Record>
 	/**
      * The JSXID of this node
      */
-    private String id;
+    protected String id;
 
     /**
      * Our parent record
      */
-    private Node parentNode;
+    protected Node parentNode;
 
     /**
      * The CdfDocument that we are a part of
      */
-    private CdfDocument document;
+    protected CdfDocument document;
 
     /**
      * The records that we contain
      */
-    private LinkedList<Record> children = new LinkedList<Record>();
+    protected LinkedList<Record> children = new LinkedList<Record>();
 }

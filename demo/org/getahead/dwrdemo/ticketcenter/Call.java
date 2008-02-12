@@ -58,6 +58,16 @@ public class Call
     }
 
     /**
+     * @return A descriptive strong of roughly how long is it since the call started.
+     */
+    public String getWaitTime()
+    {
+        long timePlain = new Date().getTime() - callStarted.getTime();
+        int time = 10000 * Math.round(timePlain / 10000);
+        return "" + time;
+    }
+
+    /**
      * @return the notes
      */
     public String getNotes()
@@ -156,7 +166,7 @@ public class Call
     /**
      * @return the handlerId
      */
-    public String getHandlerId()
+    protected String getHandlerId()
     {
         return handlerId;
     }
@@ -164,9 +174,17 @@ public class Call
     /**
      * @param handlerId the handlerIdId to set
      */
-    public void setHandlerId(String handlerId)
+    protected void setHandlerId(String handlerId)
     {
         this.handlerId = handlerId;
+    }
+
+    /**
+     * @return true if this call has a handler
+     */
+    public boolean isHandled()
+    {
+        return handlerId != null;
     }
 
     /* (non-Javadoc)

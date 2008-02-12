@@ -1,5 +1,9 @@
 package jsx3.xml;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +27,59 @@ public final class Record extends Node
 	{
 		super(id);
 	}
+
+	public Record(Object data)
+	{
+        introspectBean(data);
+	}
+
+    public Record(String id, Object data)
+    {
+        introspectBean(data);
+        setId(id);
+    }
+
+    /**
+     * @param data
+     */
+    private void introspectBean(Object data)
+    {
+        try
+        {
+            BeanInfo info = Introspector.getBeanInfo(data.getClass());
+            PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+
+            for (PropertyDescriptor descriptor : descriptors)
+            {
+                String name = descriptor.getName();
+
+                // We don't marshall getClass()
+                if ("class".equals(name))
+                {
+                    continue;
+                }
+
+                Method getter = descriptor.getReadMethod();
+                if (getter != null)
+                {
+                    Object reply = getter.invoke(data);
+                    if (reply != null)
+                    {
+                        setAttribute(name, reply.toString());
+
+                        if ("id".equals(name))
+                        {
+                            setId(reply.toString());
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
 
 	// Generic attribute management ////////////////////////////////////////////
 
@@ -304,12 +361,12 @@ public final class Record extends Node
 	protected String toXml(int depth)
 	{
 		// Serialize the child records
-		StringBuilder children = new StringBuilder();
+		StringBuilder buffer = new StringBuilder();
 		for (Record record : this)
 		{
-			children.append(Node.indent(depth));
-			children.append(record.toXml(depth + 1));
-			children.append("\n");
+			buffer.append(Node.indent(depth));
+			buffer.append(record.toXml(depth + 1));
+			buffer.append("\n");
 		}
 
 		// Start the record tag
@@ -337,14 +394,14 @@ public final class Record extends Node
 			createAttributeOutput(reply, entry.getKey(), entry.getValue());
 		}
 
-		if (children.length() == 0)
+		if (buffer.length() == 0)
 		{
 			reply.append("/>\n");
 		}
 		else
 		{
 			reply.append(">\n");
-			reply.append(children.toString());
+			reply.append(buffer.toString());
 			reply.append("</record>");
 		}
 
