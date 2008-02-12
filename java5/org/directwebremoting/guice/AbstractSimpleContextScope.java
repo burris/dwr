@@ -58,6 +58,7 @@ public abstract class AbstractSimpleContextScope<C> extends AbstractContextScope
         return (InstanceProvider<T>) get(registry, keyString);
     }
 
+    @SuppressWarnings("unused")
     public <T> void put(C registry, Key<T> key, String keyString, InstanceProvider<T> creator)
     {
         put(registry, keyString, creator);

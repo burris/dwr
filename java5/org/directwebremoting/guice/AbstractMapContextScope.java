@@ -75,11 +75,12 @@ public abstract class AbstractMapContextScope<C> extends AbstractContextScope<C,
     {
         return castToT(registry, key).remove(key, creator);
     }
-    
-    private <T> InstanceMap<T> castToT(InstanceMap<?> map, Key<T> key)
+
+    @SuppressWarnings("unused")
+    private <T> InstanceMap<T> castToT(InstanceMap<?> instanceMap, Key<T> key)
     {
         @SuppressWarnings("unchecked")
-        InstanceMap<T> result = (InstanceMap<T>) map;
+        InstanceMap<T> result = (InstanceMap<T>) instanceMap;
         return result;
     }
 

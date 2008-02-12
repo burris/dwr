@@ -46,7 +46,7 @@ public class SessionProgressListener implements ProgressListener
         return item;
     }
 
-    public void update(long bytesRead, long contentLength, int items)
+    public void update(long newBytesRead, long newContentLength, int items)
     {
         if (session.getAttribute(CANCEL_UPLOAD) != null)
         {
@@ -54,8 +54,8 @@ public class SessionProgressListener implements ProgressListener
             throw new RuntimeException("User cancelled the upload.");
         }
 
-        this.bytesRead = bytesRead;
-        this.contentLength = contentLength;
+        this.bytesRead = newBytesRead;
+        this.contentLength = newContentLength;
         this.item = items;
 
         try
