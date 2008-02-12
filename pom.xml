@@ -7,7 +7,7 @@
   <groupId>org.directwebremoting</groupId>
   <artifactId>dwr</artifactId>
   <packaging>jar</packaging>
-  <version>3.0.M1.RC1</version>
+  <version>3.0.M1.RC2</version>
   <name>Direct Web Remoting</name>
   <url>http://getahead.org/dwr</url>
 
