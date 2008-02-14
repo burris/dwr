@@ -48,6 +48,13 @@ function testEquals(actual, expected, depth) {
     return true;
   }
 
+  if (isNaN(expected)) {
+    if (!isNaN(actual)) {
+      return "expected: NaN, actual non-NaN: " + dwr.util.toDescriptiveString(actual);
+    }
+    return true;
+  }
+
   if (actual == null) {
     if (expected != null) {
       return "actual: null, expected non-null: " + dwr.util.toDescriptiveString(expected);

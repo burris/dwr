@@ -37,8 +37,7 @@ public class PrimitiveConverter extends BaseV20Converter implements Converter
      */
     public Object convertInbound(Class<?> paramType, InboundVariable data, InboundContext inctx) throws MarshallException
     {
-        String value = data.getValue();
-        value = LocalUtil.decode(value.trim());
+        String value = data.getValue().trim();
 
         try
         {

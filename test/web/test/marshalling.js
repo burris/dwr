@@ -54,6 +54,11 @@ tests[tests.length] = { code:"doubleParam", data:-1 };
 tests[tests.length] = { code:"doubleParam", data:0 };
 tests[tests.length] = { code:"doubleParam", data:1 };
 tests[tests.length] = { code:"doubleParam", data:100000000000000000000 };
+tests[tests.length] = { code:"doubleParam", data:Number.MAX_VALUE };
+tests[tests.length] = { code:"doubleParam", data:Number.MIN_VALUE };
+tests[tests.length] = { code:"doubleParam", data:Number.NaN };
+tests[tests.length] = { code:"doubleParam", data:Number.NEGATIVE_INFINITY };
+tests[tests.length] = { code:"doubleParam", data:Number.POSITIVE_INFINITY };
 
 tests[tests.length] = { code:"bigDecimalParam", data:-100000000000000000000 };
 tests[tests.length] = { code:"bigDecimalParam", data:-1 };
