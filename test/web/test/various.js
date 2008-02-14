@@ -34,6 +34,25 @@ function assertFalse(value) {
   }
 }
 
+function testScopeAndArgs() {
+  var scope = {
+    callback:function(data) {
+      assertTrue(this === scope);
+      assertTrue(passedArgs === args);
+      success("Correct parameters");
+    }
+  };
+  var args = [ 1, "two" ];
+  Test.stringParam("data", {
+    callback:scope.callback,
+    errorHandler:function(msg, ex, passedArgs) {
+      failure("Test.stringParam() threw: " + msg);
+    },
+    scope:scope,
+    args:args
+  });
+}
+
 function testXss() {
   assertTrue(dwr.util.containsXssRiskyCharacters("dd<"));
   assertFalse(dwr.util.containsXssRiskyCharacters("dd"));
