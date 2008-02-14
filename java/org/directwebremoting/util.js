@@ -47,6 +47,9 @@ dwr.util.escapeHtml = function(original) {
   if (!dwr.util._escapeDiv) {
     dwr.util._escapeDiv = document.createElement('div');
   }
+  else {
+    dwr.util._escapeDiv.innerHTML = "";
+  }
   var text = document.createTextNode(original);
   dwr.util._escapeDiv.appendChild(text);
   return dwr.util._escapeDiv.innerHTML;
