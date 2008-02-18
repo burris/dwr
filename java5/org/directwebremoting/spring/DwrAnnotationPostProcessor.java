@@ -82,7 +82,13 @@ public class DwrAnnotationPostProcessor implements BeanFactoryPostProcessor
         BeanDefinitionBuilder beanCreator = BeanDefinitionBuilder.rootBeanDefinition(BeanCreator.class);
         try {
             beanCreator.addPropertyValue("beanClass", beanDefinitionClass);
-            beanCreator.addPropertyValue("beanId", beanDefinitionHolder.getBeanName());
+            String name = beanDefinitionHolder.getBeanName();
+            if (name.startsWith("scopedTarget."))
+            {
+                name = name.substring(name.indexOf(".") + 1);
+            }
+            beanCreator.addPropertyValue("beanId", name);
+            beanCreator.addDependsOn(name);
             String creatorConfigName = "__" + javascript;
             beanCreator.addPropertyValue("javascript", javascript);
             BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);

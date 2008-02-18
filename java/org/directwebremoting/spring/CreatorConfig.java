@@ -157,7 +157,7 @@ public class CreatorConfig extends AbstractConfig
     private Creator creator;
 
     /**
-     * The properties containing the method name and the corrosponding required role.
+     * The properties containing the method name and the corresponding required role.
      */
     private Properties auth = new Properties();
 
