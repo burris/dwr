@@ -90,9 +90,9 @@ public class DefaultRemoter implements Remoter
                         {
                             paramBuffer.append('\n');
 
-                            // output: if (typeof this['<class>'] == 'undefined') { this.<class> = function() {
-                            paramBuffer.append("if (typeof this['" + jsClassName + "'] == 'undefined') {\n");
-                            paramBuffer.append("  " + jsClassName + " = function() {\n");
+                            // output: if (typeof this['<class>'] != 'function') { function <class>() {
+                            paramBuffer.append("if (typeof this['" + jsClassName + "'] != 'function') {\n");
+                            paramBuffer.append("  function " + jsClassName + "() {\n");
 
                             // output: this.<property> = <init-value>;
                             Class<?> mappedType;
