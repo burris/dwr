@@ -268,6 +268,46 @@ public class Test
         return test;
     }
 
+    public org.dom4j.Element dom4jElementParam(org.dom4j.Element test)
+    {
+        return test;
+    }
+
+    public org.dom4j.Document dom4jDocumentParam(org.dom4j.Document test)
+    {
+        return test;
+    }
+
+    public nu.xom.Element xomElementParam(nu.xom.Element test)
+    {
+        return test;
+    }
+
+    public nu.xom.Document xomDocumentParam(nu.xom.Document test)
+    {
+        return test;
+    }
+
+    public org.jdom.Element jdomElementParam(org.jdom.Element test)
+    {
+        return test;
+    }
+
+    public org.jdom.Document jdomDocumentParam(org.jdom.Document test)
+    {
+        return test;
+    }
+
+    public org.w3c.dom.Element domElementParam(org.w3c.dom.Element test)
+    {
+        return test;
+    }
+
+    public org.w3c.dom.Document domDocumentParam(org.w3c.dom.Document test)
+    {
+        return test;
+    }
+
     public Set<TestBean> testBeanSetParam(Set<TestBean> test)
     {
         if (test.size() > 1)

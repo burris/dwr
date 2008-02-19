@@ -325,6 +325,13 @@ tests[tests.length] = { code:"stringStringHashMapParam", data:map2 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map1 };
 tests[tests.length] = { code:"stringStringTreeMapParam", data:map2 };
 
+var testNode = dwr.util.byId("test");
+
+tests[tests.length] = { code:"dom4jElementParam", data:testNode };
+tests[tests.length] = { code:"xomElementParam", data:testNode };
+tests[tests.length] = { code:"jdomElementParam", data:testNode };
+tests[tests.length] = { code:"domElementParam", data:testNode };
+
 function startTest() {
   dwr.util.byId("start").disabled = true;
 
@@ -474,6 +481,7 @@ function contentFailure() {
 }
 
 function init() {
+  dwr.util.setValue("testCount", tests.length);
   failures = dwr.util.byId("failures");
   failreport = dwr.util.byId("failreport");
   execreport = dwr.util.byId("execreport");

@@ -2,12 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-  <script type='text/javascript' src='../dwr/engine.js'> </script>
-  <script type='text/javascript' src='../dwr/interface/Test.js'></script>
-  <script type='text/javascript' src='../dwr/util.js'></script>
-  <script type='text/javascript' src='../generic.js'></script>
-  <script type='text/javascript' src='marshalling.js'></script>
   <link type="text/css" href="../generic.css" rel="stylesheet" />
+  <!-- see the end of the document for scripts -->
   <title>DWR - Marshalling Tests</title>
 </head>
 
@@ -79,7 +75,7 @@
 <table class="plain form" id="testSummary">
   <tr>
     <th>Number of Tests:</th>
-    <td><script>document.write(tests.length)</script></td>
+    <td id="testCount">0</td>
   </tr>
   <tr>
     <th>Tests Dispatched:</th>
@@ -109,19 +105,29 @@
 
 <p></p>
 
-  <table class="showborder">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Function</th>
-        <th>Data</th>
-        <th>Action</th>
-        <th>Result</th>
-      </tr>
-    </thead>
-    <tbody id="chart">
-    </tbody>
-  </table>
+<table class="showborder">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Function</th>
+      <th>Data</th>
+      <th>Action</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody id="chart">
+  </tbody>
+</table>
+
+<p id="test">
+ This is a <span style="color:#F00;">test node</span> to check on <strong>DOM</strong> <span class="small">manipulation</span>.
+</p>
+
+<script type='text/javascript' src='../dwr/engine.js'> </script>
+<script type='text/javascript' src='../dwr/interface/Test.js'></script>
+<script type='text/javascript' src='../dwr/util.js'></script>
+<script type='text/javascript' src='../generic.js'></script>
+<script type='text/javascript' src='marshalling.js'></script>
 
 </body>
 </html>
