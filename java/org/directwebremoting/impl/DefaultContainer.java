@@ -230,13 +230,7 @@ public class DefaultContainer extends AbstractContainer implements Container
      */
     public Object getBean(String id)
     {
-        Object reply = beans.get(id);
-        if (reply == null)
-        {
-            log.debug("DefaultContainer: No bean with id=" + id);
-        }
-
-        return reply;
+        return beans.get(id);
     }
 
     /* (non-Javadoc)
