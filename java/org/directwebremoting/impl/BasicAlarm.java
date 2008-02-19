@@ -19,7 +19,8 @@ import org.directwebremoting.extend.Alarm;
 import org.directwebremoting.extend.Sleeper;
 
 /**
- * An Alarm that goes off if something is badly broken.
+ * An Alarm that goes off 'manually', that is to say by the calling of
+ * {@link #raiseAlarm()}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class BasicAlarm implements Alarm

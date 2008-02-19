@@ -155,7 +155,7 @@ public class DefaultServerContext implements ServerContext
     private ServletContext context = null;
 
     /**
-     * The Ioc container implementation
+     * The IOC container implementation
      */
     private Container container = null;
 
