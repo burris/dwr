@@ -40,19 +40,11 @@ dwr.util._shouldEscapeHtml = function(options) {
 };
 
 /**
- * Return a string with &, <, >, ' and " replaced with their entities
+ * Return a string with &, < and > replaced with their entities
  * @see TODO
  */
 dwr.util.escapeHtml = function(original) {
-  if (!dwr.util._escapeDiv) {
-    dwr.util._escapeDiv = document.createElement('div');
-  }
-  else {
-    dwr.util._escapeDiv.innerHTML = "";
-  }
-  var text = document.createTextNode(original);
-  dwr.util._escapeDiv.appendChild(text);
-  return dwr.util._escapeDiv.innerHTML;
+  return original.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 };
 
 /**
@@ -60,11 +52,7 @@ dwr.util.escapeHtml = function(original) {
  * @see TODO
  */
 dwr.util.unescapeHtml = function(original) {
-  if (!dwr.util._escapeDiv) {
-    dwr.util._escapeDiv = document.createElement('div');
-  }
-  dwr.util._escapeDiv.innerHTML = original.replace(/<\/?[^>]+>/gi, '');
-  return dwr.util._escapeDiv.childNodes[0] ? dwr.util._escapeDiv.childNodes[0].nodeValue : '';
+  return original.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
 };
 
 /**
