@@ -37,4 +37,10 @@ public interface FileGenerator
      * @return a valid mime-type
      */
     String getMimeType();
+
+    /**
+     * Accessor for the filename of this download
+     * @return An appropriate filename which may have to be some sort of default
+     */
+    String getFilename();
 }

@@ -65,5 +65,13 @@ public class FileTransferFileGenerator implements FileGenerator
         return fileTransfer.getMimeType();
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.FileGenerator#getFilename()
+     */
+    public String getFilename()
+    {
+        return fileTransfer.getName();
+    }
+
     private FileTransfer fileTransfer;
 }

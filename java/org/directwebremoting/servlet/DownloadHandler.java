@@ -52,7 +52,9 @@ public class DownloadHandler implements Handler
         }
         else
         {
+            response.setHeader("Content-disposition", "attachment; filename=" + generator.getFilename());
             response.setContentType(generator.getMimeType());
+
             OutputStream out = response.getOutputStream();
             generator.generateFile(out);
         }

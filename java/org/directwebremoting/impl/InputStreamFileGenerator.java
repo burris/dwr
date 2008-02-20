@@ -20,24 +20,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.directwebremoting.extend.FileGenerator;
-
 /**
  * A way to convert {@link BufferedImage}s to files so they can be written
  * using a FileServingServlet or similar.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class InputStreamFileGenerator implements FileGenerator
+public class InputStreamFileGenerator extends AbstractFileGenerator
 {
     /**
      * Setup the image to convert
      * @param in the data to stream
      * @param mimeType The mime type to convert the image into
      */
-    public InputStreamFileGenerator(InputStream in, String mimeType)
+    public InputStreamFileGenerator(InputStream in, String filename, String mimeType)
     {
+        super(filename, mimeType);
         this.in = in;
-        this.mimeType = mimeType;
     }
 
     /* (non-Javadoc)
@@ -56,19 +54,6 @@ public class InputStreamFileGenerator implements FileGenerator
             out.write(buffer, 0, length);
         }
     }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.DownloadManager.FileGenerator#getMimeType()
-     */
-    public String getMimeType()
-    {
-        return mimeType;
-    }
-
-    /**
-     * The mime-type of the image that we are writing
-     */
-    protected final String mimeType;
 
     /**
      * The stream that we are about to export

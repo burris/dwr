@@ -81,10 +81,15 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
     @Override
     protected void putFileGenerator(String id, FileGenerator generator)
     {
-        OutputStream out = null;
-        String mimeType = generator.getMimeType();
-        String filename = "dwr-cache-" + id + "-" + mimeType.replace("/", ".");
+        String filename = FILE_PREFIX
+                        + PART_SEPARATOR
+                        + id
+                        + PART_SEPARATOR
+                        + generator.getMimeType().replace("/", ".")
+                        + PART_SEPARATOR
+                        + generator.getFilename();
 
+        OutputStream out = null;
         try
         {
             out = new FileOutputStream(filename);
@@ -107,7 +112,8 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
     @Override
     protected FileGenerator getFileGenerator(String id)
     {
-        final String prefix = "dwr-cache-" + id + "-";
+        final String prefix = FILE_PREFIX + PART_SEPARATOR + id + PART_SEPARATOR;
+
         final File[] match = downloadFileCache.listFiles(new FileFilter()
         {
             /* (non-Javadoc)
@@ -129,19 +135,14 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
             log.warn("More than 1 match for prefix: " + prefix + ". Using first.");
         }
 
-        return new FileGenerator()
+        String[] parts = match[0].getName().split(PART_SEPARATOR, 4);
+
+        // Parts 0 and 1 are the prefix and id. We know they're right
+        String mimeType = parts[2].replace(".", "/");
+        String filename = parts[3];
+
+        return new AbstractFileGenerator(filename, mimeType)
         {
-            /* (non-Javadoc)
-             * @see org.directwebremoting.extend.DownloadManager.FileGenerator#getMimeType()
-             */
-            public String getMimeType()
-            {
-                String leafname = match[0].getName();
-                String suffix = leafname.substring(prefix.length());
-                String mimeType = suffix.replace(".", "/");
-                return mimeType;
-            }
-        
             /* (non-Javadoc)
              * @see org.directwebremoting.extend.DownloadManager.FileGenerator#generateFile(java.io.OutputStream)
              */
@@ -180,7 +181,6 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
     {
         final long now = System.currentTimeMillis();
 
-        final String prefix = "dwr-cache-";
         final File[] match = downloadFileCache.listFiles(new FileFilter()
         {
             /* (non-Javadoc)
@@ -188,7 +188,7 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
              */
             public boolean accept(File file)
             {
-                boolean nameMatch = file.getName().startsWith(prefix);
+                boolean nameMatch = file.getName().startsWith(FILE_PREFIX);
                 boolean oldEnough = now > file.lastModified() + purgeDownloadsAfter;
                 return nameMatch && oldEnough;
             }
@@ -218,6 +218,17 @@ public class FileStoreDownloadManager extends PurgingDownloadManager implements 
             throw new IllegalArgumentException("Download cache is not a directory: " + downloadFileCacheDir);
         }
     }
+
+    /**
+     * The prefix for all temp files that we save
+     */
+    private static final String FILE_PREFIX = "dwr";
+
+    /**
+     * The separator to distinguish the prefix, from the id, the mime-type and
+     * the filename
+     */
+    private static final String PART_SEPARATOR = "-";
 
     /**
      * The lock which you must hold to read or write from the list of

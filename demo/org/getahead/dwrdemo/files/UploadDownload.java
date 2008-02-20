@@ -72,8 +72,7 @@ public class UploadDownload
         document.add(new Paragraph(contents));
         document.close();
 
-        byte[] data = buffer.toByteArray();
-        return new FileTransfer("ExamplePDF", "application/pdf", data);
+        return new FileTransfer("example.pdf", "application/pdf", buffer.toByteArray());
     }
 
     /**

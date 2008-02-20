@@ -21,14 +21,12 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-import org.directwebremoting.extend.FileGenerator;
-
 /**
  * A way to convert {@link BufferedImage}s to files so they can be written
  * using a FileServingServlet or similar.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ImageIOFileGenerator implements FileGenerator
+public class ImageIOFileGenerator extends AbstractFileGenerator
 {
     /**
      * Setup the image to convert
@@ -36,10 +34,10 @@ public class ImageIOFileGenerator implements FileGenerator
      * @param mimeType The mime type to convert the image into
      * @param type {@link ImageIO} type
      */
-    public ImageIOFileGenerator(BufferedImage image, String mimeType, String type)
+    public ImageIOFileGenerator(BufferedImage image, String mimeType, String basename, String type)
     {
+        super(basename + "." + type, mimeType);
         this.image = image;
-        this.mimeType = mimeType;
         this.type = type;
     }
 
@@ -50,19 +48,6 @@ public class ImageIOFileGenerator implements FileGenerator
     {
         ImageIO.write(image, type, out);
     }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.DownloadManager.FileGenerator#getMimeType()
-     */
-    public String getMimeType()
-    {
-        return mimeType;
-    }
-
-    /**
-     * The mime-type of the image that we are writing
-     */
-    protected String mimeType;
 
     /**
      * The extension for the filename to go with the mime-type

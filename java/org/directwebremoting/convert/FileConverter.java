@@ -94,12 +94,12 @@ public class FileConverter extends BaseV20Converter implements Converter
             if (object instanceof BufferedImage)
             {
                 BufferedImage image = (BufferedImage) object;
-                generator = new ImageIOFileGenerator(image, "image/png", "png");
+                generator = new ImageIOFileGenerator(image, "image/png", "image", "png");
             }
             else if (object instanceof InputStream)
             {
                 InputStream in = (InputStream) object;
-                generator = new InputStreamFileGenerator(in, "binary/octet-stream");
+                generator = new InputStreamFileGenerator(in, "download.dat", "binary/octet-stream");
             }
             else if (object instanceof FileTransfer)
             {
