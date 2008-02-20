@@ -17,6 +17,7 @@ package org.directwebremoting.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,9 +27,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptConduit;
@@ -49,8 +51,9 @@ public class DefaultScriptSession implements RealScriptSession
      * @param id The new unique identifier for this session
      * @param manager The manager that created us
      * @param page The URL of the page on which we sit
+     * @param httpSessionId The cookie based id of the browser
      */
-    protected DefaultScriptSession(String id, DefaultScriptSessionManager manager, String page)
+    protected DefaultScriptSession(String id, DefaultScriptSessionManager manager, String page, String httpSessionId)
     {
         this.id = id;
         if (id == null)
@@ -58,6 +61,7 @@ public class DefaultScriptSession implements RealScriptSession
             throw new IllegalArgumentException("id can not be null");
         }
 
+        this.httpSessionId = httpSessionId;
         this.page = page;
         this.manager = manager;
         this.creationTime = System.currentTimeMillis();
@@ -69,7 +73,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public Object getAttribute(String name)
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
         synchronized (attributes)
         {
             return attributes.get(name);
@@ -81,7 +85,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void setAttribute(String name, Object value)
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
         synchronized (attributes)
         {
             attributes.put(name, value);
@@ -93,7 +97,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void removeAttribute(String name)
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
         synchronized (attributes)
         {
             attributes.remove(name);
@@ -105,7 +109,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public Iterator<String> getAttributeNames()
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
         synchronized (attributes)
         {
             Set<String> keys = Collections.unmodifiableSet(attributes.keySet());
@@ -149,7 +153,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public long getCreationTime()
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
         return creationTime;
     }
 
@@ -175,7 +179,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void addScript(ScriptBuffer script)
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
 
         if (script == null)
         {
@@ -187,8 +191,22 @@ public class DefaultScriptSession implements RealScriptSession
         {
             if (conduits.isEmpty())
             {
-                // There are no conduits, just store it until there are
-                scripts.add(script);
+                // Are there any other script sessions in the same browser
+                // that could proxy the script for us?
+                Collection<RealScriptSession> sessions = manager.getScriptSessionsByHttpSessionId(httpSessionId);
+                ScriptBuffer proxyScript = EnginePrivate.createForeignWindowProxy(getWindowName(), script);
+
+                boolean written = false;
+                for (Iterator<RealScriptSession> it = sessions.iterator(); !written && it.hasNext();)
+                {
+                    RealScriptSession session = it.next();
+                    written = session.addScriptImmediately(proxyScript);
+                }
+
+                if (!written)
+                {
+                    scripts.add(script);
+                }
             }
             else
             {
@@ -221,7 +239,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void addScriptConduit(ScriptConduit conduit) throws IOException
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
 
         synchronized (scriptLock)
         {
@@ -235,7 +253,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void writeScripts(ScriptConduit conduit) throws IOException
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
 
         synchronized (scriptLock)
         {
@@ -269,7 +287,7 @@ public class DefaultScriptSession implements RealScriptSession
      */
     public void removeScriptConduit(ScriptConduit conduit)
     {
-        checkNotInvalidated();
+        invalidateIfNeeded();
 
         synchronized (scriptLock)
         {
@@ -302,6 +320,22 @@ public class DefaultScriptSession implements RealScriptSession
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#setWindowName(java.lang.String)
+     */
+    public void setWindowName(String windowName)
+    {
+        this.windowName = windowName;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#getWindowName()
+     */
+    public String getWindowName()
+    {
+        return windowName;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.RealScriptSession#updateLastAccessedTime()
      */
     public void updateLastAccessedTime()
@@ -320,8 +354,13 @@ public class DefaultScriptSession implements RealScriptSession
      * At the same time set the lastAccessedTime flag.
      * @throws IllegalStateException If this object has become invalid
      */
-    protected void checkNotInvalidated()
+    protected void invalidateIfNeeded()
     {
+        if (invalidated)
+        {
+            return;
+        }
+
         // It's a bad idea to call native methods with locks held
         long now = System.currentTimeMillis();
 
@@ -455,6 +494,17 @@ public class DefaultScriptSession implements RealScriptSession
     protected final String page;
 
     /**
+     * We track window names to link script sessions together and to help
+     * foil the 2 connection limit
+     */
+    private String windowName;
+
+    /**
+     * The cookie based id of the browser, or null if no http session is active
+     */
+    private String httpSessionId;
+
+    /**
      * The session manager that collects sessions together
      * <p>This should not need careful synchronization since it is unchanging
      */
@@ -464,4 +514,13 @@ public class DefaultScriptSession implements RealScriptSession
      * The log stream
      */
     private static final Log log = LogFactory.getLog(DefaultScriptSession.class);
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#addScriptImmediately(org.directwebremoting.ScriptBuffer)
+     */
+    public boolean addScriptImmediately(ScriptBuffer script)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

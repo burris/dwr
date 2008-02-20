@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
+import org.directwebremoting.ScriptSession;
 import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.impl.DefaultRemoter;
 import org.directwebremoting.proxy.ScriptProxy;
@@ -74,14 +75,26 @@ public class EnginePrivate extends ScriptProxy
 
     /**
      * Call dwr.engine.remote.handleNewScriptSession() in the browser
+     * @param session The browser page to write to
      * @param newSessionId The new script session id for the browser to reuse
-     * @return A script buffer containing the appropriate code
      */
-    public static ScriptBuffer remoteHandleNewScriptSession(String newSessionId)
+    public static void remoteHandleNewScriptSession(ScriptSession session, String newSessionId)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("dwr.engine.remote.handleNewScriptSession", newSessionId);
-        return script;
+        session.addScript(script);
+    }
+
+    /**
+     * Call dwr.engine.remote.handleNewWindowName() in the browser
+     * @param session The browser page to write to
+     * @param windowName The new window name for the page
+     */
+    public static void remoteHandleNewWindowName(ScriptSession session, String windowName)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("dwr.engine.remote.handleNewWindowName", windowName);
+        session.addScript(script);
     }
 
     /**
@@ -210,6 +223,23 @@ public class EnginePrivate extends ScriptProxy
     {
         String script2 = "dwr.engine._eval(\"" + JavascriptUtil.escapeJavaScript(script) + "\");";
         return addWindowParent(script2);
+    }
+
+    /**
+     * Evade the 2 connection limit by sending scripts to the wrong window and
+     * having that use window.name to push it to the right window
+     * @param original The script that we wish to be proxied
+     * @param windowName The window to which we wish the window to be proxied
+     * @return A script to send to a different window to cause proxying
+     */
+    public static ScriptBuffer createForeignWindowProxy(String windowName, ScriptBuffer original)
+    {
+        String proxy = JavascriptUtil.escapeJavaScript(original.toString());
+
+        ScriptBuffer reply = new ScriptBuffer();
+        reply.appendCall("dwr.engine.remote.handleForeign", windowName, proxy);
+        reply.appendData(proxy);
+        return reply;
     }
 
     /**

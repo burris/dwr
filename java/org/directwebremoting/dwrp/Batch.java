@@ -159,6 +159,7 @@ public class Batch
         httpSessionId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_HTTP_SESSIONID);
         scriptSessionId = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         page = extractParameter(paramMap, ProtocolConstants.INBOUND_KEY_PAGE);
+        windowName = extractParameter(allParameters, ProtocolConstants.INBOUND_KEY_WINDOWNAME);
 
         for (Map.Entry<String, FormField> entry : paramMap.entrySet())
         {
@@ -239,6 +240,14 @@ public class Batch
     }
 
     /**
+     * @return the window name
+     */
+    public String getWindowName()
+    {
+        return windowName;
+    }
+
+    /**
      * Is this request from a GET?
      * @return true if the request is a GET request
      */
@@ -281,6 +290,11 @@ public class Batch
      * The page that the request was sent from
      */
     private String page;
+
+    /**
+     * Window name is used by reverse ajax to get around the 2 connection limit
+     */
+    private String windowName;
 
     /**
      * The unique ID sent to the current page

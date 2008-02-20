@@ -89,7 +89,7 @@ public abstract class BaseCallMarshaller implements Marshaller
         request.setAttribute(ATTRIBUTE_BATCH, batch);
 
         String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
-        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId());
+        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId(), batch.getWindowName());
 
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);

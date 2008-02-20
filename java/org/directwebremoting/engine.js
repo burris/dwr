@@ -218,6 +218,17 @@ if (typeof this['dwr'] == 'undefined') {
     }
   };
 
+  /**
+   * For use with file downloads. When a DWR function returns a binary download
+   * you can prompt the user to save it using this function
+   * @param {Object} data The binary data passed from DWR
+   */
+  dwr.engine.openInDownload = function(data) {
+    var div = document.createElement("div");
+    document.body.appendChild(div);
+    div.innerHTML = "<iframe width='0' height='0' scrolling='no' frameborder='0' src='" + data + "'></iframe>";
+  };
+
   //==============================================================================
   // Only private stuff below here
   //==============================================================================
@@ -626,6 +637,38 @@ if (typeof this['dwr'] == 'undefined') {
         dwr.engine._debug("Server side script session id timed out. New session automatically created");
       }
       dwr.engine._scriptSessionId = newSessionId;
+    },
+
+    /**
+     * Called by the server when we need to set a new script session id
+     * @param {Object} newSessionId The new script session id to be used from now
+     */
+    handleNewWindowName:function(windowName) {
+      dwr.engine._debug("Setting new window name: " + windowName);
+      if (window.name != null && window.name != "") {
+        dwr.engine._debug("- Warning: This will override existing name of: " + window.name);
+      }
+      window.name = windowName;
+    },
+
+    /**
+     * Execute some script in a different window
+     * @param {Object} windowName The name of the window in which to eval the script
+     * @param {Object} script The script to eval elsewhere
+     */
+    handleForeign:function(windowName, script) {
+      var foreign = window.open(null, windowName);
+      if (foreign != null) {
+        if (foreign.dwr != null) {
+          foreign.dwr.engine._eval(script);
+        }
+        else {
+          dwr.engine._debug("Found window, but DWR did not exist in it");
+        }
+      }
+      else {
+        dwr.engine._debug("Could not find window");
+      }
     },
 
     /**
@@ -1441,16 +1484,14 @@ if (typeof this['dwr'] == 'undefined') {
      */
     create:function() {
       var batch = {
-        map:{ callCount:0 },
+        async:dwr.engine._async,
         charsProcessed:0,
-        paramCount:0,
-        parameters:{},
-        headers:{},
-        isPoll:false,
         handlers:{},
+        isPoll:false,
+        map:{ callCount:0, windowName:window.name },
+        paramCount:0,
         preHooks:[],
         postHooks:[],
-        async:dwr.engine._async,
         timeout:dwr.engine._timeout,
         errorHandler:dwr.engine._errorHandler,
         warningHandler:dwr.engine._warningHandler,
@@ -1475,23 +1516,22 @@ if (typeof this['dwr'] == 'undefined') {
      */
     createPoll:function() {
       var batch = {
-        map:{ callCount:1, id:0 /* TODO: do we need id? */ },
         async:true,
         charsProcessed:0,
-        paramCount:0,
-        parameters:{},
-        headers:{},
-        isPoll:true,
         handlers:[{
           callback:function(pause) {
             dwr.engine._pollRetries = 0;
             setTimeout("dwr.engine._poll()", pause);
           }
         }],
+        isPoll:true,
+        map:{ windowName:window.name },
+        paramCount:0,
+        path:dwr.engine._defaultPath,
         preHooks:[],
         postHooks:[],
         timeout:0,
-        path:dwr.engine._defaultPath,
+        windowName:window.name,
         errorHandler:dwr.engine._pollErrorHandler,
         warningHandler:dwr.engine._pollErrorHandler,
         textHtmlHandler:dwr.engine._textHtmlHandler
@@ -1508,12 +1548,14 @@ if (typeof this['dwr'] == 'undefined') {
      */
     populateHeadersAndParameters:function(batch) {
       var propname, data;
+      batch.headers = {};
       if (dwr.engine._headers) {
         for (propname in dwr.engine._headers) {
           data = dwr.engine._headers[propname];
           if (typeof data != "function") batch.headers[propname] = data;
         }
       }
+      batch.parameters = {};
       if (dwr.engine._parameters) {
         for (propname in dwr.engine._parameters) {
           data = dwr.engine._parameters[propname];

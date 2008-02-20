@@ -52,6 +52,7 @@ public class PollBatch
         batchId = extractParameter(allParameters, ProtocolConstants.INBOUND_KEY_BATCHID);
         scriptSessionId = extractParameter(allParameters, ProtocolConstants.INBOUND_KEY_SCRIPT_SESSIONID);
         page = extractParameter(allParameters, ProtocolConstants.INBOUND_KEY_PAGE);
+        windowName = extractParameter(allParameters, ProtocolConstants.INBOUND_KEY_WINDOWNAME);
         String prString = extractParameter(allParameters, ProtocolConstants.INBOUND_KEY_PARTIAL_RESPONSE);
         partialResponse = PartialResponse.fromOrdinal(prString);
     }
@@ -108,6 +109,14 @@ public class PollBatch
     }
 
     /**
+     * @return the window name
+     */
+    public String getWindowName()
+    {
+        return windowName;
+    }
+
+    /**
      * Is this request from a GET?
      * @return true if the request is a GET request
      */
@@ -144,6 +153,11 @@ public class PollBatch
      * The page that the request was sent from
      */
     private String page;
+
+    /**
+     * Window name is used by reverse ajax to get around the 2 connection limit
+     */
+    private String windowName;
 
     /**
      * The unique ID sent to the current page

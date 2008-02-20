@@ -17,6 +17,7 @@ package org.directwebremoting.extend;
 
 import java.io.IOException;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 
 /**
@@ -27,6 +28,16 @@ import org.directwebremoting.ScriptSession;
  */
 public interface RealScriptSession extends ScriptSession
 {
+    /**
+     * If this ScriptSession currently has a connected {@link ScriptConduit}
+     * and this conduit accepts and claims to be able to publish the script
+     * then publish and return true, otherwise return false.
+     * Add a script to the list waiting for remote execution.
+     * The version automatically wraps the string in a ClientScript object.
+     * @param script The script to execute
+     */
+    boolean addScriptImmediately(ScriptBuffer script);
+
     /**
      * While a Marshaller is processing a request it can register a
      * ScriptConduit with the ScriptSession to say - "pass scripts to me"
@@ -66,4 +77,16 @@ public interface RealScriptSession extends ScriptSession
      * session does not timeout before it should.
      */
     void updateLastAccessedTime();
+
+    /**
+     * If the global parameter avoid2ConnectionLimitWithWindowName == true then
+     * we need to keep a track of the names of the windows that connect to us
+     * @param windowName The new name for the window that spawned this Session
+     */
+    void setWindowName(String windowName);
+
+    /**
+     * Accessor for the name attached to this window
+     */
+    String getWindowName();
 }

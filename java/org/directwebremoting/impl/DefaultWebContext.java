@@ -28,13 +28,13 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
-import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
+import org.directwebremoting.util.IdGenerator;
 import org.directwebremoting.util.SwallowingHttpServletResponse;
 
 /**
@@ -58,12 +58,18 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
 
         this.request = request;
         this.response = response;
+
+        Object value = container.getBean("avoidConnectionLimitWithWindowName");
+        if (value != null)
+        {
+            avoidConnectionLimitWithWindowName = Boolean.parseBoolean(value.toString());
+        }
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.extend.RealWebContext#checkPageInformation(java.lang.String, java.lang.String, boolean)
+     * @see org.directwebremoting.extend.RealWebContext#checkPageInformation(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void checkPageInformation(String sentPage, String sentScriptId)
+    public void checkPageInformation(String sentPage, String sentScriptId, String windowName)
     {
         ScriptSessionManager scriptSessionManager = getScriptSessionManager();
 
@@ -86,8 +92,7 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
             String newSessionId = scriptSession.getId();
 
             // Inject a (new) script session id into the page
-            ScriptBuffer handleNewSession = EnginePrivate.remoteHandleNewScriptSession(newSessionId);
-            scriptSession.addScript(handleNewSession);
+            EnginePrivate.remoteHandleNewScriptSession(scriptSession, newSessionId);
 
             // Use the new script session id not the one passed in
             log.debug("ScriptSession re-sync: " + sentScriptId + " has become " + newSessionId);
@@ -110,6 +115,16 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
             // The passed script session id passed the test, use it
             this.scriptSessionId = sentScriptId;
             this.page = sentPage;
+        }
+
+        if (avoidConnectionLimitWithWindowName)
+        {
+            if (windowName == null || windowName.equals(""))
+            {
+                windowName = "DWR-" + generator.generateId(16);
+                EnginePrivate.remoteHandleNewWindowName(scriptSession, windowName);
+            }
+            scriptSession.setWindowName(windowName);
         }
     }
 
@@ -187,6 +202,17 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
 
         return buffer.toString();
     }
+
+    /**
+     * We can turn connection limit avoidance off
+     */
+    private boolean avoidConnectionLimitWithWindowName = true;
+
+    /**
+     * If a window does not have a name, we give it one so we can avoid the
+     * 2 connection limit
+     */
+    private static IdGenerator generator = new IdGenerator();
 
     /**
      * The unique ID (like a session ID) assigned to the current page

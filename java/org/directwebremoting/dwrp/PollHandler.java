@@ -105,9 +105,7 @@ public class PollHandler implements Handler
         // Check to see that the page and script session id are valid
         RealWebContext webContext = (RealWebContext) WebContextFactory.get();
         String normalizedPage = pageNormalizer.normalizePage(batch.getPage());
-        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId());
-
-        final RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
+        webContext.checkPageInformation(normalizedPage, batch.getScriptSessionId(), batch.getWindowName());
 
         // We might need to complain that reverse ajax is not enabled.
         if (!activeReverseAjaxEnabled)
@@ -127,19 +125,15 @@ public class PollHandler implements Handler
             return;
         }
 
-        // So we've done the parsing and checking this is where we start work
-
         // A script conduit is some route from a ScriptSession back to the page
         // that belongs to the session. There may be zero or many of these
         // conduits (although if there are more than 2, something is strange)
         // All scripts destined for a page go to a ScriptSession and then out
         // via a ScriptConduit.
+        final RealScriptSession scriptSession = (RealScriptSession) webContext.getScriptSession();
 
         // Create a conduit depending on the type of request (from the URL)
         final BaseScriptConduit conduit = createScriptConduit(batch, response);
-
-        // Register the conduit with a script session so messages can get out
-        scriptSession.addScriptConduit(conduit);
 
         // So we're going to go to sleep. How do we wake up?
         Sleeper sleeper = containerAbstraction.createSleeper(request);
@@ -147,7 +141,7 @@ public class PollHandler implements Handler
         // There are various reasons why we want to wake up and carry on ...
         final List<Alarm> alarms = new ArrayList<Alarm>();
 
-        // The conduit might want to say 'I give up'
+        // If the conduit has an error flushing data, it needs to give up
         alarms.add(conduit.getErrorAlarm());
 
         // Set the system up to resume on output (perhaps with delay)
@@ -200,6 +194,14 @@ public class PollHandler implements Handler
                 }
             }
         };
+
+        // Register the conduit with a script session so messages can get out.
+        // This must happen late on in this method because this will cause any
+        // scripts cached in the script session (because there was no conduit
+        // available when they were written) to be sent to the conduit.
+        // We need any AlarmScriptConduits to be notified so they can make
+        // maxWaitWfterWrite work for all cases
+        scriptSession.addScriptConduit(conduit);
 
         // Actually go to sleep. This *must* be the last thing in this method to
         // cope with all the methods of affecting Threads. Jetty throws,

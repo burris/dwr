@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.event.EventListenerList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.ServerContext;
 import org.directwebremoting.event.ScriptSessionEvent;
@@ -106,7 +108,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         String id = generator.generateId(16);
 
-        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page);
+        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page, httpSessionId);
 
         synchronized (sessionLock)
         {
@@ -135,6 +137,14 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     protected void associateScriptSessionAndHttpSession(RealScriptSession scriptSession, String httpSessionId)
     {
         scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, httpSessionId);
+
+        Set<String> scriptSessionIds = sessionXRef.get(httpSessionId);
+        if (scriptSessionIds == null)
+        {
+            scriptSessionIds = new HashSet<String>();
+            sessionXRef.put(httpSessionId, scriptSessionIds);
+        }
+        scriptSessionIds.add(scriptSession.getId());
     }
 
     /**
@@ -144,12 +154,25 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
      */
     protected void disassociateScriptSessionAndHttpSession(RealScriptSession scriptSession)
     {
-        // Officially we should perhaps do something like this:
-        //  scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, null);
-        // We don't because the session is about to be invalidated, so there
-        // isn't much point, and secondly because scriptSession.setAttribute()
-        // causes a check on checkNotInvalidated() which in turn ...
-        // So we avoid the infinite loop by doing nothing
+        Object httpSessionId = scriptSession.getAttribute(ATTRIBUTE_HTTPSESSIONID);
+        if (httpSessionId == null)
+        {
+            return;
+        }
+
+        Set<String> scriptSessionIds = sessionXRef.get(httpSessionId);
+        if (scriptSessionIds == null)
+        {
+            log.debug("Warning: No script session ids for http session");
+            return;
+        }
+        scriptSessionIds.remove(scriptSession.getId());
+        if (scriptSessionIds.size() == 0)
+        {
+            sessionXRef.remove(httpSessionId);
+        }
+
+        scriptSession.setAttribute(ATTRIBUTE_HTTPSESSIONID, null);
     }
 
     /**
@@ -211,6 +234,27 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
             reply.addAll(pageSessions);
             return reply;
         }
+    }
+
+    /**
+     * Lookup all the windows associated with a given browser
+     * @param httpSessionId The browser id to lookup
+     * @return A list of script sessions for each open window
+     */
+    public Collection<RealScriptSession> getScriptSessionsByHttpSessionId(String httpSessionId)
+    {
+        Collection<RealScriptSession> reply = new ArrayList<RealScriptSession>();
+
+        Set<String> scriptSessionIds = sessionXRef.get(httpSessionId);
+        for (String scriptSessionId : scriptSessionIds)
+        {
+            DefaultScriptSession scriptSession = sessionMap.get(scriptSessionId);
+            if (scriptSession != null)
+            {
+                reply.add(scriptSession);
+            }
+        }
+        return reply;
     }
 
     /* (non-Javadoc)
@@ -441,14 +485,29 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     protected final Object sessionLock = new Object();
 
     /**
-     * The map of all the known sessions
+     * Allows us to associate script sessions with http sessions.
+     * The key is an http session id, the 
+     * <p>GuardedBy("sessionLock")
+     */
+    private Map<String, Set<String>> sessionXRef = new HashMap<String, Set<String>>();
+
+    /**
+     * The map of all the known sessions.
+     * The key is the script session id, the value is the session data
      * <p>GuardedBy("sessionLock")
      */
     private Map<String, DefaultScriptSession> sessionMap = new HashMap<String, DefaultScriptSession>();
 
     /**
-     * The map of pages that have sessions
+     * The map of pages that have sessions.
+     * The key is a normalized page, the value the script sessions that are
+     * known to be currently visiting the page
      * <p>GuardedBy("sessionLock")
      */
     private Map<String, Set<RealScriptSession>> pageSessionMap = new HashMap<String, Set<RealScriptSession>>();
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(DefaultScriptSessionManager.class);
 }
