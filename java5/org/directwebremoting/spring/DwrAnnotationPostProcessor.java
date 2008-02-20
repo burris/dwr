@@ -47,33 +47,36 @@ public class DwrAnnotationPostProcessor implements BeanFactoryPostProcessor
         {
             BeanDefinitionHolder beanDefinitionHolder = new BeanDefinitionHolder(beanDefinitionRegistry.getBeanDefinition(beanName), beanName);
             Class<?> beanDefinitionClass = getBeanDefinitionClass(beanDefinitionHolder, beanDefinitionRegistry);
-            RemoteProxy annotation = beanDefinitionClass.getAnnotation(RemoteProxy.class);
-            if (annotation != null)
+            if (beanDefinitionClass != null)
             {
-                String javascript = annotation.name();
-                if (log.isInfoEnabled())
+                RemoteProxy annotation = beanDefinitionClass.getAnnotation(RemoteProxy.class);
+                if (annotation != null)
                 {
-                    log.info("Detected candidate bean [" + beanName + "]. Remoting using " + javascript);
+                    String javascript = annotation.name();
+                    if (log.isInfoEnabled())
+                    {
+                        log.info("Detected candidate bean [" + beanName + "]. Remoting using " + javascript);
+                    }
+                    registerCreator(beanDefinitionHolder, beanDefinitionRegistry, beanDefinitionClass, javascript);
                 }
-                registerCreator(beanDefinitionHolder, beanDefinitionRegistry, beanDefinitionClass, javascript);
             }
         }
     }
 
     protected Class<?> getBeanDefinitionClass(BeanDefinitionHolder beanDefinitionHolder, BeanDefinitionRegistry beanDefinitionRegistry)
     {
-        String beanClassName = DwrNamespaceHandler.resolveBeanClassname(beanDefinitionHolder.getBeanDefinition(), beanDefinitionRegistry);
         try
         {
-            if (beanClassName == null)
-            {
-                throw new FatalBeanException("Unabled to find type for beanName '" + beanDefinitionHolder.getBeanName() + "'. " + "Check your bean has a correctly configured parent or provide a class for " + " the bean definition");
-            }
+            String beanClassName = DwrNamespaceHandler.resolveBeanClassname(beanDefinitionHolder.getBeanDefinition(), beanDefinitionRegistry);
             return ClassUtils.forName(beanClassName);
         }
-        catch (ClassNotFoundException cne)
+        catch (Exception cne)
         {
-            throw new FatalBeanException("Unable to create DWR bean creator for '" + beanDefinitionHolder.getBeanName() + "'.", cne);
+            if (log.isInfoEnabled())
+            {
+                log.info("Could not infer class for [" + beanDefinitionHolder.getBeanName() + "]. Is it a factory bean? Omitting bean from annotation processing");
+            }
+            return null;
         }
     }
 

@@ -417,7 +417,7 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
                 definition = parentDefinition;
             } catch (Exception e)
             {
-                throw new FatalBeanException("No parent bean could be found for " + definition);
+                throw new FatalBeanException("No parent bean could be found for " + definition, e);
             }
         }
         return beanClassName;
