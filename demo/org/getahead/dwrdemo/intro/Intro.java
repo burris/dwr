@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.util.VersionUtil;
 
 /**
  * Used by the default webapp landing page to check basic functionality
@@ -29,13 +30,17 @@ import org.directwebremoting.WebContextFactory;
 public class Intro
 {
     /**
-     * A simple test that the DWr is working. Used by the front page.
+     * A simple test that the DWR is working. Used by the front page.
      * @return The text of the insert.html page
      * @throws IOException From {@link WebContext#forwardToString(String)}
      * @throws ServletException From {@link WebContext#forwardToString(String)}
      */
-    public String getInsert() throws ServletException, IOException
+    public String[] getInsert() throws ServletException, IOException
     {
-        return WebContextFactory.get().forwardToString("/insert.html");
+        return new String[]
+        {
+            WebContextFactory.get().forwardToString("/insert.html"),
+            VersionUtil.getVersion(),
+        };
     }
 }

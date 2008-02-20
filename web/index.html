@@ -16,15 +16,16 @@
       }
       dwr.util.useLoadingMessage();
       // Turn on the generic error div
-      $("error").style.display = "block";
+      dwr.util.byId("error").style.display = "block";
       // Load a message from the server
       Intro.getInsert(load);
     }
 
     function load(data) {
-      $("error").style.display = "none";
-      dwr.util.setValue("reply", data, { escapeHtml:false });
-      $("reply").style.display = "block";
+      dwr.util.byId("error").style.display = "none";
+      dwr.util.setValue("reply", data[0], { escapeHtml:false });
+      dwr.util.setValue("version", "(Version " + data[1] + ")");
+      dwr.util.byId("reply").style.display = "block";
     }
   </script>
   <link rel="stylesheet" type="text/css" href="generic.css" />
@@ -38,7 +39,7 @@
 
 <div style="float:right;"><a href="http://getahead.org/dwr/"><img src="logo.gif"/></a></div>
 
-<h1>Welcome to DWR</h1>
+<h1>Welcome to DWR <small id="version"></small></h1>
 
 <p>DWR is an Ajax remoting framework for Java to make it easy for web pages to
 interact with Java classes.</p>
