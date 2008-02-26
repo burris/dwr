@@ -689,13 +689,13 @@ public final class LocalUtil
      * environment expects failures for missing jar files and can carry on if
      * this process fails.
      * @param <T> The base type that we want a class to implement
-     * @param name The name for debugging purposes
+     * @param debugContext The name for debugging purposes
      * @param className The class to create
      * @param impl The implementation class - what should className do?
      * @return The class if it is safe or null otherwise.
      */
     @SuppressWarnings("unchecked")
-    public static <T> Class<? extends T> classForName(String name, String className, Class<T> impl)
+    public static <T> Class<? extends T> classForName(String debugContext, String className, Class<T> impl)
     {
         Class<? extends T> clazz;
 
@@ -706,19 +706,19 @@ public final class LocalUtil
         catch (ClassNotFoundException ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Skipping '" + debugContext + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (NoClassDefFoundError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Skipping '" + debugContext + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (TransformerFactoryConfigurationError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Skipping '" + debugContext + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
             log.debug("Maybe you need to add xalan.jar to your webserver?");
             return null;
         }
@@ -737,24 +737,24 @@ public final class LocalUtil
         }
         catch (InstantiationException ex)
         {
-            log.error("InstantiationException for '" + name + "' failed:", ex);
+            log.error("InstantiationException for '" + debugContext + "' failed:", ex);
             return null;
         }
         catch (IllegalAccessException ex)
         {
-            log.error("IllegalAccessException for '" + name + "' failed:", ex);
+            log.error("IllegalAccessException for '" + debugContext + "' failed:", ex);
             return null;
         }
         catch (NoClassDefFoundError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Skipping '" + debugContext + "' due to NoClassDefFoundError on " + className + ". Cause: " + ex.getMessage());
             return null;
         }
         catch (TransformerFactoryConfigurationError ex)
         {
             // We expect this sometimes, hence debug
-            log.debug("Skipping '" + name + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
+            log.debug("Skipping '" + debugContext + "' due to TransformerFactoryConfigurationError on " + className + ". Cause: " + ex.getMessage());
             log.debug("Maybe you need to add xalan.jar to your webserver?");
             return null;
         }
@@ -764,12 +764,12 @@ public final class LocalUtil
             if (ex instanceof ClassNotFoundException)
             {
                 // We expect this sometimes, hence debug
-                log.debug("Skipping '" + name + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
+                log.debug("Skipping '" + debugContext + "' due to ClassNotFoundException on " + className + ". Cause: " + ex.getMessage());
                 return null;
             }
             else
             {
-                log.error("Failed to load '" + name + "' (" + className + ")", ex);
+                log.error("Failed to load '" + debugContext + "' (" + className + ")", ex);
                 return null;
             }
         }
