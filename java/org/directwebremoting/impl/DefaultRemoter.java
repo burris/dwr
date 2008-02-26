@@ -66,14 +66,120 @@ public class DefaultRemoter implements Remoter
             actualPath = overridePath;
         }
 
-        StringBuffer buffer = new StringBuffer();
+        Creator creator = creatorManager.getCreator(scriptName);
 
-        // Output the class definitions for the converted objects
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append(createParameterDefinitions());
+        buffer.append(EnginePrivate.getEngineInitScript());
+        buffer.append(createClassDefinition(scriptName));
+        buffer.append(createPathDefinition(scriptName, actualPath));
+        buffer.append(createMethodDefinitions(creator, scriptName));
+
+        return buffer.toString();
+    }
+
+    /**
+     * Create a class definition string.
+     * This is similar to {@link EnginePrivate#getEngineInitScript()} except
+     * that it creates scripts for a specific class not for dwr.engine
+     * @see EnginePrivate#getEngineInitScript()
+     * @param scriptName
+     */
+    protected String createClassDefinition(String scriptName)
+    {
+        return "if (typeof this['" + scriptName + "'] == 'undefined') this." + scriptName + " = {};\n\n";
+    }
+
+    /**
+     * Create a _path member to point at DWR
+     * @param scriptName The class that we are creating a member for
+     * @param actualPath The default path to the DWR servlet
+     */
+    protected String createPathDefinition(String scriptName, String actualPath)
+    {
+        return scriptName + "._path = '" + actualPath + "';\n\n";
+    }
+
+    /**
+     * Create a list of method definitions for the given creator.
+     * @param creator The source of method definitions
+     * @param scriptName To allow AccessControl to allow/deny requests
+     */
+    protected String createMethodDefinitions(Creator creator, String scriptName)
+    {
+        StringBuilder buffer = new StringBuilder();
+
+        Method[] methods = creator.getType().getMethods();
+        for (Method method : methods)
+        {
+            String methodName = method.getName();
+
+            // We don't need to check accessControl.getReasonToNotExecute()
+            // because the checks are made by the execute() method, but we do
+            // check if we can display it
+            try
+            {
+                accessControl.assertIsDisplayable(creator, scriptName, method);
+            }
+            catch (SecurityException ex)
+            {
+                if (!allowImpossibleTests)
+                {
+                    continue;
+                }
+            }
+
+            // Is it on the list of banned names
+            if (JavascriptUtil.isReservedWord(methodName))
+            {
+                continue;
+            }
+
+            // Check to see if the creator is reloadable
+            // If it is, then do not cache the generated Javascript
+            // See the notes on creator.isCacheable().
+            String script;
+            if (!creator.isCacheable())
+            {
+                script = getMethodJS(scriptName, method);
+            }
+            else
+            {
+                String key = scriptName + "." + method.getName();
+
+                // For optimal performance we might use the Memoizer pattern
+                // JCiP#108 however performance isn't a big issue and we are
+                // prepared to cope with getMethodJS() being run more than once.
+                script = methodCache.get(key);
+                if (script == null)
+                {
+                    script = getMethodJS(scriptName, method);
+                    methodCache.put(key, script);
+                }
+            }
+
+            buffer.append(script);
+        }
+
+        return buffer.toString();
+    }
+
+    /**
+     * Output the class definitions for all the converted objects.
+     * An optimization for this class might be to only generate class
+     * definitions for classes used as parameters in the class that we are
+     * currently generating a proxy for
+     */
+    protected String createParameterDefinitions()
+    {
+        StringBuilder buffer = new StringBuilder();
+
         for (String match : converterManager.getConverterMatchStrings())
         {
             try
             {
-                StringBuffer paramBuffer = new StringBuffer();
+                StringBuilder paramBuffer = new StringBuilder();
 
                 Converter conv = converterManager.getConverterByMatchString(match);
                 // We will only generate JavaScript classes for compound objects/beans
@@ -150,69 +256,7 @@ public class DefaultRemoter implements Remoter
                 buffer.append("// Missing parameter declaration for " + match + ". See the server logs for details.");
             }
         }
-
-        Creator creator = creatorManager.getCreator(scriptName);
-
         buffer.append('\n');
-
-        String init = EnginePrivate.getEngineInitScript();
-        buffer.append(init);
-
-        // output: if (typeof this['<class>'] == 'undefined') this.<class> = {};
-        buffer.append("if (typeof this['" + scriptName + "'] == 'undefined') this." + scriptName + " = {};\n\n");
-        buffer.append(scriptName + "._path = '" + actualPath + "';\n\n");
-
-        Method[] methods = creator.getType().getMethods();
-        for (Method method : methods)
-        {
-            String methodName = method.getName();
-
-            // We don't need to check accessControl.getReasonToNotExecute()
-            // because the checks are made by the execute() method, but we do
-            // check if we can display it
-            try
-            {
-                accessControl.assertIsDisplayable(creator, scriptName, method);
-            }
-            catch (SecurityException ex)
-            {
-                if (!allowImpossibleTests)
-                {
-                    continue;
-                }
-            }
-
-            // Is it on the list of banned names
-            if (JavascriptUtil.isReservedWord(methodName))
-            {
-                continue;
-            }
-
-            // Check to see if the creator is reloadable
-            // If it is, then do not cache the generated Javascript
-            // See the notes on creator.isCacheable().
-            String script;
-            if (!creator.isCacheable())
-            {
-                script = getMethodJS(scriptName, method);
-            }
-            else
-            {
-                String key = scriptName + "." + method.getName();
-
-                // For optimal performance we might use the Memoizer pattern
-                // JCiP#108 however performance isn't a big issue and we are
-                // prepared to cope with getMethodJS() being run more than once.
-                script = methodCache.get(key);
-                if (script == null)
-                {
-                    script = getMethodJS(scriptName, method);
-                    methodCache.put(key, script);
-                }
-            }
-
-            buffer.append(script);
-        }
 
         return buffer.toString();
     }
@@ -223,7 +267,7 @@ public class DefaultRemoter implements Remoter
      * @param method Target method
      * @return Javascript implementing the DWR call for the target method
      */
-    private String getMethodJS(String scriptName, Method method)
+    protected String getMethodJS(String scriptName, Method method)
     {
         StringBuffer buffer = new StringBuffer();
 
@@ -564,23 +608,23 @@ public class DefaultRemoter implements Remoter
     /**
      * If we need to override the default path
      */
-    private String overridePath = null;
+    protected String overridePath = null;
 
     /**
      * This helps us test that access rules are being followed
      */
-    private boolean allowImpossibleTests = false;
+    protected boolean allowImpossibleTests = false;
 
     /**
      * To prevent a DoS attack we limit the max number of calls that can be
      * made in a batch
      */
-    private int maxCallCount = 20;
+    protected int maxCallCount = 20;
 
     /**
      * Generated Javascript cache
      */
-    private Map<String, String> methodCache = Collections.synchronizedMap(new HashMap<String, String>());
+    protected Map<String, String> methodCache = Collections.synchronizedMap(new HashMap<String, String>());
 
     /**
      * The log stream
