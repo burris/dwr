@@ -70,6 +70,7 @@ public final class DTDEntityResolver implements EntityResolver
         { "-//GetAhead Limited//DTD Direct Web Remoting 0.4//EN", "/dwr10.dtd"},
         { "-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN", "/dwr10.dtd"},
         { "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN", "/dwr20.dtd"},
+        { "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN", "/dwr30.dtd"},
     };
 
     /**

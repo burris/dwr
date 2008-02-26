@@ -78,12 +78,6 @@ public class DefaultCreatorManager implements CreatorManager
      */
     public void addCreator(String scriptName, String creatorName, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
-        if (!LocalUtil.isJavaIdentifier(scriptName))
-        {
-            log.error("Illegal identifier: '" + scriptName + "'");
-            return;
-        }
-
         Class<? extends Creator> clazz = creatorTypes.get(creatorName);
         if (clazz == null)
         {
@@ -97,7 +91,7 @@ public class DefaultCreatorManager implements CreatorManager
         creator.setProperties(params);
 
         // add the creator for the script name
-        addCreator(scriptName, creator);
+        addCreator(creator.getJavascript(), creator);
     }
 
     /* (non-Javadoc)

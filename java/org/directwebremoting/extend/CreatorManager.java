@@ -50,7 +50,9 @@ public interface CreatorManager
     void addCreator(String scriptName, String typeName, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException;
 
     /**
-     * Add a new creator
+     * Add a new creator.
+     * TODO: If we refactor this, we should remove the scriptName parameter and
+     * read the value from the creator
      * @param scriptName The name of the creator to Javascript
      * @param creator The creator to add
      * @throws IllegalArgumentException If we have a duplicate name
