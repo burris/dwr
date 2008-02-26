@@ -36,6 +36,10 @@ public class NewCreator extends AbstractCreator implements Creator
         try
         {
             clazz = LocalUtil.classForName(classname);
+            if (getJavascript() == null)
+            {
+                setJavascript(clazz.getSimpleName());
+            }
         }
         catch (ExceptionInInitializerError ex)
         {
