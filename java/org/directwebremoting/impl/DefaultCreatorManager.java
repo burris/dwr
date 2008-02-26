@@ -65,7 +65,7 @@ public class DefaultCreatorManager implements CreatorManager
             return;
         }
 
-        Class<?> clazz = LocalUtil.classForName(typeName, className, Creator.class);
+        Class<? extends Creator> clazz = LocalUtil.classForName(typeName, className, Creator.class);
         if (clazz != null)
         {
             log.debug("- adding creator type: " + typeName + " = " + clazz);
@@ -76,7 +76,7 @@ public class DefaultCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see org.directwebremoting.CreatorManager#addCreator(java.lang.String, java.lang.String, java.util.Map)
      */
-    public void addCreator(String scriptName, String typeName, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
+    public void addCreator(String scriptName, String creatorName, Map<String, String> params) throws InstantiationException, IllegalAccessException, IllegalArgumentException
     {
         if (!LocalUtil.isJavaIdentifier(scriptName))
         {
@@ -84,14 +84,14 @@ public class DefaultCreatorManager implements CreatorManager
             return;
         }
 
-        Class<?> clazz = creatorTypes.get(typeName);
+        Class<? extends Creator> clazz = creatorTypes.get(creatorName);
         if (clazz == null)
         {
-            log.error("Missing creator: " + typeName + " (while initializing creator for: " + scriptName + ".js)");
+            log.error("Missing creator: " + creatorName + " (while initializing creator for: " + scriptName + ".js)");
             return;
         }
 
-        Creator creator = (Creator) clazz.newInstance();
+        Creator creator = clazz.newInstance();
 
         LocalUtil.setParams(creator, params, ignore);
         creator.setProperties(params);
@@ -225,7 +225,7 @@ public class DefaultCreatorManager implements CreatorManager
     /**
      * The list of the available creators
      */
-    protected Map<String, Class<?>> creatorTypes = new HashMap<String, Class<?>>();
+    protected Map<String, Class<? extends Creator>> creatorTypes = new HashMap<String, Class<? extends Creator>>();
 
     /**
      * The list of the configured creators
