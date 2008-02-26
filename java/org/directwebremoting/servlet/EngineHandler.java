@@ -100,6 +100,12 @@ public class EngineHandler extends JavaScriptHandler
         // using for script tag hack protection
         replace.put("${scriptTagProtection}", scriptTagProtection);
 
+        // engine.js needs to know the URLs to send requests to:
+        replace.put("${plainCallHandlerUrl}", plainCallHandlerUrl);
+        replace.put("${plainPollHandlerUrl}", plainPollHandlerUrl);
+        replace.put("${htmlCallHandlerUrl}", htmlCallHandlerUrl);
+        replace.put("${htmlPollHandlerUrl}", htmlPollHandlerUrl);
+
         return replace;
     }
 
@@ -157,6 +163,58 @@ public class EngineHandler extends JavaScriptHandler
     {
         this.maxWaitAfterWrite = maxWaitAfterWrite;
     }
+
+    /**
+     * @param plainCallHandlerUrl the plainCallHandlerUrl to set
+     */
+    public void setPlainCallHandlerUrl(String plainCallHandlerUrl)
+    {
+        this.plainCallHandlerUrl = plainCallHandlerUrl;
+    }
+
+    /**
+     * @param plainPollHandlerUrl the plainPollHandlerUrl to set
+     */
+    public void setPlainPollHandlerUrl(String plainPollHandlerUrl)
+    {
+        this.plainPollHandlerUrl = plainPollHandlerUrl;
+    }
+
+    /**
+     * @param htmlCallHandlerUrl the htmlCallHandlerUrl to set
+     */
+    public void setHtmlCallHandlerUrl(String htmlCallHandlerUrl)
+    {
+        this.htmlCallHandlerUrl = htmlCallHandlerUrl;
+    }
+
+    /**
+     * @param htmlPollHandlerUrl the htmlPollHandlerUrl to set
+     */
+    public void setHtmlPollHandlerUrl(String htmlPollHandlerUrl)
+    {
+        this.htmlPollHandlerUrl = htmlPollHandlerUrl;
+    }
+
+    /**
+     * URL that engine.js makes calls into
+     */
+    private String plainCallHandlerUrl = "/call/plaincall/";
+
+    /**
+     * URL that engine.js makes calls into
+     */
+    private String plainPollHandlerUrl = "/call/plainpoll/";
+
+    /**
+     * URL that engine.js makes calls into
+     */
+    private String htmlCallHandlerUrl = "/call/htmlcall/";
+
+    /**
+     * URL that engine.js makes calls into
+     */
+    private String htmlPollHandlerUrl = "/call/htmlpoll/";
 
     /**
      * The session cookie name

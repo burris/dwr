@@ -172,7 +172,7 @@ public class ContainerUtil
      */
     public static void setupDefaultContainer(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
     {
-        setupDefaults(container, servletConfig);
+        setupDefaults(container);
         setupFromServletConfig(container, servletConfig);
         resolveContainerAbstraction(container, servletConfig);
         container.setupFinished();
@@ -222,10 +222,9 @@ public class ContainerUtil
     /**
      * Take a DefaultContainer and setup the default beans
      * @param container The container to configure
-     * @param servletConfig The source of init parameters
      * @throws ContainerConfigurationException If we can't use a bean
      */
-    public static void setupDefaults(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
+    public static void setupDefaults(DefaultContainer container) throws ContainerConfigurationException
     {
         container.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
         container.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
@@ -260,10 +259,6 @@ public class ContainerUtil
         createUrlMapping(container, "/interface/", "interfaceHandlerUrl", InterfaceHandler.class);
         createUrlMapping(container, "/monitor/", "monitorHandlerUrl", MonitorHandler.class);
         createUrlMapping(container, "/download/", "downloadHandlerUrl", DownloadHandler.class);
-
-        // The Poll and Call URLs can not be changed easily because they are
-        // referenced from engine.js. Maybe one day this would be a good
-        // extension
         createUrlMapping(container, "/call/plaincall/", "plainCallHandlerUrl", PlainCallHandler.class);
         createUrlMapping(container, "/call/plainpoll/", "plainPollHandlerUrl", PlainPollHandler.class);
         createUrlMapping(container, "/call/htmlcall/", "htmlCallHandlerUrl", HtmlCallHandler.class);

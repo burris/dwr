@@ -248,13 +248,11 @@ if (typeof this['dwr'] == 'undefined') {
   /** Do we use XHR for reverse ajax because we are not streaming? */
   dwr.engine._pollWithXhr = "${pollWithXhr}";
 
-  dwr.engine._ModePlainCall = "/call/plaincall/";
-
-  dwr.engine._ModeHtmlCall = "/call/htmlcall/";
-
-  dwr.engine._ModePlainPoll = "/call/plainpoll/";
-
-  dwr.engine._ModeHtmlPoll = "/call/htmlpoll/";
+  /** These URLs can be configured from the server */
+  dwr.engine._ModePlainCall = "${plainCallHandlerUrl}";
+  dwr.engine._ModePlainPoll = "${plainCallHandlerUrl}";
+  dwr.engine._ModeHtmlCall = "${htmlCallHandlerUrl}";
+  dwr.engine._ModeHtmlPoll = "${htmlPollHandlerUrl}";
 
   /** The page id */
   dwr.engine._scriptSessionId = null;
@@ -522,6 +520,9 @@ if (typeof this['dwr'] == 'undefined') {
         if (stacktrace && window.console.trace) window.console.trace();
         window.console.log(message);
         written = true;
+      }
+      else if (window.Jaxer) {
+        Jaxer.Log.info(message);
       }
       else if (window.opera && window.opera.postError) {
         window.opera.postError(message);
@@ -1013,7 +1014,6 @@ if (typeof this['dwr'] == 'undefined') {
        * @param {Object} batch The batch to alter for XHR transmit
        */
       send:function(batch) {
-
         if (batch.isPoll) {
           batch.map.partialResponse = dwr.engine._partialResponseYes;
         }
@@ -1461,7 +1461,7 @@ if (typeof this['dwr'] == 'undefined') {
         batch.htmlfile = new window.ActiveXObject("htmlfile");
         batch.htmlfile.open();
         batch.htmlfile.write("<" + "html>");
-        //batch.htmlfile.write("<script>document.domain='" + document.domain + "';</script>");
+        //batch.htmlfile.write("<scr" + "ipt>document.domain='" + document.domain + "';</scr" + "ipt>");
         batch.htmlfile.write("<div><iframe className='wibble' src='javascript:void(0)' id='" + idname + "' name='" + idname + "' onload='dwr.engine.transport.iframe.loadingComplete(" + batch.map.batchId + ");'></iframe></div>");
         batch.htmlfile.write("</" + "html>");
         batch.htmlfile.close();
