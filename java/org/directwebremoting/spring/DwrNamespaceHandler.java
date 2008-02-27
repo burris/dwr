@@ -74,6 +74,7 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
         registerBeanDefinitionParser("configuration", new ConfigurationBeanDefinitionParser());
         registerBeanDefinitionParser("controller", new ControllerBeanDefinitionParser());
         registerBeanDefinitionParser("url-mapping", new UrlMappingBeanDefinitionParser());
+        registerBeanDefinitionParser("proxy-ref", new ProxyBeanDefinitionParser());
 
         registerBeanDefinitionDecorator("init", new InitDefinitionDecorator());
         registerBeanDefinitionDecorator("create", new CreatorBeanDefinitionDecorator());
@@ -342,6 +343,42 @@ public abstract class DwrNamespaceHandler extends NamespaceHandlerSupport
             return parserContext.getRegistry().getBeanDefinition("DwrAnnotationURLMapper");
         }
 
+    }
+
+    /**
+     * Registers a bean proxy based in <dwr:proxy-ref />
+     *
+     * @author Jose Noheda [jose.noheda@gmail.com]
+     */
+    protected class ProxyBeanDefinitionParser implements BeanDefinitionParser
+    {
+
+        public BeanDefinition parse(Element element, ParserContext parserContext)
+        {
+            String beanRef = element.getAttribute("bean");
+            BeanDefinitionRegistry registry = parserContext.getRegistry();
+            BeanDefinition beanRefDefinition = findParentDefinition(beanRef, registry);
+            //BeanDefinitionHolder beanDefinitionHolder = new BeanDefinitionHolder(beanRefDefinition, beanRef);
+            String javascript = element.getAttribute("javascript");
+            if (!StringUtils.hasText(javascript))
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("No javascript name provided. Remoting using bean id [" + beanRef + "]");
+                }
+                javascript = StringUtils.capitalize(beanRef);
+            }
+            BeanDefinitionBuilder beanCreator = BeanDefinitionBuilder.rootBeanDefinition(BeanCreator.class);
+            beanCreator.addPropertyValue("beanClass", resolveBeanClassname(beanRefDefinition, registry));
+            beanCreator.addPropertyValue("beanId", beanRef);
+            beanCreator.addDependsOn(beanRef);
+            beanCreator.addPropertyValue("javascript", javascript);
+            BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
+            creatorConfig.addPropertyValue("creator", beanCreator.getBeanDefinition());
+            registerCreator(parserContext.getRegistry(), javascript, creatorConfig, new HashMap<String, String>(), element.getChildNodes());
+            return creatorConfig.getBeanDefinition(); 
+        }
+        
     }
 
     protected class RemoteBeanDefinitionDecorator implements BeanDefinitionDecorator
