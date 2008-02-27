@@ -243,7 +243,7 @@ if (typeof this['dwr'] == 'undefined') {
   dwr.engine._scriptTagProtection = "${scriptTagProtection}";
 
   /** The default path to the DWR servlet */
-  dwr.engine._defaultPath = "${defaultPath}";
+  dwr.engine._pathToDwrServlet = "${pathToDwrServlet}";
 
   /** Do we use XHR for reverse ajax because we are not streaming? */
   dwr.engine._pollWithXhr = "${pollWithXhr}";
@@ -368,7 +368,7 @@ if (typeof this['dwr'] == 'undefined') {
       headers:{}, preHooks:[], postHooks:[],
       timeout:dwr.engine._timeout,
       errorHandler:null, warningHandler:null, textHtmlHandler:null,
-      path:dwr.engine._defaultPath,
+      path:dwr.engine._pathToDwrServlet,
       handlers:[{ exceptionHandler:null, callback:null }]
     };
     dwr.engine.transport.send(batch);
@@ -949,10 +949,15 @@ if (typeof this['dwr'] == 'undefined') {
     send:function(batch) {
       dwr.engine.batch.prepareToSend(batch);
 
+      // Work out if we are going cross domain
+      var dwrShortPath = dwr.engine._pathToDwrServlet.split("/", 3).join("/");
+      var hrefShortPath = window.location.href.split("/", 3).join("/");
+      var isCrossDomain = (dwrShortPath != hrefShortPath);
+
       if (batch.fileUpload) {
         batch.transport = dwr.engine.transport.iframe;
       }
-      else if (dwr.engine.isCrossDomain) {
+      else if (isCrossDomain && !dwr.engine.isJaxerServer) {
         batch.transport = dwr.engine.transport.scriptTag;
       }
       // else if (batch.isPoll && dwr.engine.isIE) {
@@ -1036,9 +1041,12 @@ if (typeof this['dwr'] == 'undefined') {
         // Proceed using XMLHttpRequest
         if (batch.async) {
           batch.req.onreadystatechange = function() {
-            if (typeof dwr != 'undefined') dwr.engine.transport.xhr.stateChange(batch);
+            if (typeof dwr != 'undefined') {
+              dwr.engine.transport.xhr.stateChange(batch);
+            }
           };
         }
+
         // If we're polling, record this for monitoring
         if (batch.isPoll) {
           dwr.engine._pollReq = batch.req;
@@ -1047,6 +1055,7 @@ if (typeof this['dwr'] == 'undefined') {
         }
 
         httpMethod = dwr.engine.transport.xhr.httpMethod;
+
         // Workaround for Safari 1.x POST bug
         var indexSafari = navigator.userAgent.indexOf("Safari/");
         if (indexSafari >= 0) {
@@ -1066,20 +1075,27 @@ if (typeof this['dwr'] == 'undefined') {
 
         batch.mode = batch.isPoll ? dwr.engine._ModePlainPoll : dwr.engine._ModePlainCall;
         var request = dwr.engine.batch.constructRequest(batch, httpMethod);
+
         try {
           batch.req.open(httpMethod, request.url, batch.async);
           try {
             for (var prop in batch.headers) {
               var value = batch.headers[prop];
-              if (typeof value == "string") batch.req.setRequestHeader(prop, value);
+              if (typeof value == "string") {
+                batch.req.setRequestHeader(prop, value);
+              }
             }
-            if (!batch.headers["Content-Type"]) batch.req.setRequestHeader("Content-Type", "text/plain");
+            if (!batch.headers["Content-Type"]) {
+              batch.req.setRequestHeader("Content-Type", "text/plain");
+            }
           }
           catch (ex) {
             dwr.engine._handleWarning(batch, ex);
           }
           batch.req.send(request.body);
-          if (!batch.async) dwr.engine.transport.xhr.stateChange(batch);
+          if (!batch.async) {
+            dwr.engine.transport.xhr.stateChange(batch);
+          }
         }
         catch (ex) {
           dwr.engine._handleError(batch, ex);
@@ -1105,7 +1121,9 @@ if (typeof this['dwr'] == 'undefined') {
 
         var req = batch.req;
         try {
-          if (req.readyState != 4) return;
+          if (req.readyState != 4) {
+            return;
+          }
         }
         catch (ex) {
           dwr.engine._handleWarning(batch, ex);
@@ -1127,6 +1145,10 @@ if (typeof this['dwr'] == 'undefined') {
           }
           else {
             var contentType = req.getResponseHeader("Content-Type");
+            if (dwr.engine.isJaxerServer) {
+              // HACK! Jaxer does something b0rken with Content-Type
+              contentType = "text/javascript";
+            }
             if (!contentType.match(/^text\/plain/) && !contentType.match(/^text\/javascript/)) {
               if (contentType.match(/^text\/html/) && typeof batch.textHtmlHandler == "function") {
                 batch.textHtmlHandler({ status:status, responseText:reply, contentType:contentType });
@@ -1441,10 +1463,17 @@ if (typeof this['dwr'] == 'undefined') {
       send:function(batch) {
         batch.mode = batch.isPoll ? dwr.engine._ModePlainPoll : dwr.engine._ModePlainCall;
         var request = dwr.engine.batch.constructRequest(batch, "GET");
-        batch.script = document.createElement("script");
-        batch.script.id = "dwr-st-" + batch.map["c0-id"];
-        batch.script.src = request.url;
-        document.body.appendChild(batch.script);
+        // The best option is DOM manipulation, but this only works after onload
+        // has completed
+        if (document.body) {
+          batch.script = document.createElement("script");
+          batch.script.id = "dwr-st-" + batch.map["c0-id"];
+          batch.script.src = request.url;
+          document.body.appendChild(batch.script);
+        }
+        else {
+          document.writeln("<scr" + "ipt id='dwr-st-" + batch.map["c0-id"] + "' src='" + request.url + "'> </scr" + "ipt>");
+        }
       }
     },
 
@@ -1527,7 +1556,7 @@ if (typeof this['dwr'] == 'undefined') {
         isPoll:true,
         map:{ windowName:window.name },
         paramCount:0,
-        path:dwr.engine._defaultPath,
+        path:dwr.engine._pathToDwrServlet,
         preHooks:[],
         postHooks:[],
         timeout:0,
@@ -1810,6 +1839,7 @@ if (typeof this['dwr'] == 'undefined') {
   dwr.engine.isOpera = (userAgent.indexOf("Opera") >= 0) ? version : 0;
   dwr.engine.isKhtml = (versionString.indexOf("Konqueror") >= 0) || (versionString.indexOf("Safari") >= 0) ? version : 0;
   dwr.engine.isSafari = (versionString.indexOf("Safari") >= 0) ? version : 0;
+  dwr.engine.isJaxerServer = (window.Jaxer && Jaxer.isOnServer);
 
   var geckoPos = userAgent.indexOf("Gecko");
   dwr.engine.isMozilla = ((geckoPos >= 0) && (!dwr.engine.isKhtml)) ? version : 0;
@@ -1827,7 +1857,7 @@ if (typeof this['dwr'] == 'undefined') {
   catch(ex) { }
 
   // Fetch the scriptSessionId from the server
-  dwr.engine._execute(dwr.engine._defaultPath, '__System', 'pageLoaded', function() {
+  dwr.engine._execute(dwr.engine._pathToDwrServlet, '__System', 'pageLoaded', function() {
     dwr.engine._ordered = false;
   });
 
@@ -1841,7 +1871,7 @@ if (typeof this['dwr'] == 'undefined') {
       * @param {Object} data The data to publish
       */
     publish:function(topicName, data) {
-      dwr.engine._execute(dwr.engine._defaultPath, '__System', 'publish', topicName, data, {});
+      dwr.engine._execute(dwr.engine._pathToDwrServlet, '__System', 'publish', topicName, data, {});
     },
 
     /**
@@ -1859,7 +1889,7 @@ if (typeof this['dwr'] == 'undefined') {
         scope:scope,
         subscriberData:subscriberData
       };
-      dwr.engine._execute(dwr.engine._defaultPath, '__System', 'subscribe', topicName, subscription, {});
+      dwr.engine._execute(dwr.engine._pathToDwrServlet, '__System', 'subscribe', topicName, subscription, {});
       return subscription;
     },
 
@@ -1890,7 +1920,7 @@ if (typeof this['dwr'] == 'undefined') {
         scope:scope,
         subscriberData:subscriberData
       };
-      dwr.engine._execute(dwr.engine._defaultPath, '__System', 'subscribe', topicName, subscription, {});
+      dwr.engine._execute(dwr.engine._pathToDwrServlet, '__System', 'subscribe', topicName, subscription, {});
       return subscription;
     },
 
