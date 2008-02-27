@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Jaxer With DWR Remoting</title>
+  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/util.js' runat="both"></script>
+  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/engine.js' runat="both"></script>
+  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/new/org.getahead.dwrdemo.intro.Intro.js' runat="both"></script>
+  <script type='text/javascript'>
+  function loadClient() {
+    Intro.getInsert(function(parts) {
+      dwr.util.setValue('fillFromClient', parts[0], { escapeHtml:false });
+    });
+  }
+  </script>
+  <script type='text/javascript' runat="server">
+  function loadServer() {
+    Intro.getInsert(function(parts) {
+      dwr.util.setValue('fillFromServer', parts[0], { escapeHtml:false });
+    });
+  }
+  </script>
+</head>
+<body onload="loadClient();" onserverload="loadServer()">
+
+<p>Normal paragraph rendered in HTML</p>
+
+<p>From the client: <div id="fillFromClient"></div></p>
+
+<p>From the server: <div id="fillFromServer"></div></p>
+
+</body>
+</html>
