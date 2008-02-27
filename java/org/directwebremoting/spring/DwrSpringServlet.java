@@ -107,6 +107,8 @@ public class DwrSpringServlet extends HttpServlet
             webContextBuilder = container.getBean(WebContextBuilder.class);
 
             ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, this);
+            ContainerUtil.publishContainer(container, servletConfig);
+
             // retrieve the configurators from Spring (loaded by the ContextLoaderListener)
             try
             {
@@ -124,8 +126,6 @@ public class DwrSpringServlet extends HttpServlet
 
             ContainerUtil.configureFromInitParams(container, servletConfig);
             ContainerUtil.configure(container, configurators);
-
-            ContainerUtil.publishContainer(container, servletConfig);
         }
         catch (Exception ex)
         {

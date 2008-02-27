@@ -74,8 +74,8 @@ public class DwrServlet extends HttpServlet
             webContextBuilder = container.getBean(WebContextBuilder.class);
 
             ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, this);
-            ContainerUtil.configureContainerFully(container, servletConfig);
             ContainerUtil.publishContainer(container, servletConfig);
+            ContainerUtil.configureContainerFully(container, servletConfig);
         }
         catch (ExceptionInInitializerError ex)
         {

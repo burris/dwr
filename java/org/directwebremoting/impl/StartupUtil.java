@@ -58,12 +58,12 @@ public class StartupUtil
 
             Container container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
-            WebContextBuilder webContextBuilder = StartupUtil.initWebContext(servletConfig, servletContext, container);
-            StartupUtil.initServerContext(servletConfig, servletContext, container);
+            StartupUtil.initContainerBeans(servletConfig, servletContext, container);
+            WebContextBuilder webContextBuilder = container.getBean(WebContextBuilder.class);
 
             ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, null);
-            ContainerUtil.configureContainerFully(container, servletConfig);
             ContainerUtil.publishContainer(container, servletConfig);
+            ContainerUtil.configureContainerFully(container, servletConfig);
 
             return container;
         }

@@ -28,16 +28,13 @@ public class SingletonContainer
             StartupUtil.initContainerBeans(servletConfig, servletContext, container);
             webContextBuilder = container.getBean(WebContextBuilder.class);
             ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, null);
+            ContainerUtil.publishContainer(container, servletConfig);
 
             ContainerUtil.configureFromSystemDwrXml(container);
-
             DwrXmlConfigurator local = new DwrXmlConfigurator();
             local.setClassResourceName("/dwr-test.xml");
             local.configure(container);
-
             ContainerUtil.configureFromInitParams(container, servletConfig);
-
-            ContainerUtil.publishContainer(container, servletConfig);
         }
         finally
         {

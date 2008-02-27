@@ -214,6 +214,7 @@ public class DwrController extends AbstractController implements BeanNameAware, 
             webContextBuilder = container.getBean(WebContextBuilder.class);
 
             ContainerUtil.prepareForWebContextFilter(servletContext, servletConfig, container, webContextBuilder, null);
+            ContainerUtil.publishContainer(container, servletConfig);
 
             // The dwr.xml from within the JAR file.
             if (includeDefaultConfig)
@@ -222,7 +223,6 @@ public class DwrController extends AbstractController implements BeanNameAware, 
             }
 
             ContainerUtil.configure(container, configurators);
-            ContainerUtil.publishContainer(container, servletConfig);
         }
         catch (Exception ex)
         {
