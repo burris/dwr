@@ -484,12 +484,19 @@ public class ContainerUtil
     {
         ServletContext servletContext = servletConfig.getServletContext();
 
+        // TODO: Make sense of this
+        // Store this container in the servletContext so long as no-one else did
+        // INIT_PUBLISH_CONTAINER="publishContainerAs" which does not sound like
+        // a logical name. Plus what happens when there is more than one DWR?
+        /*
         String publishName = servletConfig.getInitParameter(INIT_PUBLISH_CONTAINER);
         if (publishName != null)
         {
             servletContext.setAttribute(publishName, container);
         }
+        */
 
+        // Push the container into a list that holds all the known containers
         List<Container> containers = (List<Container>) servletContext.getAttribute(ATTRIBUTE_CONTAINER_LIST);
         if (containers == null)
         {
@@ -633,11 +640,11 @@ public class ContainerUtil
      */
     public static final String INIT_LOGLEVEL = "logLevel";
 
-    /**
+    /*
      * Init parameter: Should we publish the {@link Container} to the servlet
      * context, and if so, under what name?
      */
-    public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs";
+    //public static final String INIT_PUBLISH_CONTAINER = "publishContainerAs";
 
     /**
      * Init parameter: If you wish to use a custom configurator, place its
