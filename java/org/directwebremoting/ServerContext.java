@@ -81,7 +81,12 @@ public interface ServerContext
      * with a "/" character but does not end with a "/" character.
      * For servlets in the default (root) context, this method returns "".
      * The container does not decode this string.
-     * @return The portion of the request URI that indicates the context
+     * <p>WARNING: This method may return null if DWR has not received any
+     * requests. If this method is called from outside of DWR, as the servlet
+     * environment is starting up you should check for a null reply and try
+     * again later.
+     * @return The portion of the request URI that indicates the context or null
+     * if DWR has not received and requests so far
      */
     String getContextPath();
 
