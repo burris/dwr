@@ -250,7 +250,7 @@ if (typeof this['dwr'] == 'undefined') {
 
   /** These URLs can be configured from the server */
   dwr.engine._ModePlainCall = "${plainCallHandlerUrl}";
-  dwr.engine._ModePlainPoll = "${plainCallHandlerUrl}";
+  dwr.engine._ModePlainPoll = "${plainPollHandlerUrl}";
   dwr.engine._ModeHtmlCall = "${htmlCallHandlerUrl}";
   dwr.engine._ModeHtmlPoll = "${htmlPollHandlerUrl}";
 
