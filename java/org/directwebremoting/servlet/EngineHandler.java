@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.DwrConstants;
+import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.util.MimeConstants;
 
@@ -83,12 +84,9 @@ public class EngineHandler extends JavaScriptHandler
 
         // What is the replacement field we use to tell engine.js what we are using
         // for script tag hack protection
-        String path = request.getContextPath() + request.getServletPath();
-        if (overridePath != null)
-        {
-            path = overridePath;
-        }
-        replace.put("${defaultPath}", path);
+        String contextServletPath = request.getContextPath() + request.getServletPath();
+        String pathToDwrServlet = remoter.getPathToDwrServlet(contextServletPath);
+        replace.put("${pathToDwrServlet}", pathToDwrServlet);
 
         // Under what cookie name is the session id stored?
         replace.put("${sessionCookieName}", sessionCookieName);
@@ -133,15 +131,6 @@ public class EngineHandler extends JavaScriptHandler
     public void setScriptTagProtection(String scriptTagProtection)
     {
         this.scriptTagProtection = scriptTagProtection;
-    }
-
-    /**
-     * If we need to override the default path
-     * @param overridePath The new override path
-     */
-    public void setOverridePath(String overridePath)
-    {
-        this.overridePath = overridePath;
     }
 
     /**
@@ -197,6 +186,14 @@ public class EngineHandler extends JavaScriptHandler
     }
 
     /**
+     * @param remoter the remoter to set
+     */
+    public void setRemoter(Remoter remoter)
+    {
+        this.remoter = remoter;
+    }
+
+    /**
      * URL that engine.js makes calls into
      */
     private String plainCallHandlerUrl = "/call/plaincall/";
@@ -230,11 +227,6 @@ public class EngineHandler extends JavaScriptHandler
     private int maxWaitAfterWrite = -1;
 
     /**
-     * If we need to override the default path
-     */
-    private String overridePath = null;
-
-    /**
      * By default we disable GET, but this hinders old Safaris
      */
     private boolean allowGetForSafariButMakeForgeryEasier = false;
@@ -243,6 +235,11 @@ public class EngineHandler extends JavaScriptHandler
      * What is the string we use for script tag hack protection
      */
     private String scriptTagProtection = DwrConstants.SCRIPT_TAG_PROTECTION;
+
+    /**
+     * So we can correctly calculate the path to the DWR servlet
+     */
+    private Remoter remoter;
 
     /**
      * Are we supporting streaming?

@@ -55,9 +55,9 @@ public class InterfaceHandler extends JavaScriptHandler
             throw new SecurityException("Script names may only contain Java Identifiers");
         }
 
-        String path = request.getContextPath() + request.getServletPath();
+        String contextServletPath = request.getContextPath() + request.getServletPath();
 
-        return remoter.generateInterfaceScript(scriptName, path);
+        return remoter.generateInterfaceScript(scriptName, contextServletPath);
     }
 
     /**

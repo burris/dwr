@@ -24,8 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.LogFactory;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.AjaxFilter;
 import org.directwebremoting.AjaxFilterChain;
 import org.directwebremoting.WebContext;
@@ -58,23 +60,15 @@ public class DefaultRemoter implements Remoter
     /* (non-Javadoc)
      * @see org.directwebremoting.Remoter#generateInterfaceScript(java.lang.String, java.lang.String)
      */
-    public String generateInterfaceScript(String scriptName, String path) throws SecurityException
+    public String generateInterfaceScript(String scriptName, String contextServletPath) throws SecurityException
     {
-        String actualPath = path;
-        if (overridePath != null)
-        {
-            actualPath = overridePath;
-        }
-
-        Creator creator = creatorManager.getCreator(scriptName);
-
         StringBuilder buffer = new StringBuilder();
 
-        buffer.append(createParameterDefinitions());
+        buffer.append(createParameterDefinitions(scriptName));
         buffer.append(EnginePrivate.getEngineInitScript());
         buffer.append(createClassDefinition(scriptName));
-        buffer.append(createPathDefinition(scriptName, actualPath));
-        buffer.append(createMethodDefinitions(creator, scriptName));
+        buffer.append(createPathDefinition(scriptName, contextServletPath));
+        buffer.append(createMethodDefinitions(scriptName));
 
         return buffer.toString();
     }
@@ -94,20 +88,63 @@ public class DefaultRemoter implements Remoter
     /**
      * Create a _path member to point at DWR
      * @param scriptName The class that we are creating a member for
-     * @param actualPath The default path to the DWR servlet
+     * @param path The default path to the DWR servlet
      */
-    protected String createPathDefinition(String scriptName, String actualPath)
+    protected String createPathDefinition(String scriptName, String path)
     {
-        return scriptName + "._path = '" + actualPath + "';\n\n";
+        return scriptName + "._path = '" + getPathToDwrServlet(path) + "';\n\n";
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.Remoter#getPathToDwrServlet(java.lang.String)
+     */
+    public String getPathToDwrServlet(String contextServletPath)
+    {
+        String actualPath = contextServletPath;
+        if (overridePath != null)
+        {
+            actualPath = overridePath;
+        }
+
+        if (useAbsolutePath)
+        {
+            HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+
+            StringBuffer absolutePath = new StringBuffer(48);
+
+            String scheme = request.getScheme();
+            int port = request.getServerPort();
+
+            absolutePath.append(scheme);
+            absolutePath.append("://");
+            absolutePath.append(request.getServerName());
+
+            if (port > 0 && 
+                ((scheme.equalsIgnoreCase("http") && port != 80) || 
+                 (scheme.equalsIgnoreCase("https") && port != 443)))
+            {
+                absolutePath.append(':');
+                absolutePath.append(port);
+            }
+            
+            absolutePath.append(request.getContextPath());
+            absolutePath.append(request.getServletPath());
+
+            actualPath = absolutePath.toString();
+        }
+
+        return actualPath;
     }
 
     /**
      * Create a list of method definitions for the given creator.
-     * @param creator The source of method definitions
-     * @param scriptName To allow AccessControl to allow/deny requests
+     * @param fullCreatorName To allow AccessControl to allow/deny requests
      */
-    protected String createMethodDefinitions(Creator creator, String scriptName)
+    protected String createMethodDefinitions(String fullCreatorName)
     {
+        Creator creator = creatorManager.getCreator(fullCreatorName);
+        String scriptName = creator.getJavascript();
+
         StringBuilder buffer = new StringBuilder();
 
         Method[] methods = creator.getType().getMethods();
@@ -169,9 +206,13 @@ public class DefaultRemoter implements Remoter
      * Output the class definitions for all the converted objects.
      * An optimization for this class might be to only generate class
      * definitions for classes used as parameters in the class that we are
-     * currently generating a proxy for
+     * currently generating a proxy for.
+     * <p>Currently the <code>scriptName</code> parameter is not used, we just
+     * generate the class definitions for all types, however conceptually, it
+     * should be used
+     * @param scriptName The script for which we are generating parameter classes
      */
-    protected String createParameterDefinitions()
+    protected String createParameterDefinitions(String scriptName)
     {
         StringBuilder buffer = new StringBuilder();
 
@@ -508,6 +549,18 @@ public class DefaultRemoter implements Remoter
     }
 
     /**
+     * By default we use a relative path to the DWR servlet which can help if
+     * there are several routes to the servlet. However it can be a pain if
+     * the DWR engine is running on a different port from the web-server.
+     * However this is a minority case so this is not officially supported.
+     * @param useAbsolutePath Does DWR generate an absolute _path property
+     */
+    public void setUseAbsolutePath(boolean useAbsolutePath)
+    {
+        this.useAbsolutePath = useAbsolutePath;
+    }
+
+    /**
      * Accessor for the CreatorManager that we configure
      * @param creatorManager The new ConverterManager
      */
@@ -609,6 +662,11 @@ public class DefaultRemoter implements Remoter
      * If we need to override the default path
      */
     protected String overridePath = null;
+
+    /**
+     * @see #setUseAbsolutePath(boolean)
+     */
+    protected boolean useAbsolutePath = false;
 
     /**
      * This helps us test that access rules are being followed
