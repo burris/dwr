@@ -32,7 +32,7 @@ import org.directwebremoting.util.SharedObjects;
  * This is an example of how to control clients using server side threads
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Clock
+public class Clock implements Runnable
 {
     /**
      * Create a schedule to update the clock every second.
@@ -40,16 +40,18 @@ public class Clock
     public Clock()
     {
         ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
-        executor.scheduleAtFixedRate(new Runnable()
+        executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS);
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+    public void run()
+    {
+        if (active)
         {
-            public void run()
-            {
-                if (active)
-                {
-                    setClockDisplay(new Date().toString());
-                }
-            }
-        }, 1, 1, TimeUnit.SECONDS);
+            setClockDisplay(new Date().toString());
+        }
     }
 
     /**

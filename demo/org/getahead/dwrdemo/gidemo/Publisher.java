@@ -29,33 +29,34 @@ import org.directwebremoting.util.SharedObjects;
  * A generator of random objects to push to GI
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class Publisher
+public class Publisher implements Runnable
 {
     /**
      * Create a new publish thread and start it
      */
     public Publisher()
     {
-        Runnable runnable = new PublisherRunnable();
         ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
-        executor.scheduleAtFixedRate(runnable, 1, 1, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS);
     }
 
-    protected class PublisherRunnable implements Runnable
+    /* (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
+    public void run()
     {
-        /* (non-Javadoc)
-         * @see java.lang.Runnable#run()
-         */
-        public void run()
+        ServerContext serverContext = ServerContextFactory.get();
+        String contextPath = serverContext.getContextPath();
+        if (contextPath == null)
         {
-            ServerContext serverContext = ServerContextFactory.get();
-            String contextPath = serverContext.getContextPath();
-            Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/dwr-oa-gi.html");
-            ScriptProxy proxy = new ScriptProxy(sessions);
-
-            Corporation corp = corporations.getNextChangedCorporation();
-            proxy.addFunctionCall("OpenAjax.hub.publish", "gidemo.corp", corp);
+            return;
         }
+
+        Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/dwr-oa-gi.html");
+        ScriptProxy proxy = new ScriptProxy(sessions);
+
+        Corporation corp = corporations.getNextChangedCorporation();
+        proxy.addFunctionCall("OpenAjax.hub.publish", "gidemo.corp", corp);
     }
 
     /**

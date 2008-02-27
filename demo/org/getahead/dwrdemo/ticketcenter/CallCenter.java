@@ -46,7 +46,7 @@ import org.getahead.dwrdemo.util.RandomData;
 /**
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class CallCenter
+public class CallCenter implements Runnable
 {
     /**
      * Create a new publish thread and start it
@@ -59,48 +59,44 @@ public class CallCenter
         addRandomUnknownCall();
         addRandomUnknownCall();
 
-        Runnable runnable = new UpdateRunnable();
         ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
-        executor.scheduleAtFixedRate(runnable, 2, 2, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(this, 2, 2, TimeUnit.SECONDS);
     }
 
     /**
      * Called once every couple of seconds to take some random action
      */
-    protected class UpdateRunnable implements Runnable
+    public void run()
     {
-        public void run()
+        try
         {
-            try
+            synchronized (calls)
             {
-                synchronized (calls)
+                switch (random.nextInt(5))
                 {
-                    switch (random.nextInt(5))
-                    {
-                    case 0:
-                    case 1:
-                        addRandomUnknownCall();
-                        break;
-    
-                    case 2:
-                        addRandomKnownCall();
-                        break;
-    
-                    case 3:
-                        removeRandomCall();
-                        break;
-    
-                    default:
-                        break;
-                    }
-    
-                    updateAll();
+                case 0:
+                case 1:
+                    addRandomUnknownCall();
+                    break;
+
+                case 2:
+                    addRandomKnownCall();
+                    break;
+
+                case 3:
+                    removeRandomCall();
+                    break;
+
+                default:
+                    break;
                 }
+
+                updateAll();
             }
-            catch (Exception ex)
-            {
-                log.warn("Random event failure", ex);
-            }
+        }
+        catch (Exception ex)
+        {
+            log.warn("Random event failure", ex);
         }
     }
 
@@ -374,6 +370,10 @@ public class CallCenter
     {
         ServerContext serverContext = ServerContextFactory.get();
         String contextPath = serverContext.getContextPath();
+        if (contextPath == null)
+        {
+            return;
+        }
 
         Collection<ScriptSession> sessions = serverContext.getScriptSessionsByPage(contextPath + "/gi/ticketcenter.html");
 
