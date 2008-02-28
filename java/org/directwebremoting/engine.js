@@ -950,9 +950,13 @@ if (typeof this['dwr'] == 'undefined') {
       dwr.engine.batch.prepareToSend(batch);
 
       // Work out if we are going cross domain
-      var dwrShortPath = dwr.engine._pathToDwrServlet.split("/", 3).join("/");
-      var hrefShortPath = window.location.href.split("/", 3).join("/");
-      var isCrossDomain = (dwrShortPath != hrefShortPath);
+      var isCrossDomain = false;
+      var path = dwr.engine._pathToDwrServlet;
+      if (path.indexOf("http://") == 0 || path.indexOf("https://") == 0) {
+        var dwrShortPath = dwr.engine._pathToDwrServlet.split("/", 3).join("/");
+        var hrefShortPath = window.location.href.split("/", 3).join("/");
+        var isCrossDomain = (dwrShortPath != hrefShortPath);
+      }
 
       if (batch.fileUpload) {
         batch.transport = dwr.engine.transport.iframe;
