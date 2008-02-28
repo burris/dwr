@@ -277,7 +277,7 @@ public class ContainerUtil
      * @param handler The class of Handler
      * @throws ContainerConfigurationException From {@link DefaultContainer#addParameter(String, Object)}
      */
-    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class<?> handler) throws ContainerConfigurationException
+    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class<? extends Handler> handler) throws ContainerConfigurationException
     {
         container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
         container.addParameter(propertyName, url);
