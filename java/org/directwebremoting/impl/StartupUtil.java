@@ -97,7 +97,7 @@ public class StartupUtil
      */
     public static void logStartup(ServletConfig config)
     {
-        log.info("DWR Version " + VersionUtil.getVersion() + " starting.");
+        log.info("DWR Version " + VersionUtil.getLabel() + " starting.");
         log.info("- Servlet Engine: " + config.getServletContext().getServerInfo());
         log.info("- Java Version:   " + System.getProperty("java.version"));
         log.info("- Java Vendor:    " + System.getProperty("java.vendor"));

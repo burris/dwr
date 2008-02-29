@@ -96,7 +96,7 @@ public class DwrConnectionMetaData implements ConnectionMetaData
 	 */
 	public String getProviderVersion() throws JMSException
 	{
-		return VersionUtil.getVersion();
+		return VersionUtil.getLabel();
 	}
 
 	private Collection<String> properties = new ArrayList<String>();

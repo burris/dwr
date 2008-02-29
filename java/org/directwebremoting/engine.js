@@ -204,17 +204,21 @@ if (typeof this['dwr'] == 'undefined') {
       return;
     }
     dwr.engine._batch = null;
-    if (batch.map.callCount == 0) return;
+    if (batch.map.callCount == 0) {
+      return;
+    }
 
     // The hooks need to be merged carefully to preserve ordering
-    if (options) dwr.engine.batch.merge(batch, options);
+    if (options) {
+      dwr.engine.batch.merge(batch, options);
+    }
 
     // In ordered mode, we don't send unless the list of sent items is empty
     if (dwr.engine._ordered && dwr.engine._batchesLength != 0) {
       dwr.engine._batchQueue[dwr.engine._batchQueue.length] = batch;
     }
     else {
-      dwr.engine.transport.send(batch);
+      return dwr.engine.transport.send(batch);
     }
   };
 
@@ -227,6 +231,53 @@ if (typeof this['dwr'] == 'undefined') {
     var div = document.createElement("div");
     document.body.appendChild(div);
     div.innerHTML = "<iframe width='0' height='0' scrolling='no' frameborder='0' src='" + data + "'></iframe>";
+  };
+
+  /**
+   * What is the current version DWR number
+   * DWR version numbers are of the form "Version 1.2.3.3128[.beta]", where:
+   * 1 is the major release number. Changes in major version number indicate
+   * significant enhancements in functionality
+   * 2 is the minor release number. Changes in minor version number indicate
+   * less significant changes in functionality
+   * 3 is the revision release number. Changes here typically indicate bug
+   * fixes only
+   * 3128 is the build number. This number increments for each build
+   * .beta is a release title that is generally only used for non production
+   * releases to indicate the purpose/quality of the release
+   * The label is these strings concatenated
+   */
+  dwr.version = {
+    /**
+     * Changes in major version number indicate significant enhancements
+     */
+    major:parseInt("${versionMajor}"),
+
+    /**
+     * Changes in minor version number indicate smaller enhancements
+     */
+    minor:parseInt("${versionMinor}"),
+
+    /**
+     * Changes with the revision number typically indicate bug-fixes only
+     */
+    revision:parseInt("${versionRevision}"),
+
+    /**
+     * The build number increments for each build
+     */
+    build:parseInt("${versionBuild}"),
+
+    /**
+     * Only used for non production releases to indicate the purpose/quality of
+     * the release. Example titles include 'milestone1' or 'beta3'.
+     */
+    title:"${versionTitle}",
+
+    /**
+     *  The strings above concetenated
+     */
+    label:"${versionLabel}"
   };
 
   //==============================================================================
@@ -254,6 +305,9 @@ if (typeof this['dwr'] == 'undefined') {
   dwr.engine._ModeHtmlCall = "${htmlCallHandlerUrl}";
   dwr.engine._ModeHtmlPoll = "${htmlPollHandlerUrl}";
 
+  /** Do we make the calls async? Default to 'true' */
+  dwr.engine._async = Boolean("${defaultToAsync}");
+
   /** The page id */
   dwr.engine._scriptSessionId = null;
 
@@ -275,9 +329,6 @@ if (typeof this['dwr'] == 'undefined') {
   /** Do we attempt to ensure that calls happen in the order in which they were
   sent? This starts true until we have fetched the ids, when it is to false */
   dwr.engine._ordered = true;
-
-  /** Do we make the calls async? */
-  dwr.engine._async = true;
 
   /** The current batch (if we are in batch mode) */
   dwr.engine._batch = null;
@@ -414,7 +465,9 @@ if (typeof this['dwr'] == 'undefined') {
 
     // Now we have finished remembering the call, we increment the call count
     batch.map.callCount++;
-    if (singleShot) dwr.engine.endBatch();
+    if (singleShot) {
+      return dwr.engine.endBatch();
+    }
   };
 
   /**
@@ -521,11 +574,12 @@ if (typeof this['dwr'] == 'undefined') {
         window.console.log(message);
         written = true;
       }
-      else if (window.Jaxer) {
-        Jaxer.Log.info(message);
-      }
       else if (window.opera && window.opera.postError) {
         window.opera.postError(message);
+        written = true;
+      }
+      else if (window.Jaxer && Jaxer.isOnServer) {
+        Jaxer.Log.info(message);
         written = true;
       }
     }
@@ -558,6 +612,10 @@ if (typeof this['dwr'] == 'undefined') {
         dwr.engine._debug("Warning: batch == null in remoteHandleCallback for batchId=" + batchId, true);
         return;
       }
+
+      // We store the reply in the batch so that in sync mode we can return the data
+      batch.reply = reply;
+
       // Error handlers inside here indicate an error that is nothing to do
       // with DWR so we handle them differently.
       try {
@@ -971,7 +1029,7 @@ if (typeof this['dwr'] == 'undefined') {
         batch.transport = dwr.engine.transport.xhr;
       }
 
-      batch.transport.send(batch);
+      return batch.transport.send(batch);
     },
 
     /**
@@ -1108,6 +1166,9 @@ if (typeof this['dwr'] == 'undefined') {
         if (batch.isPoll && batch.map.partialResponse == dwr.engine._partialResponseYes) {
           dwr.engine.transport.xhr.checkCometPoll();
         }
+
+        // This is only of any use in sync mode to return the reply data
+        return batch.reply;
       },
 
       /**
@@ -1125,7 +1186,9 @@ if (typeof this['dwr'] == 'undefined') {
 
         var req = batch.req;
         try {
-          if (req.readyState != 4) {
+          var readyState = req.readyState;
+          var notReady = (req.readyState != 4)
+          if (notReady) {
             return;
           }
         }

@@ -104,7 +104,7 @@ public class DefaultServerContext implements ServerContext
      */
     public String getVersion()
     {
-        return VersionUtil.getVersion();
+        return VersionUtil.getLabel();
     }
 
     /* (non-Javadoc)

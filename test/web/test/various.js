@@ -199,6 +199,16 @@ function testSyncNesting() {
   dwr.engine.setAsync(true); 
 }
 
+function testSyncReturning() {
+  dwr.engine.setAsync(false);
+  var data1 = Test.slowStringParam("SyncNesting-1", 100);
+  success(data1);
+  var data2 = Test.slowStringParam("SyncNesting-2", 100);
+  success(data2);
+  success("SyncNesting-End");
+  dwr.engine.setAsync(true); 
+}
+
 function testSyncInCallMetaData() {
   Test.slowStringParam("SyncInCallMetaData-1", 100, {
     async:false,

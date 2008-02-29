@@ -326,7 +326,7 @@ public class DefaultRemoter implements Remoter
         buffer.append("callback) {\n");
 
         String executeFunctionName = EnginePrivate.getExecuteFunctionName();
-        buffer.append("  " + executeFunctionName + "(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
+        buffer.append("  return " + executeFunctionName + "(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (LocalUtil.isServletClass(paramTypes[j]))

@@ -53,5 +53,6 @@ public class JaxerContainer extends DefaultContainer
         addParameter("crossDomainSessionSecurity", "false");
         addParameter("allowScriptTagRemoting", "true");
         addParameter("useAbsolutePath", "true");
+        addParameter("defaultToAsync", "false");
     }
 }

@@ -15,9 +15,8 @@
   </script>
   <script type='text/javascript' runat="server">
   function loadServer() {
-    Intro.getInsert(function(parts) {
-      dwr.util.setValue('fillFromServer', parts[0], { escapeHtml:false });
-    });
+    var parts = Intro.getInsert();
+    dwr.util.setValue('fillFromServer', parts[0], { escapeHtml:false });
   }
   </script>
 </head>

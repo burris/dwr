@@ -40,7 +40,7 @@ public class Intro
         return new String[]
         {
             WebContextFactory.get().forwardToString("/insert.html"),
-            VersionUtil.getVersion(),
+            VersionUtil.getLabel(),
         };
     }
 }

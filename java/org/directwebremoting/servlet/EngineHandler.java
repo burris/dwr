@@ -27,6 +27,7 @@ import org.directwebremoting.extend.DwrConstants;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.util.MimeConstants;
+import org.directwebremoting.util.VersionUtil;
 
 /**
  * A Handler that supports requests for engine.js
@@ -103,6 +104,17 @@ public class EngineHandler extends JavaScriptHandler
         replace.put("${plainPollHandlerUrl}", plainPollHandlerUrl);
         replace.put("${htmlCallHandlerUrl}", htmlCallHandlerUrl);
         replace.put("${htmlPollHandlerUrl}", htmlPollHandlerUrl);
+
+        // Do we start off with everything in Sjax mode?
+        replace.put("${defaultToAsync}", String.valueOf(defaultToAsync));
+
+        // Version numbers so clients can sort out what they're up against
+        replace.put("${versionMajor}", String.valueOf(VersionUtil.getMajor()));
+        replace.put("${versionMinor}", String.valueOf(VersionUtil.getMinor()));
+        replace.put("${versionRevision}", String.valueOf(VersionUtil.getRevision()));
+        replace.put("${versionBuild}", String.valueOf(VersionUtil.getBuild()));
+        replace.put("${versionTitle}", String.valueOf(VersionUtil.getTitle()));
+        replace.put("${versionLabel}", String.valueOf(VersionUtil.getLabel()));
 
         return replace;
     }
@@ -196,22 +208,22 @@ public class EngineHandler extends JavaScriptHandler
     /**
      * URL that engine.js makes calls into
      */
-    private String plainCallHandlerUrl = "/call/plaincall/";
+    private String plainCallHandlerUrl;
 
     /**
      * URL that engine.js makes calls into
      */
-    private String plainPollHandlerUrl = "/call/plainpoll/";
+    private String plainPollHandlerUrl;
 
     /**
      * URL that engine.js makes calls into
      */
-    private String htmlCallHandlerUrl = "/call/htmlcall/";
+    private String htmlCallHandlerUrl;
 
     /**
      * URL that engine.js makes calls into
      */
-    private String htmlPollHandlerUrl = "/call/htmlpoll/";
+    private String htmlPollHandlerUrl;
 
     /**
      * The session cookie name
@@ -235,6 +247,11 @@ public class EngineHandler extends JavaScriptHandler
      * What is the string we use for script tag hack protection
      */
     private String scriptTagProtection = DwrConstants.SCRIPT_TAG_PROTECTION;
+
+    /**
+     * Does DWR by default use synchronous XHR - i.e. Sjax
+     */
+    private boolean defaultToAsync = true;
 
     /**
      * So we can correctly calculate the path to the DWR servlet
