@@ -23,13 +23,12 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
 import org.directwebremoting.extend.TypeHintContext;
-import org.directwebremoting.util.JavascriptUtil;
 import org.directwebremoting.util.LocalUtil;
 
 /**
@@ -61,8 +60,8 @@ public class SignatureParser
         {
             log.debug("Parsing extra type info: ");
 
-            String reply = JavascriptUtil.stripMultiLineComments(sigtext);
-            reply = JavascriptUtil.stripSingleLineComments(reply);
+            String reply = LegacyCompressor.stripMultiLineComments(sigtext);
+            reply = LegacyCompressor.stripSingleLineComments(reply);
             String process = reply;
 
             process = process.replace('\n', ' ');

@@ -20,8 +20,9 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.util.JavascriptUtil;
-import org.directwebremoting.util.MimeConstants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.extend.Compressor;
 
 /**
  * Basically a file servlet component that does some <b>very limited</b>
@@ -37,39 +38,33 @@ public abstract class JavaScriptHandler extends TemplateHandler
     protected String generateCachableContent(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String output = super.generateCachableContent(request, response);
-
-        if (getMimeType().equals(MimeConstants.MIME_JS) && scriptCompressed)
+        try
         {
-            output = JavascriptUtil.compress(output, compressionLevel);
+            return compressor.compressJavaScript(output);
         }
-
-        return output;
+        catch (Exception ex)
+        {
+            log.warn("Compression system (" + compressor.getClass().getSimpleName() +") failed to compress script", ex);
+            return output;
+        }
     }
 
     /**
-     * To what level do we compress scripts?
-     * @param scriptCompressed The scriptCompressed to set.
+     * Setter for the current JavaScript compression library
+     * @param compressor The new compression library
      */
-    public void setScriptCompressed(boolean scriptCompressed)
+    public void setCompressor(Compressor compressor)
     {
-        this.scriptCompressed = scriptCompressed;
+        this.compressor = compressor;
     }
 
     /**
-     * @param compressionLevel The compressionLevel to set.
+     * Are we compressing the script?
      */
-    public void setCompressionLevel(int compressionLevel)
-    {
-        this.compressionLevel = compressionLevel;
-    }
+    private Compressor compressor;
 
     /**
-     * How much do we compression javascript by?
+     * The log stream
      */
-    protected int compressionLevel = JavascriptUtil.LEVEL_DEBUGGABLE;
-
-    /**
-     * Do we retain comments and unneeded spaces in Javascript code?
-     */
-    private boolean scriptCompressed = false;
+    private static final Log log = LogFactory.getLog(JavaScriptHandler.class);
 }

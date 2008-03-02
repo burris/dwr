@@ -43,8 +43,19 @@ public class DefaultContainer extends AbstractContainer implements Container
 {
     /**
      * Set the class that should be used to implement the given interface
-     * @param askFor The interface to implement
-     * @param valueParam The new implementation
+     * @param base The interface to implement
+     * @param implementation The new implementation
+     * @throws ContainerConfigurationException If the specified beans could not be used
+     */
+    public <T> void addImplementation(Class<T> base, Class<? extends T> implementation)
+    {
+        addParameter(base.getName(), implementation.getName());
+    }
+
+    /**
+     * Add a parameter to the container as a possibility for injection
+     * @param askFor The key that will be looked up
+     * @param valueParam The value to be returned from the key lookup
      * @throws ContainerConfigurationException If the specified beans could not be used
      */
     public void addParameter(String askFor, Object valueParam) throws ContainerConfigurationException

@@ -42,6 +42,7 @@ import org.directwebremoting.dwrp.HtmlCallMarshaller;
 import org.directwebremoting.dwrp.PlainCallMarshaller;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.AjaxFilterManager;
+import org.directwebremoting.extend.Compressor;
 import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.extend.ContainerAbstraction;
 import org.directwebremoting.extend.ContainerConfigurationException;
@@ -198,13 +199,13 @@ public class ContainerUtil
                 ContainerAbstraction abstraction = abstractionImpl.newInstance();
                 if (abstraction.isNativeEnvironment(servletConfig))
                 {
-                    container.addParameter(ContainerAbstraction.class.getName(), abstractionImplName);
+                    container.addImplementation(ContainerAbstraction.class, abstractionImpl);
 
                     String loadMonitorImplName = container.getParameter(ServerLoadMonitor.class.getName());
                     if (loadMonitorImplName == null)
                     {
                         Class<? extends ServerLoadMonitor> loadMonitorImpl = abstraction.getServerLoadMonitorImplementation();
-                        container.addParameter(ServerLoadMonitor.class.getName(), loadMonitorImpl.getName());
+                        container.addImplementation(ServerLoadMonitor.class, loadMonitorImpl);
                     }
 
                     return;
@@ -226,21 +227,22 @@ public class ContainerUtil
      */
     public static void setupDefaults(DefaultContainer container) throws ContainerConfigurationException
     {
-        container.addParameter(AccessControl.class.getName(), DefaultAccessControl.class.getName());
-        container.addParameter(ConverterManager.class.getName(), DefaultConverterManager.class.getName());
-        container.addParameter(CreatorManager.class.getName(), DefaultCreatorManager.class.getName());
-        container.addParameter(UrlProcessor.class.getName(), UrlProcessor.class.getName());
-        container.addParameter(HubBuilder.class.getName(), DefaultHubBuilder.class.getName());
-        container.addParameter(WebContextBuilder.class.getName(), DefaultWebContextBuilder.class.getName());
-        container.addParameter(ServerContextBuilder.class.getName(), DefaultServerContextBuilder.class.getName());
-        container.addParameter(AjaxFilterManager.class.getName(), DefaultAjaxFilterManager.class.getName());
-        container.addParameter(Remoter.class.getName(), DefaultRemoter.class.getName());
-        container.addParameter(DebugPageGenerator.class.getName(), DefaultDebugPageGenerator.class.getName());
-        container.addParameter(PlainCallMarshaller.class.getName(), PlainCallMarshaller.class.getName());
-        container.addParameter(HtmlCallMarshaller.class.getName(), HtmlCallMarshaller.class.getName());
-        container.addParameter(ScriptSessionManager.class.getName(), DefaultScriptSessionManager.class.getName());
-        container.addParameter(PageNormalizer.class.getName(), DefaultPageNormalizer.class.getName());
-        container.addParameter(DownloadManager.class.getName(), InMemoryDownloadManager.class.getName());
+        container.addImplementation(AccessControl.class, DefaultAccessControl.class);
+        container.addImplementation(ConverterManager.class, DefaultConverterManager.class);
+        container.addImplementation(CreatorManager.class, DefaultCreatorManager.class);
+        container.addImplementation(UrlProcessor.class, UrlProcessor.class);
+        container.addImplementation(HubBuilder.class, DefaultHubBuilder.class);
+        container.addImplementation(WebContextBuilder.class, DefaultWebContextBuilder.class);
+        container.addImplementation(ServerContextBuilder.class, DefaultServerContextBuilder.class);
+        container.addImplementation(AjaxFilterManager.class, DefaultAjaxFilterManager.class);
+        container.addImplementation(Remoter.class, DefaultRemoter.class);
+        container.addImplementation(DebugPageGenerator.class, DefaultDebugPageGenerator.class);
+        container.addImplementation(PlainCallMarshaller.class, PlainCallMarshaller.class);
+        container.addImplementation(HtmlCallMarshaller.class, HtmlCallMarshaller.class);
+        container.addImplementation(ScriptSessionManager.class, DefaultScriptSessionManager.class);
+        container.addImplementation(PageNormalizer.class, DefaultPageNormalizer.class);
+        container.addImplementation(DownloadManager.class, InMemoryDownloadManager.class);
+        container.addImplementation(Compressor.class, NullCompressor.class);
 
         String abstractions = JettyContainerAbstraction.class.getName() + " " +
                               GrizzlyContainerAbstraction.class.getName() + " " +

@@ -39,8 +39,8 @@ public class JaxerContainer extends DefaultContainer
         ContainerUtil.setupDefaults(this);
 
         // Overrides for custom implementations
-        addParameter(CreatorManager.class.getName(), WideOpenCreatorManager.class.getName());
-        addParameter(Remoter.class.getName(), JaxerRemoter.class.getName());
+        addImplementation(CreatorManager.class, WideOpenCreatorManager.class);
+        addImplementation(Remoter.class, JaxerRemoter.class);
         ContainerUtil.createUrlMapping(this, "/new/", "interfaceHandlerUrl", JaxerInterfaceHandler.class);
 
         // Custom settings for existing DWR implementations
