@@ -4,8 +4,17 @@
   <!--=======================================================================-->
   <!-- File that contains local settings, you may need to edit this -->
   <property file="build.properties"/>
-  <!-- Version number information -->
+
+  <!-- Version numbers: Duplicates the logic in VersionUtil.loadProperties() -->
   <property file="${source.root}/java/dwr-version.properties"/>
+  <condition property="label" value="${major}.${minor}.${revision}">
+    <equals arg1="${title}" arg2=""/>
+  </condition>
+  <condition property="label" value="${major}.${minor}.${revision}.${build}.${title}">
+    <not>
+      <equals arg1="${title}" arg2=""/>
+    </not>
+  </condition>
 
   <path id="classpath">
     <!--
@@ -83,7 +92,7 @@
     <javadoc access="public"
         author="true"
         destdir="${target.root}/javadoc"
-        doctitle="DWR Version ${version}"
+        doctitle="DWR Version ${label}"
         use="true"
         splitindex="true"
         version="true">
@@ -140,7 +149,7 @@
 
   <!--=======================================================================-->
   <target name="files" depends="war, javadoc" description="Create output WAR and JAR files">
-    <zip destfile="${target.root}/dwr-${version}-src.zip">
+    <zip destfile="${target.root}/dwr-${label}-src.zip">
       <fileset dir="${source.root}">
         <exclude name="target/**"/>
         <exclude name="**/*.iml"/>
