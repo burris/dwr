@@ -3,9 +3,11 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Jaxer With DWR Remoting</title>
-  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/util.js' runat="both"></script>
-  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/engine.js' runat="both"></script>
-  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/new/org.getahead.dwrdemo.intro.Intro.js' runat="both"></script>
+
+  <!-- Roughly speaking, this is how DWR works on the client -->
+  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/util.js'></script>
+  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/engine.js'></script>
+  <script type='text/javascript' src='http://localhost:8080/jwdr/dwr/new/org.getahead.dwrdemo.intro.Intro.js'></script>
   <script type='text/javascript'>
   function loadClient() {
     Intro.getInsert(function(parts) {
@@ -13,7 +15,13 @@
     });
   }
   </script>
+
+  <!-- This is how it works on the server, frameworkPatch.js would be pre-integrated -->
+  <script type='text/javascript' src='frameworkPatch.js' runat="server"></script>
   <script type='text/javascript' runat="server">
+  Jaxer.dwr.pathToDwrServlet = "http://localhost:8080/jwdr/dwr";
+  Jaxer.dwr.require("util", "new/org.getahead.dwrdemo.intro.Intro");
+
   function loadServer() {
     var parts = Intro.getInsert();
     dwr.util.setValue('fillFromServer', parts[0], { escapeHtml:false });
