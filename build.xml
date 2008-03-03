@@ -245,13 +245,15 @@
 
   <!--=======================================================================-->
   <target name="jaxer" depends="compile" description="Create Jaxer output file">
-    <mkdir dir="${target.root}"/>
-    <jar destfile="${target.root}/jaxer-dwr.jar" compress="true">
+    <mkdir dir="${target.root}/jaxer"/>
+    <jar destfile="${target.root}/jaxer/jaxer-dwr.jar" compress="true">
       <fileset dir="${target.root}/classes"/>
       <fileset dir="${target.root}/jaxer-main-classes"/>
     </jar>
-    <war destfile="${target.root}/jwdr.war" webxml="${source.root}/jaxer/web/WEB-INF/web.xml">
-      <lib file="${target.root}/jaxer-dwr.jar"/>
+    <copy file="${source.root}/jaxer/web/WEB-INF/web.xml" todir="${target.root}/jaxer/"/>
+    <copy file="${source.root}/jaxer/etc/docs/readme.txt" todir="${target.root}/jaxer/"/>
+    <war destfile="${target.root}/jaxer/demoServer.war" webxml="${source.root}/jaxer/web/WEB-INF/web.xml">
+      <lib file="${target.root}/jaxer/jaxer-dwr.jar"/>
       <classes dir="${target.root}/jaxer-test-classes"/>
       <fileset dir="${source.root}/jaxer/web">
         <exclude name="**/*.iml"/>
@@ -261,7 +263,7 @@
         <exclude name="WEB-INF/classes/**"/>
       </fileset>
     </war>
-    <zip destfile="${target.root}/demoJaxerFile.zip" basedir="${source.root}/jaxer/jaxer-web">
+    <zip destfile="${target.root}/jaxer/demoRemoting.zip" basedir="${source.root}/jaxer/jaxer-web">
       <exclude name="**/*.iml"/>
       <exclude name="**/*.ipr"/>
       <exclude name="**/*.iws"/>

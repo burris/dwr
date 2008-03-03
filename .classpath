@@ -121,7 +121,9 @@
 	<classpathentry kind="src" output="target/eclipse/classes/test" path="test/resources"/>
 	<classpathentry kind="src" output="target/eclipse/classes/gi" path="generated/gi/java"/>
 	<classpathentry kind="src" output="target/eclipse/classes/drapgen" path="drapgen/java"/>
-	<classpathentry kind="src" output="target/eclipse/classes/jaxer" path="jaxer/main/java"/>
-	<classpathentry kind="src" output="target/eclipse/classes/jaxer" path="jaxer/main/resources"/>
+	<classpathentry kind="src" output="target/eclipse/classes/jaxer-main" path="jaxer/main/java"/>
+	<classpathentry kind="src" output="target/eclipse/classes/jaxer-main" path="jaxer/main/resources"/>
+	<classpathentry kind="src" output="target/eclipse/classes/jaxer-test" path="jaxer/test/java"/>
+	<classpathentry kind="src" output="target/eclipse/classes/jaxer-test" path="jaxer/test/resources"/>
 	<classpathentry kind="output" path="target/eclipse/classes/other"/>
 </classpath>
