@@ -535,7 +535,7 @@ public class AllConverterTest
         try
         {
             testDate = format.parse("01-01-2005");
-            singletonContainer = new SingletonContainer();
+            singletonContainer = new SingletonContainer("/dwr-test.xml");
         }
         catch (Exception ex)
         {

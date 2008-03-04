@@ -5,6 +5,8 @@ import javax.servlet.ServletContext;
 
 import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory.WebContextBuilder;
+import org.directwebremoting.annotations.AnnotationsConfigurator;
+import org.directwebremoting.extend.Configurator;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DwrXmlConfigurator;
@@ -18,11 +20,10 @@ public class SingletonContainer
     /**
      *
      */
-    public SingletonContainer() throws Exception
+    public SingletonContainer(String classResourceName) throws Exception
     {
         try
         {
-            // Setup the DWR container
             container = ContainerUtil.createAndSetupDefaultContainer(servletConfig);
 
             StartupUtil.initContainerBeans(servletConfig, servletContext, container);
@@ -31,10 +32,13 @@ public class SingletonContainer
             ContainerUtil.publishContainer(container, servletConfig);
 
             ContainerUtil.configureFromSystemDwrXml(container);
+
             DwrXmlConfigurator local = new DwrXmlConfigurator();
-            local.setClassResourceName("/dwr-test.xml");
+            local.setClassResourceName(classResourceName);
             local.configure(container);
-            ContainerUtil.configureFromInitParams(container, servletConfig);
+
+            Configurator configurator = new AnnotationsConfigurator();
+            configurator.configure(container);
         }
         finally
         {
