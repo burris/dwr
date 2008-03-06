@@ -20,6 +20,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.servlet.InterfaceHandler;
 import org.directwebremoting.servlet.PathConstants;
 
@@ -37,11 +39,24 @@ public class JaxerInterfaceHandler extends InterfaceHandler
     {
         String scriptName = request.getPathInfo();
         scriptName = scriptName.replaceFirst("/", "");
-        scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
 
         String path = request.getContextPath() + request.getServletPath();
 
-        return remoter.generateInterfaceScript(scriptName, path);
+        if (scriptName.endsWith(PathConstants.EXTENSION_JS))
+        {
+            scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
+            return remoter.generateInterfaceScript(scriptName, path);
+        }
+        else if (scriptName.endsWith(PathConstants.EXTENSION_SDOC))
+        {
+            scriptName = scriptName.replace(PathConstants.EXTENSION_SDOC, "");
+            return remoter.generateInterfaceSDoc(scriptName, path);
+        }
+        else
+        {
+            log.debug("Throwing at request for script with unknown extension: '" + scriptName + "'");
+            throw new SecurityException("Unknown extension");
+        }
     }
 
     /* (non-Javadoc)
@@ -52,4 +67,9 @@ public class JaxerInterfaceHandler extends InterfaceHandler
     {
         return "JaxerInterfaceHandler(" + interfaceHandlerUrl + ")";
     }
+
+    /**
+     * The log stream
+     */
+    private static final Log log = LogFactory.getLog(JaxerInterfaceHandler.class);
 }

@@ -42,6 +42,11 @@ public interface PathConstants
     public static final String EXTENSION_JS = ".js";
 
     /**
+     * Extension for javascript files
+     */
+    public static final String EXTENSION_SDOC = ".sdoc";
+
+    /**
      * The position of web.xml
      */
     public static final String RESOURCE_WEB_XML = "/WEB-INF/web.xml";

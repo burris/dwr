@@ -32,6 +32,14 @@ public interface Remoter
     String generateInterfaceScript(String scriptName, String contextServletPath) throws SecurityException;
 
     /**
+     * Generate an SDoc file that documents the interface definition
+     * @param scriptName The script to generate for
+     * @param contextServletPath request.contextPath + request.servletPath.
+     * @return An sdoc file that documents the associated interface file
+     */
+    String generateInterfaceSDoc(String scriptName, String contextServletPath);
+
+    /**
      * Execute a set of remote calls and generate set of reply data for later
      * conversion to whatever wire protocol we are using today.
      * @param calls The set of calls to execute

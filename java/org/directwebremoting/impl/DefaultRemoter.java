@@ -73,6 +73,18 @@ public class DefaultRemoter implements Remoter
         return buffer.toString();
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.Remoter#generateInterfaceSDoc(java.lang.String, java.lang.String)
+     */
+    public String generateInterfaceSDoc(String scriptName, String contextServletPath)
+    {
+        StringBuilder buffer = new StringBuilder();
+
+        buffer.append(createMethodSDoc(scriptName));
+
+        return buffer.toString();
+    }
+
     /**
      * Create a class definition string.
      * This is similar to {@link EnginePrivate#getEngineInitScript()} except
@@ -203,6 +215,77 @@ public class DefaultRemoter implements Remoter
     }
 
     /**
+     * Create a list of method definitions for the given creator.
+     * @param fullCreatorName To allow AccessControl to allow/deny requests
+     */
+    protected String createMethodSDoc(String fullCreatorName)
+    {
+        if (!debug)
+        {
+            throw new SecurityException("SDoc is only available in debug mode.");
+        }
+
+        Creator creator = creatorManager.getCreator(fullCreatorName);
+        String scriptName = creator.getJavascript();
+
+        StringBuilder buffer = new StringBuilder();
+
+        Method[] methods = creator.getType().getMethods();
+        for (Method method : methods)
+        {
+            String methodName = method.getName();
+
+            // We don't need to check accessControl.getReasonToNotExecute()
+            // because the checks are made by the execute() method, but we do
+            // check if we can display it
+            try
+            {
+                accessControl.assertIsDisplayable(creator, scriptName, method);
+            }
+            catch (SecurityException ex)
+            {
+                if (!allowImpossibleTests)
+                {
+                    continue;
+                }
+            }
+
+            // Is it on the list of banned names
+            if (JavascriptUtil.isReservedWord(methodName))
+            {
+                continue;
+            }
+
+            // Check to see if the creator is reloadable
+            // If it is, then do not cache the generated Javascript
+            // See the notes on creator.isCacheable().
+            String script;
+            if (!creator.isCacheable())
+            {
+                script = getMethodSDoc(scriptName, method);
+            }
+            else
+            {
+                String key = scriptName + "." + method.getName();
+
+                // For optimal performance we might use the Memoizer pattern
+                // JCiP#108 however performance isn't a big issue and we are
+                // prepared to cope with getMethodJS() being run more than once.
+                script = methodCache.get(key);
+                if (script == null)
+                {
+                    script = getMethodSDoc(scriptName, method);
+                    methodCache.put(key, script);
+                }
+            }
+
+            buffer.append(script);
+        }
+
+        return buffer.toString();
+    }
+
+    /**
      * Output the class definitions for all the converted objects.
      * An optimization for this class might be to only generate class
      * definitions for classes used as parameters in the class that we are
@@ -313,8 +396,10 @@ public class DefaultRemoter implements Remoter
         StringBuffer buffer = new StringBuffer();
 
         String methodName = method.getName();
-        buffer.append(scriptName + '.' + methodName + " = function(");
         Class<?>[] paramTypes = method.getParameterTypes();
+
+        // Create the function definition
+        buffer.append(scriptName + '.' + methodName + " = function(");
         for (int j = 0; j < paramTypes.length; j++)
         {
             if (!LocalUtil.isServletClass(paramTypes[j]))
@@ -322,9 +407,9 @@ public class DefaultRemoter implements Remoter
                 buffer.append("p" + j + ", ");
             }
         }
-
         buffer.append("callback) {\n");
 
+        // The method body calls into engine.js
         String executeFunctionName = EnginePrivate.getExecuteFunctionName();
         buffer.append("  return " + executeFunctionName + "(" + scriptName + "._path, '" + scriptName + "', '" + methodName + "\', ");
         for (int j = 0; j < paramTypes.length; j++)
@@ -338,8 +423,47 @@ public class DefaultRemoter implements Remoter
                 buffer.append("p" + j + ", ");
             }
         }
-
         buffer.append("callback);\n");
+        buffer.append("};\n\n");
+
+        return buffer.toString();
+    }
+
+    /**
+     * Generates Javascript for a given Java method
+     * @param scriptName  Name of the Javascript file, without ".js" suffix
+     * @param method Target method
+     * @return Javascript implementing the DWR call for the target method
+     */
+    protected String getMethodSDoc(String scriptName, Method method)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        String methodName = method.getName();
+        Class<?>[] paramTypes = method.getParameterTypes();
+
+        // Create the sdoc comment
+        buffer.append("/**\n");
+        for (int j = 0; j < paramTypes.length; j++)
+        {
+            if (!LocalUtil.isServletClass(paramTypes[j]))
+            {
+                buffer.append(" * @param {" + paramTypes[j] + "} p" + j + " a param\n");
+            }
+        }
+        buffer.append(" * @param {function|Object} callback callback function or options object\n");
+        buffer.append(" */\n");
+
+        // Create the function definition
+        buffer.append(scriptName + '.' + methodName + " = function(");
+        for (int j = 0; j < paramTypes.length; j++)
+        {
+            if (!LocalUtil.isServletClass(paramTypes[j]))
+            {
+                buffer.append("p" + j + ", ");
+            }
+        }
+        buffer.append("callback) {\n");
         buffer.append("};\n\n");
 
         return buffer.toString();
