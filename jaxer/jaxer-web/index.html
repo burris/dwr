@@ -20,7 +20,8 @@
   <script type='text/javascript' src='frameworkPatch.js' runat="server"></script>
   <script type='text/javascript' runat="server">
   Jaxer.dwr.pathToDwrServlet = "http://localhost:8080/demoServer/dwr";
-  Jaxer.dwr.require("util", "new/org.getahead.dwrdemo.intro.Intro");
+  Jaxer.dwr.requireUtil();
+  Jaxer.dwr.createNew("org.getahead.dwrdemo.intro.Intro");
 
   function loadServer() {
     var parts = Intro.getInsert();

@@ -24,7 +24,22 @@ Jaxer.dwr.pathToDwrServlet = null;
  * <code>Jaxer.dwr.require("util", "new/java.io.File");</code>
  * @param {string} varargs list of resources to import
  */
-Jaxer.dwr.require = function(varargs) {
+Jaxer.dwr.requireUtil = function() {
+  Jaxer.dwr._requireSingle("util");
+}
+
+/**
+ * Import Java resources into Jaxer.
+ * Each resource is the name of a Java class prefixed with details about how it
+ * is to be instantiated. In the initial release, only 'new' is supported
+ * although it is envisaged that support for other creators like spring/guice
+ * will be added shortly. There is a special value of 'util' that will give
+ * access to the dwr.util classes
+ * <p>Example usage:
+ * <code>Jaxer.dwr.require("util", "new/java.io.File");</code>
+ * @param {string} varargs list of resources to import
+ */
+Jaxer.dwr.createNew = function(className) {
   if (!Jaxer.dwr.pathToDwrServlet) {
     Jaxer.Log.error("Jaxer.dwr.pathToDwrServlet has not been set");
     return;
@@ -33,9 +48,7 @@ Jaxer.dwr.require = function(varargs) {
     Jaxer.dwr._requireSingle("engine");
     Jaxer.dwr._haveEngine = true;
   }
-  for (var i = 0; i < arguments.length; i++) {
-    Jaxer.dwr._requireSingle(arguments[i]);
-  }
+  Jaxer.dwr._requireSingle("new/" + className);
 }
 
 /**
