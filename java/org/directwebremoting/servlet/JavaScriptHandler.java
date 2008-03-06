@@ -38,6 +38,12 @@ public abstract class JavaScriptHandler extends TemplateHandler
     protected String generateCachableContent(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String output = super.generateCachableContent(request, response);
+
+        if (debug || compressor == null)
+        {
+            return output;
+        }
+
         try
         {
             return compressor.compressJavaScript(output);
@@ -59,9 +65,22 @@ public abstract class JavaScriptHandler extends TemplateHandler
     }
 
     /**
+     * In debug mode we don't do compression at all
+     */
+    public void setDebug(boolean debug)
+    {
+        this.debug = debug;
+    }
+
+    /**
      * Are we compressing the script?
      */
     private Compressor compressor;
+
+    /**
+     * In debug mode, we skip script compression
+     */
+    private boolean debug = false;
 
     /**
      * The log stream
