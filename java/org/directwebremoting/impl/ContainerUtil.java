@@ -175,7 +175,7 @@ public class ContainerUtil
     {
         setupDefaults(container);
         setupFromServletConfig(container, servletConfig);
-        resolveContainerAbstraction(container, servletConfig);
+        resolveMultipleImplementations(container, servletConfig);
         container.setupFinished();
     }
 
@@ -188,8 +188,10 @@ public class ContainerUtil
      * @throws ContainerConfigurationException If we can't use a bean
      */
     @SuppressWarnings("unchecked")
-    public static void resolveContainerAbstraction(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
+    public static void resolveMultipleImplementations(DefaultContainer container, ServletConfig servletConfig) throws ContainerConfigurationException
     {
+        resolveMultipleImplementation(container, Compressor.class);
+
         String abstractionImplNames = container.getParameter(ContainerAbstraction.class.getName());
         for (String abstractionImplName : abstractionImplNames.split(" "))
         {
@@ -221,6 +223,38 @@ public class ContainerUtil
     }
 
     /**
+     * Some interfaces have multiple options, and we pick the first that we
+     * can construct. The assumption is that multiple implementations are
+     * held as strings concatenated, separated with spaces.
+     * @param container The container which has a multiple implementation
+     * @param toResolve The class which needs disambiguating
+     */
+    protected static void resolveMultipleImplementation(DefaultContainer container, Class<?> toResolve)
+    {
+        String abstractionImplNames = container.getParameter(toResolve.getName());
+        for (String abstractionImplName : abstractionImplNames.split(" "))
+        {
+            try
+            {
+                Class<?> abstractionImpl = Class.forName(abstractionImplName);
+                if (!toResolve.isAssignableFrom(abstractionImpl))
+                {
+                    log.error("Can't cast: " + abstractionImpl.getName() + " to " + toResolve.getName());
+                }
+
+                abstractionImpl.newInstance();
+                container.addParameter(toResolve.getName(), abstractionImpl.getName());
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                throw new ContainerConfigurationException("Exception while loading ContainerAbstraction called : " + abstractionImplName, ex);
+            }
+        }
+    }
+
+    /**
      * Take a DefaultContainer and setup the default beans
      * @param container The container to configure
      * @throws ContainerConfigurationException If we can't use a bean
@@ -242,29 +276,34 @@ public class ContainerUtil
         container.addImplementation(ScriptSessionManager.class, DefaultScriptSessionManager.class);
         container.addImplementation(PageNormalizer.class, DefaultPageNormalizer.class);
         container.addImplementation(DownloadManager.class, InMemoryDownloadManager.class);
-        container.addImplementation(Compressor.class, NullCompressor.class);
 
-        String abstractions = JettyContainerAbstraction.class.getName() + " " +
-                              GrizzlyContainerAbstraction.class.getName() + " " +
-                              ServletSpecContainerAbstraction.class.getName();
-        container.addParameter(ContainerAbstraction.class.getName(), abstractions);
+        container.addImplementationOption(Compressor.class, YahooJSCompressor.class);
+        container.addImplementationOption(Compressor.class, LegacyCompressor.class);
+        container.addImplementationOption(Compressor.class, NullCompressor.class);
+
+        container.addImplementationOption(ContainerAbstraction.class, JettyContainerAbstraction.class);
+        container.addImplementationOption(ContainerAbstraction.class, GrizzlyContainerAbstraction.class);
+        container.addImplementationOption(ContainerAbstraction.class, ServletSpecContainerAbstraction.class);
 
         // Mapping handlers to URLs
-        createUrlMapping(container, "/index.html", "indexHandlerUrl", IndexHandler.class);
-        createUrlMapping(container, "/engine.js", "engineHandlerUrl", EngineHandler.class);
-        createUrlMapping(container, "/util.js", "utilHandlerUrl", UtilHandler.class);
-        createUrlMapping(container, "/auth.js", "authHandlerUrl", AuthHandler.class);
-        createUrlMapping(container, "/gi.js", "giHandlerUrl", GiHandler.class);
-        createUrlMapping(container, "/webwork/DWRActionUtil.js", "webworkUtilHandlerUrl", WebworkUtilHandler.class);
-        createUrlMapping(container, "/about", "aboutHandlerUrl", AboutHandler.class);
-        createUrlMapping(container, "/test/", "testHandlerUrl", TestHandler.class);
-        createUrlMapping(container, "/interface/", "interfaceHandlerUrl", InterfaceHandler.class);
-        createUrlMapping(container, "/monitor/", "monitorHandlerUrl", MonitorHandler.class);
-        createUrlMapping(container, "/download/", "downloadHandlerUrl", DownloadHandler.class);
-        createUrlMapping(container, "/call/plaincall/", "plainCallHandlerUrl", PlainCallHandler.class);
-        createUrlMapping(container, "/call/plainpoll/", "plainPollHandlerUrl", PlainPollHandler.class);
-        createUrlMapping(container, "/call/htmlcall/", "htmlCallHandlerUrl", HtmlCallHandler.class);
-        createUrlMapping(container, "/call/htmlpoll/", "htmlPollHandlerUrl", HtmlPollHandler.class);
+        createUrlMapping(container, "/index.html", IndexHandler.class, "indexHandlerUrl");
+        createUrlMapping(container, "/engine.js", EngineHandler.class, "engineHandlerUrl");
+        createUrlMapping(container, "/util.js", UtilHandler.class, "utilHandlerUrl");
+        createUrlMapping(container, "/auth.js", AuthHandler.class);
+        createUrlMapping(container, "/gi.js", GiHandler.class);
+        createUrlMapping(container, "/webwork/DWRActionUtil.js", WebworkUtilHandler.class);
+        createUrlMapping(container, "/about", AboutHandler.class);
+        createUrlMapping(container, "/test/", TestHandler.class, "testHandlerUrl");
+        createUrlMapping(container, "/interface/", InterfaceHandler.class, "interfaceHandlerUrl");
+        createUrlMapping(container, "/monitor/", MonitorHandler.class);
+        createUrlMapping(container, "/download/", DownloadHandler.class, "downloadHandlerUrl");
+        createUrlMapping(container, "/call/plaincall/", PlainCallHandler.class, "plainCallHandlerUrl");
+        createUrlMapping(container, "/call/plainpoll/", PlainPollHandler.class, "plainPollHandlerUrl");
+        createUrlMapping(container, "/call/htmlcall/", HtmlCallHandler.class, "htmlCallHandlerUrl");
+        createUrlMapping(container, "/call/htmlpoll/", HtmlPollHandler.class, "htmlPollHandlerUrl");
+
+        createUrlMapping(container, "/engine.sdoc", EngineHandler.class);
+        createUrlMapping(container, "/util.sdoc", UtilHandler.class);
     }
 
     /**
@@ -275,14 +314,32 @@ public class ContainerUtil
      * </ul>
      * @param container The container to create the entries in
      * @param url The URL of the new {@link Handler}
+     * @param handler The class of Handler
      * @param propertyName The property name (for injection and lookup)
+     * @throws ContainerConfigurationException From {@link DefaultContainer#addParameter(String, Object)}
+     */
+    public static void createUrlMapping(DefaultContainer container, String url, Class<? extends Handler> handler, String propertyName) throws ContainerConfigurationException
+    {
+        container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
+        if (propertyName != null)
+        {
+            container.addParameter(propertyName, url);
+        }
+    }
+
+    /**
+     * Creates entries in the {@link Container} so 1 lookup is possible.
+     * <ul>
+     * <li>You can find a {@link Handler} for a URL. Used by {@link UrlProcessor}
+     * </ul>
+     * @param container The container to create the entries in
+     * @param url The URL of the new {@link Handler}
      * @param handler The class of Handler
      * @throws ContainerConfigurationException From {@link DefaultContainer#addParameter(String, Object)}
      */
-    public static void createUrlMapping(DefaultContainer container, String url, String propertyName, Class<? extends Handler> handler) throws ContainerConfigurationException
+    public static void createUrlMapping(DefaultContainer container, String url, Class<? extends Handler> handler) throws ContainerConfigurationException
     {
-        container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
-        container.addParameter(propertyName, url);
+        createUrlMapping(container, url, handler, null);
     }
 
     /**

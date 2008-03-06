@@ -57,7 +57,7 @@ public class DwrJaxerServlet extends HttpServlet
 
         try
         {
-            ContainerUtil.resolveContainerAbstraction(container, servletConfig);
+            ContainerUtil.resolveMultipleImplementations(container, servletConfig);
             container.setupFinished();
 
             StartupUtil.initContainerBeans(servletConfig, servletContext, container);

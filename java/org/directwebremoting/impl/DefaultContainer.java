@@ -53,6 +53,39 @@ public class DefaultContainer extends AbstractContainer implements Container
     }
 
     /**
+     * Set the class that should be used to implement the given interface
+     * @param base The interface to implement
+     * @param implementation The new implementation
+     * @throws ContainerConfigurationException If the specified beans could not be used
+     */
+    public <T> void addImplementationOption(Class<T> base, Class<? extends T> implementation)
+    {
+        // Check we can create this type
+        try
+        {
+            implementation.newInstance();
+        }
+        catch (InstantiationException ex)
+        {
+            throw new ContainerConfigurationException("Unable to instantiate " + implementation.getName());
+        }
+        catch (IllegalAccessException ex)
+        {
+            throw new ContainerConfigurationException("Unable to access " + implementation.getName());
+        }
+
+        Object existingOptions = beans.get(base.getName());
+        if (existingOptions == null)
+        {
+            beans.put(base.getName(), implementation.getName());
+        }
+        else
+        {
+            beans.put(base.getName(), existingOptions + " " + implementation.getName());
+        }
+    }
+
+    /**
      * Add a parameter to the container as a possibility for injection
      * @param askFor The key that will be looked up
      * @param valueParam The value to be returned from the key lookup
