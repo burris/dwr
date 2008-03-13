@@ -29,7 +29,7 @@ public interface PathConstants
      * a prefix so the {@link UrlProcessor} knows that this is a URL and not
      * some other property
      */
-    public static final String URL_PREFIX = "url:";
+    public static final String PATH_PREFIX = "url:";
 
     /**
      * Help page name
@@ -40,11 +40,6 @@ public interface PathConstants
      * Extension for javascript files
      */
     public static final String EXTENSION_JS = ".js";
-
-    /**
-     * Extension for javascript files
-     */
-    public static final String EXTENSION_SDOC = ".sdoc";
 
     /**
      * The position of web.xml

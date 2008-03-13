@@ -286,24 +286,21 @@ public class ContainerUtil
         container.addImplementationOption(ContainerAbstraction.class, ServletSpecContainerAbstraction.class);
 
         // Mapping handlers to URLs
-        createUrlMapping(container, "/index.html", IndexHandler.class, "indexHandlerUrl");
-        createUrlMapping(container, "/engine.js", EngineHandler.class, "engineHandlerUrl");
-        createUrlMapping(container, "/util.js", UtilHandler.class, "utilHandlerUrl");
-        createUrlMapping(container, "/auth.js", AuthHandler.class);
-        createUrlMapping(container, "/gi.js", GiHandler.class);
-        createUrlMapping(container, "/webwork/DWRActionUtil.js", WebworkUtilHandler.class);
-        createUrlMapping(container, "/about", AboutHandler.class);
-        createUrlMapping(container, "/test/", TestHandler.class, "testHandlerUrl");
-        createUrlMapping(container, "/interface/", InterfaceHandler.class, "interfaceHandlerUrl");
-        createUrlMapping(container, "/monitor/", MonitorHandler.class);
-        createUrlMapping(container, "/download/", DownloadHandler.class, "downloadHandlerUrl");
-        createUrlMapping(container, "/call/plaincall/", PlainCallHandler.class, "plainCallHandlerUrl");
-        createUrlMapping(container, "/call/plainpoll/", PlainPollHandler.class, "plainPollHandlerUrl");
-        createUrlMapping(container, "/call/htmlcall/", HtmlCallHandler.class, "htmlCallHandlerUrl");
-        createUrlMapping(container, "/call/htmlpoll/", HtmlPollHandler.class, "htmlPollHandlerUrl");
-
-        createUrlMapping(container, "/engine.sdoc", EngineHandler.class);
-        createUrlMapping(container, "/util.sdoc", UtilHandler.class);
+        createPathMapping(container, "/index.html", IndexHandler.class, "indexHandlerUrl");
+        createPathMapping(container, "/engine.js", EngineHandler.class, "engineHandlerUrl");
+        createPathMapping(container, "/util.js", UtilHandler.class, "utilHandlerUrl");
+        createPathMapping(container, "/auth.js", AuthHandler.class);
+        createPathMapping(container, "/gi.js", GiHandler.class);
+        createPathMapping(container, "/webwork/DWRActionUtil.js", WebworkUtilHandler.class);
+        createPathMapping(container, "/about", AboutHandler.class);
+        createPathMapping(container, "/test/", TestHandler.class, "testHandlerUrl");
+        createPathMapping(container, "/interface/", InterfaceHandler.class, "interfaceHandlerUrl");
+        createPathMapping(container, "/monitor/", MonitorHandler.class);
+        createPathMapping(container, "/download/", DownloadHandler.class, "downloadHandlerUrl");
+        createPathMapping(container, "/call/plaincall/", PlainCallHandler.class, "plainCallHandlerUrl");
+        createPathMapping(container, "/call/plainpoll/", PlainPollHandler.class, "plainPollHandlerUrl");
+        createPathMapping(container, "/call/htmlcall/", HtmlCallHandler.class, "htmlCallHandlerUrl");
+        createPathMapping(container, "/call/htmlpoll/", HtmlPollHandler.class, "htmlPollHandlerUrl");
     }
 
     /**
@@ -318,9 +315,9 @@ public class ContainerUtil
      * @param propertyName The property name (for injection and lookup)
      * @throws ContainerConfigurationException From {@link DefaultContainer#addParameter(String, Object)}
      */
-    public static void createUrlMapping(DefaultContainer container, String url, Class<? extends Handler> handler, String propertyName) throws ContainerConfigurationException
+    public static void createPathMapping(DefaultContainer container, String url, Class<? extends Handler> handler, String propertyName) throws ContainerConfigurationException
     {
-        container.addParameter(PathConstants.URL_PREFIX + url, handler.getName());
+        container.addParameter(PathConstants.PATH_PREFIX + url, handler.getName());
         if (propertyName != null)
         {
             container.addParameter(propertyName, url);
@@ -337,9 +334,9 @@ public class ContainerUtil
      * @param handler The class of Handler
      * @throws ContainerConfigurationException From {@link DefaultContainer#addParameter(String, Object)}
      */
-    public static void createUrlMapping(DefaultContainer container, String url, Class<? extends Handler> handler) throws ContainerConfigurationException
+    public static void createPathMapping(DefaultContainer container, String url, Class<? extends Handler> handler) throws ContainerConfigurationException
     {
-        createUrlMapping(container, url, handler, null);
+        createPathMapping(container, url, handler, null);
     }
 
     /**

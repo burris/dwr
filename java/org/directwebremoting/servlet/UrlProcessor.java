@@ -57,13 +57,14 @@ public class UrlProcessor implements Handler, InitializingBean
         Collection<String> beanNames = container.getBeanNames();
         for (String name : beanNames)
         {
-            if (name.startsWith(PathConstants.URL_PREFIX))
+            if (name.startsWith(PathConstants.PATH_PREFIX))
             {
                 Object bean = container.getBean(name);
 
                 if (bean instanceof Handler)
                 {
-                    urlMapping.put(name.substring(PathConstants.URL_PREFIX.length()), bean);
+                    Handler handler = (Handler) bean;
+                    urlMapping.put(name.substring(PathConstants.PATH_PREFIX.length()), handler);
                 }
                 else
                 {
@@ -90,14 +91,14 @@ public class UrlProcessor implements Handler, InitializingBean
             else
             {
                 // Loop through all the known URLs
-                for (Entry<String, Object> entry : urlMapping.entrySet())
+                for (Entry<String, Handler> entry : urlMapping.entrySet())
                 {
                     String url = entry.getKey();
 
                     // If this URL matches, call the handler
                     if (pathInfo.startsWith(url))
                     {
-                        Handler handler = (Handler) entry.getValue();
+                        Handler handler = entry.getValue();
                         handler.handle(request, response);
                         return;
                     }
@@ -139,7 +140,7 @@ public class UrlProcessor implements Handler, InitializingBean
     /**
      * The mapping of URLs to {@link Handler}s
      */
-    protected Map<String, Object> urlMapping = new HashMap<String, Object>();
+    protected Map<String, Handler> urlMapping = new HashMap<String, Handler>();
 
     /**
      * The default if we have no other action (HTTP-404)

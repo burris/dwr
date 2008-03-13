@@ -41,7 +41,7 @@ public class JaxerContainer extends DefaultContainer
         // Overrides for custom implementations
         addImplementation(CreatorManager.class, WideOpenCreatorManager.class);
         addImplementation(Remoter.class, JaxerRemoter.class);
-        ContainerUtil.createUrlMapping(this, "/new/", JaxerInterfaceHandler.class, "interfaceHandlerUrl");
+        ContainerUtil.createPathMapping(this, "/new/", JaxerInterfaceHandler.class, "interfaceHandlerUrl");
 
         // Custom settings for existing DWR implementations
         addParameter("debug", "true");
