@@ -301,6 +301,8 @@ public class ContainerUtil
         createPathMapping(container, "/call/plainpoll/", PlainPollHandler.class, "plainPollHandlerUrl");
         createPathMapping(container, "/call/htmlcall/", HtmlCallHandler.class, "htmlCallHandlerUrl");
         createPathMapping(container, "/call/htmlpoll/", HtmlPollHandler.class, "htmlPollHandlerUrl");
+
+        container.addParameter("maxWaitAfterWrite", "500");
     }
 
     /**

@@ -131,7 +131,7 @@ public class OutputAlarm extends BasicAlarm implements Alarm
     /**
      * How long do we wait after output happens in case there is more output
      */
-    protected int maxWaitAfterWrite;
+    protected int maxWaitAfterWrite = -1;
 
     /**
      * The script session to monitor for output
