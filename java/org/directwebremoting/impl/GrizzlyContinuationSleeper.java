@@ -43,61 +43,91 @@ public class GrizzlyContinuationSleeper implements Sleeper
     {
         this.onAwakening = awakening;
 
-        try
+        synchronized (wakeUpCalledLock)
         {
-            continuation.suspend(-1);
-        }
-        catch (Exception ex)
-        {
-            Continuation.rethrowIfContinuation(ex);
-
-            log.warn("Exception", ex);
-            proxy = new ThreadWaitSleeper();
-            proxy.goToSleep(onAwakening);
+            if (wakeUpCalled)
+            {
+                onAwakening.run();
+            }
+            else
+            {
+                try
+                {
+                    continuation.suspend(-1);
+                }
+                catch (Exception ex)
+                {
+                    Continuation.rethrowIfContinuation(ex);
+        
+                    log.warn("Exception", ex);
+                    proxy = new ThreadWaitSleeper();
+                    proxy.goToSleep(onAwakening);
+                }
+            }
         }
     }
 
-    
     /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.PollHandler.Sleeper#wakeUp()
      */
     public void wakeUp()
     {
-        if (proxy != null)
+        synchronized (wakeUpCalledLock)
         {
-            proxy.wakeUp();
-        }
-        else
-        {
-            synchronized (continuation)
+            if (wakeUpCalled)
             {
-                if (!resumed)
-                {
-                    try
-                    {
-                        /*
-                         * Flush bytes if any first as before resuming the 
-                         * as Grizzly Comet isn't allowing writes once the
-                         * continuation is resumed. 
-                         *
-                         * This can be achieved
-                         * by using Grizzly CometHandler, which isn't exposed
-                         * with DWR.
-                         */
-                        onAwakening.run();
-                        continuation.resume();                      
-                    }
-                    catch (Exception ex)
-                    {
-                        log.error("Broken reflection", ex);
-                    }
+                return;
+            }
 
-                    resumed = true;
+            wakeUpCalled = true;
+
+            if (proxy != null)
+            {
+                proxy.wakeUp();
+            }
+            else
+            {
+                synchronized (continuation)
+                {
+                    if (!resumed)
+                    {
+                        try
+                        {
+                            /*
+                             * Flush bytes if any first as before resuming the 
+                             * as Grizzly Comet isn't allowing writes once the
+                             * continuation is resumed. 
+                             *
+                             * This can be achieved
+                             * by using Grizzly CometHandler, which isn't exposed
+                             * with DWR.
+                             */
+                            onAwakening.run();
+                            continuation.resume();                      
+                        }
+                        catch (Exception ex)
+                        {
+                            log.error("Broken reflection", ex);
+                        }
+
+                        resumed = true;
+                    }
                 }
             }
         }
     }
-    
+
+    /**
+     * All operations that involve going to sleep of waking up must hold this
+     * lock before they take action.
+     */
+    private Object wakeUpCalledLock = new Object();
+
+    /**
+     * Has wakeUp been called?
+     */
+    private boolean wakeUpCalled = false;
+
     /**
      * If continuations fail, we proxy to a Thread Wait version
      */

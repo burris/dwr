@@ -29,20 +29,30 @@ public class ThreadWaitSleeper implements Sleeper
      */
     public void goToSleep(Runnable onAwakening)
     {
-        try
+        synchronized (wakeUpCalledLock)
         {
-            synchronized (lock)
+            if (wakeUpCalled)
             {
-                lock.wait();
+                onAwakening.run();
             }
-        }
-        catch (InterruptedException ex)
-        {
-            Thread.interrupted();
-        }
-        finally
-        {
-            onAwakening.run();
+            else
+            {
+                try
+                {
+                    synchronized (lock)
+                    {
+                        lock.wait();
+                    }
+                }
+                catch (InterruptedException ex)
+                {
+                    Thread.interrupted();
+                }
+                finally
+                {
+                    onAwakening.run();
+                }
+            }
         }
     }
 
@@ -51,11 +61,32 @@ public class ThreadWaitSleeper implements Sleeper
      */
     public void wakeUp()
     {
-        synchronized (lock)
+        synchronized (wakeUpCalledLock)
         {
-            lock.notifyAll();
+            if (wakeUpCalled)
+            {
+                return;
+            }
+
+            wakeUpCalled = true;
+
+            synchronized (lock)
+            {
+                lock.notifyAll();
+            }
         }
     }
+
+    /**
+     * All operations that involve going to sleep of waking up must hold this
+     * lock before they take action.
+     */
+    private Object wakeUpCalledLock = new Object();
+
+    /**
+     * Has wakeUp been called?
+     */
+    private boolean wakeUpCalled = false;
 
     /**
      * The object to lock on

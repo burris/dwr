@@ -58,7 +58,7 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
     public void setTimeToNextPoll(int disconnectedTime)
     {
         log.warn("timeToNextPoll is deprecated. Please use disconnectedTime");
-        this.disconnectedTime = disconnectedTime;
+        setDisconnectedTime(disconnectedTime);
     }
 
     /**
@@ -67,6 +67,12 @@ public class PollingServerLoadMonitor extends AbstractServerLoadMonitor implemen
      */
     public void setDisconnectedTime(int disconnectedTime)
     {
+        if (disconnectedTime < 500)
+        {
+            log.warn("Small values of disconnectedTime could heavy server load. Using disconnectedTime=500");
+            disconnectedTime = 500;
+        }
+
         this.disconnectedTime = disconnectedTime;
     }
 

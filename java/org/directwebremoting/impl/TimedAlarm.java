@@ -43,7 +43,11 @@ public class TimedAlarm extends BasicAlarm implements Alarm
     @Override
     public void cancel()
     {
-        future.cancel(false);
+        if (future != null)
+        {
+            future.cancel(false);
+        }
+
         super.cancel();
     }
 
@@ -61,10 +65,17 @@ public class TimedAlarm extends BasicAlarm implements Alarm
             }
         };
 
-        ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
-        future = executor.schedule(runnable, waitTime, TimeUnit.MILLISECONDS);
-
         super.setAlarmAction(sleeper);
+
+        if (waitTime == 0)
+        {
+            raiseAlarm();
+        }
+        else
+        {
+            ScheduledThreadPoolExecutor executor = SharedObjects.getScheduledThreadPoolExecutor();
+            future = executor.schedule(runnable, waitTime, TimeUnit.MILLISECONDS);
+        }
     }
 
     /**

@@ -35,12 +35,12 @@ import org.directwebremoting.util.HitMonitor;
  * </pre>
  * <p>Where cT is the connectedTime and dT is the disconnectedTime.</p>
  * 
- * <p>We impose some limits: a maximum number of symultaneously connected
+ * <p>We impose some limits: a maximum number of simultaneously connected
  * browsers <code>maxWaitingThreads</code>, and the maximum number of
  * connections per second <code>maxHitsPerSecond</code>.</p>
  * 
  * <p>We attempt to keep the actual waitingThreads and hitsPerSecond within
- * bounds by vairying connectedTime and disconnectedTime.</p>
+ * bounds by varying connectedTime and disconnectedTime.</p>
  * 
  * <p>The system is in one of 3 modes: USAGE_LOW, USAGE_HIGH and USAGE_DIGG. The
  * boundary between USAGE_LOW and USAGE_HIGH is called threadOut. The boundary

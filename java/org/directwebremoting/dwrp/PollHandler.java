@@ -153,8 +153,8 @@ public class PollHandler implements Handler
         }
 
         // Set the system up to resume anyway after maxConnectedTime
-        long maxConnectedTime = serverLoadMonitor.getConnectedTime();
-        alarms.add(new TimedAlarm(maxConnectedTime));
+        long connectedTime = serverLoadMonitor.getConnectedTime();
+        alarms.add(new TimedAlarm(connectedTime));
 
         // We also need to wake-up if the server is being shut down
         // WARNING: This code has a non-obvious side effect - The server load
@@ -167,6 +167,14 @@ public class PollHandler implements Handler
         {
             alarm.setAlarmAction(sleeper);
         }
+
+        // Register the conduit with a script session so messages can get out.
+        // This must happen late on in this method because this will cause any
+        // scripts cached in the script session (because there was no conduit
+        // available when they were written) to be sent to the conduit.
+        // We need any AlarmScriptConduits to be notified so they can make
+        // maxWaitWfterWrite work for all cases
+        scriptSession.addScriptConduit(conduit);
 
         // We need to do something sensible when we wake up ...
         Runnable onAwakening = new Runnable()
@@ -194,14 +202,6 @@ public class PollHandler implements Handler
                 }
             }
         };
-
-        // Register the conduit with a script session so messages can get out.
-        // This must happen late on in this method because this will cause any
-        // scripts cached in the script session (because there was no conduit
-        // available when they were written) to be sent to the conduit.
-        // We need any AlarmScriptConduits to be notified so they can make
-        // maxWaitWfterWrite work for all cases
-        scriptSession.addScriptConduit(conduit);
 
         // Actually go to sleep. This *must* be the last thing in this method to
         // cope with all the methods of affecting Threads. Jetty throws,
