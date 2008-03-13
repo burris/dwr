@@ -54,28 +54,6 @@ public class JaxerRemoter extends DefaultRemoter
         return buffer.toString();
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.Remoter#generateInterfaceSDoc(java.lang.String, java.lang.String)
-     */
-    @Override
-    public String generateInterfaceSDoc(String fullCreatorName, String contextServletPath)
-    {
-        Creator creator = creatorManager.getCreator(fullCreatorName);
-        if (creator == null)
-        {
-            log.warn("Failed to find creator using: " + fullCreatorName);
-            throw new SecurityException("Failed to find creator");
-        }
-
-        String scriptName = creator.getJavascript();
-
-        StringBuilder buffer = new StringBuilder();
-
-        buffer.append(createMethodSDoc(scriptName));
-
-        return buffer.toString();
-    }
-
     /**
      * The log stream
      */

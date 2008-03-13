@@ -47,37 +47,24 @@ public class InterfaceHandler extends JavaScriptHandler
     protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String scriptName = request.getPathInfo();
+
+        if (!scriptName.endsWith(PathConstants.EXTENSION_JS))
+        {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         scriptName = scriptName.replace(interfaceHandlerUrl, "");
+        scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
+
+        if (!LocalUtil.isJavaIdentifier(scriptName))
+        {
+            log.debug("Throwing at request for script with name: '" + scriptName + "'");
+            throw new SecurityException("Script names may only contain Java Identifiers");
+        }
 
         String contextServletPath = request.getContextPath() + request.getServletPath();
-
-        if (scriptName.endsWith(PathConstants.EXTENSION_JS))
-        {
-            scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
-            if (!LocalUtil.isJavaIdentifier(scriptName))
-            {
-                log.debug("Throwing at request for script with name: '" + scriptName + "'");
-                throw new SecurityException("Script names may only contain Java Identifiers");
-            }
-
-            return remoter.generateInterfaceScript(scriptName, contextServletPath);
-        }
-        else if (scriptName.endsWith(PathConstants.EXTENSION_SDOC))
-        {
-            scriptName = scriptName.replace(PathConstants.EXTENSION_SDOC, "");
-            if (!LocalUtil.isJavaIdentifier(scriptName))
-            {
-                log.debug("Throwing at request for script with name: '" + scriptName + "'");
-                throw new SecurityException("Script names may only contain Java Identifiers");
-            }
-
-            return remoter.generateInterfaceSDoc(scriptName, contextServletPath);
-        }
-        else
-        {
-            log.debug("Throwing at request for script with unknown extension: '" + scriptName + "'");
-            throw new SecurityException("Unknown extension");
-        }
+        return remoter.generateInterfaceScript(scriptName, contextServletPath);
     }
 
     /**

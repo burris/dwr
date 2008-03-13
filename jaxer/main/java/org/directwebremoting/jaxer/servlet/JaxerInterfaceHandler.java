@@ -20,8 +20,6 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.servlet.InterfaceHandler;
 import org.directwebremoting.servlet.PathConstants;
 
@@ -38,25 +36,18 @@ public class JaxerInterfaceHandler extends InterfaceHandler
     protected String generateTemplate(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String scriptName = request.getPathInfo();
+
+        if (!scriptName.endsWith(PathConstants.EXTENSION_JS))
+        {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return "";
+        }
+
         scriptName = scriptName.replaceFirst("/", "");
+        scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
 
-        String path = request.getContextPath() + request.getServletPath();
-
-        if (scriptName.endsWith(PathConstants.EXTENSION_JS))
-        {
-            scriptName = scriptName.replace(PathConstants.EXTENSION_JS, "");
-            return remoter.generateInterfaceScript(scriptName, path);
-        }
-        else if (scriptName.endsWith(PathConstants.EXTENSION_SDOC))
-        {
-            scriptName = scriptName.replace(PathConstants.EXTENSION_SDOC, "");
-            return remoter.generateInterfaceSDoc(scriptName, path);
-        }
-        else
-        {
-            log.debug("Throwing at request for script with unknown extension: '" + scriptName + "'");
-            throw new SecurityException("Unknown extension");
-        }
+        String contextServletPath = request.getContextPath() + request.getServletPath();
+        return remoter.generateInterfaceScript(scriptName, contextServletPath);
     }
 
     /* (non-Javadoc)
@@ -67,9 +58,4 @@ public class JaxerInterfaceHandler extends InterfaceHandler
     {
         return "JaxerInterfaceHandler(" + interfaceHandlerUrl + ")";
     }
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(JaxerInterfaceHandler.class);
 }
