@@ -15,8 +15,11 @@
  */
 package org.directwebremoting.proxy.browser;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.proxy.ScriptProxy;
 
@@ -60,5 +63,22 @@ public class Window extends ScriptProxy
     public void alert(String message)
     {
         addFunctionCall("alert", message);
+    }
+
+    public void setLocation(URI newPage)
+    {
+        setLocation(newPage.toASCIIString());
+    }
+
+    public void setLocation(URL newPage)
+    {
+        setLocation(newPage.toExternalForm());
+    }
+
+    public void setLocation(String newPage)
+    {
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendData("window.location = '" + newPage + "';");
+        addScript(script);
     }
 }
