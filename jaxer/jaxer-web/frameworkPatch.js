@@ -36,7 +36,7 @@ Jaxer.dwr.requireUtil = function() {
  * will be added shortly. There is a special value of 'util' that will give
  * access to the dwr.util classes
  * <p>Example usage:
- * <code>Jaxer.dwr.require("util", "new/java.io.File");</code>
+ * <code>Jaxer.dwr.createNew("java.io.File");</code>
  * @param {string} varargs list of resources to import
  */
 Jaxer.dwr.createNew = function(className) {

@@ -4,18 +4,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Jaxer With DWR Remoting</title>
 
-  <!-- Roughly speaking, this is how DWR works on the client -->
-  <script type='text/javascript' src='http://localhost:8080/demoServer/dwr/util.js'></script>
-  <script type='text/javascript' src='http://localhost:8080/demoServer/dwr/engine.js'></script>
-  <script type='text/javascript' src='http://localhost:8080/demoServer/dwr/new/org.getahead.dwrdemo.intro.Intro.js'></script>
-  <script type='text/javascript'>
-  function loadClient() {
-    Intro.getInsert(function(parts) {
-      dwr.util.setValue('fillFromClient', parts[0], { escapeHtml:false });
-    });
-  }
-  </script>
-
   <!-- This is how it works on the server, frameworkPatch.js would be pre-integrated -->
   <script type='text/javascript' src='frameworkPatch.js' runat="server"></script>
   <script type='text/javascript' runat="server">
@@ -29,11 +17,9 @@
   }
   </script>
 </head>
-<body onload="loadClient();" onserverload="loadServer()">
+<body onserverload="loadServer()">
 
 <p>Normal paragraph rendered in HTML</p>
-
-<p>From the client: <div id="fillFromClient"></div></p>
 
 <p>From the server: <div id="fillFromServer"></div></p>
 
