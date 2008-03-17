@@ -57,6 +57,7 @@ import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerLoadMonitor;
+import org.directwebremoting.json.JsonCallMarshaller;
 import org.directwebremoting.servlet.AboutHandler;
 import org.directwebremoting.servlet.AuthHandler;
 import org.directwebremoting.servlet.DownloadHandler;
@@ -67,6 +68,7 @@ import org.directwebremoting.servlet.HtmlCallHandler;
 import org.directwebremoting.servlet.HtmlPollHandler;
 import org.directwebremoting.servlet.IndexHandler;
 import org.directwebremoting.servlet.InterfaceHandler;
+import org.directwebremoting.servlet.JsonCallHandler;
 import org.directwebremoting.servlet.MonitorHandler;
 import org.directwebremoting.servlet.PathConstants;
 import org.directwebremoting.servlet.PlainCallHandler;
@@ -249,7 +251,11 @@ public class ContainerUtil
             }
             catch (Exception ex)
             {
-                throw new ContainerConfigurationException("Exception while loading ContainerAbstraction called : " + abstractionImplName, ex);
+                log.debug("Can't use : " + abstractionImplName + " to implement " + toResolve.getName() + ". This is probably not an error unless you were expecting to use it. Reason: " + ex.toString());
+            }
+            catch (NoClassDefFoundError ex)
+            {
+                log.debug("Can't use : " + abstractionImplName + " to implement " + toResolve.getName() + ". This is probably not an error unless you were expecting to use it. Reason: " + ex.toString());
             }
         }
     }
@@ -273,6 +279,7 @@ public class ContainerUtil
         container.addImplementation(DebugPageGenerator.class, DefaultDebugPageGenerator.class);
         container.addImplementation(PlainCallMarshaller.class, PlainCallMarshaller.class);
         container.addImplementation(HtmlCallMarshaller.class, HtmlCallMarshaller.class);
+        container.addImplementation(JsonCallMarshaller.class, JsonCallMarshaller.class);
         container.addImplementation(ScriptSessionManager.class, DefaultScriptSessionManager.class);
         container.addImplementation(PageNormalizer.class, DefaultPageNormalizer.class);
         container.addImplementation(DownloadManager.class, InMemoryDownloadManager.class);
@@ -298,6 +305,7 @@ public class ContainerUtil
         createPathMapping(container, "/interface/", InterfaceHandler.class, "interfaceHandlerUrl");
         createPathMapping(container, "/monitor/", MonitorHandler.class);
         createPathMapping(container, "/download/", DownloadHandler.class, "downloadHandlerUrl");
+        createPathMapping(container, "/json/", JsonCallHandler.class);
         createPathMapping(container, "/call/plaincall/", PlainCallHandler.class, "plainCallHandlerUrl");
         createPathMapping(container, "/call/plainpoll/", PlainPollHandler.class, "plainPollHandlerUrl");
         createPathMapping(container, "/call/htmlcall/", HtmlCallHandler.class, "htmlCallHandlerUrl");
