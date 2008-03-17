@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -84,11 +83,6 @@ public class JsonCallMarshaller implements Marshaller
             throw new SecurityException("GET Disalowed");
         }
 
-        if (crossDomainSessionSecurity)
-        {
-            checkNotCsrfAttack(request, batch);
-        }
-
         // Save the batch so marshallException can get at a batch id
         request.setAttribute(ATTRIBUTE_BATCH, batch);
 
@@ -98,48 +92,6 @@ public class JsonCallMarshaller implements Marshaller
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);
         return marshallInbound(batch);
-    }
-
-    /**
-     * Check that this request is not subject to a CSRF attack
-     * @param request The original browser's request
-     * @param batch The data that we've parsed from the request body
-     */
-    private void checkNotCsrfAttack(HttpServletRequest request, Batch batch)
-    {
-        // A check to see that this isn't a csrf attack
-        // http://en.wikipedia.org/wiki/Cross-site_request_forgery
-        // http://www.tux.org/~peterw/csrf.txt
-        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie())
-        {
-            String headerSessionId = request.getRequestedSessionId();
-            if (headerSessionId.length() > 0)
-            {
-                String bodySessionId = batch.getHttpSessionId();
-
-                // Normal case; if same session cookie is supplied by DWR and
-                // in HTTP header then all is ok
-                if (headerSessionId.equals(bodySessionId))
-                {
-                    return;
-                }
-
-                // Weblogic adds creation time to the end of the incoming
-                // session cookie string (even for request.getRequestedSessionId()).
-                // Use the raw cookie instead
-                for (Cookie cookie : request.getCookies())
-                {
-                    if (cookie.getName().equals(sessionCookieName) && cookie.getValue().equals(bodySessionId))
-                    {
-                        return;
-                    }
-                }
-
-                // Otherwise error
-                log.error("A request has been denied as a potential CSRF attack.");
-                throw new SecurityException("CSRF Security Error");
-            }
-        }
     }
 
     /**
@@ -572,15 +524,6 @@ public class JsonCallMarshaller implements Marshaller
     }
 
     /**
-     * To we perform cross-domain session security checks?
-     * @param crossDomainSessionSecurity the cross domain session security setting
-     */
-    public void setCrossDomainSessionSecurity(boolean crossDomainSessionSecurity)
-    {
-        this.crossDomainSessionSecurity = crossDomainSessionSecurity;
-    }
-
-    /**
      * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
      */
     public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
@@ -681,11 +624,6 @@ public class JsonCallMarshaller implements Marshaller
      * By default we disable GET, but this hinders old Safaris
      */
     private boolean allowGetForSafariButMakeForgeryEasier = false;
-
-    /**
-     * To we perform cross-domain session security checks?
-     */
-    protected boolean crossDomainSessionSecurity = true;
 
     /**
      * How we turn pages into the canonical form.
