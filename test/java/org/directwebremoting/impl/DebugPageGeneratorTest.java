@@ -92,7 +92,7 @@ public class DebugPageGeneratorTest
         creatorManager.isDebug();
         EasyMock.expectLastCall().andReturn(Boolean.TRUE);
 
-        creatorManager.getCreator("creatorName");
+        creatorManager.getCreator("creatorName", false);
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
         EasyMock.expectLastCall().andReturn(creator);
@@ -153,12 +153,12 @@ public class DebugPageGeneratorTest
         creatorManager.isDebug();
         EasyMock.expectLastCall().andReturn(Boolean.TRUE);
 
-        creatorManager.getCreatorNames();
+        creatorManager.getCreatorNames(false);
         ArrayList<String> names = new ArrayList<String>();
         names.add("creatorName");
         EasyMock.expectLastCall().andReturn(names);
 
-        creatorManager.getCreator("creatorName");
+        creatorManager.getCreator("creatorName", false);
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
         EasyMock.expectLastCall().andReturn(creator);

@@ -62,6 +62,16 @@ public interface Creator
     boolean isCacheable();
 
     /**
+     * Hidden creators do not show up from the outside world, the only way to
+     * call them is to know their name. This restriction is in addition to those
+     * made by setting <code>debug=false</code>, which prevents enumeration of
+     * the exported classes. If a class is hidden then you can't ask for an
+     * interface script even when you know it by name.
+     * @return false if a class is not hidden
+     */
+    boolean isHidden();
+
+    /**
      * How is this creator referred to in Javascript land?
      * @return A Javascript identifier
      */

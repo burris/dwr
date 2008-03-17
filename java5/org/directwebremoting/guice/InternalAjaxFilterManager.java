@@ -15,7 +15,7 @@
  */
 package org.directwebremoting.guice;
 
-import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,11 +27,11 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 
-import static org.directwebremoting.guice.DwrGuiceUtil.getInjector;
+import static org.directwebremoting.guice.DwrGuiceUtil.*;
 
 /**
  * Extends an existing ajax filter manager with an injected list of ajax filters
- * specified at Guice bind-time. Only to be used in conjection with
+ * specified at Guice bind-time. Only to be used in conjunction with
  * {@link DwrGuiceServlet}.
  * @author Tim Peierls [tim at peierls dot net]
  */
@@ -47,21 +47,29 @@ public class InternalAjaxFilterManager implements AjaxFilterManager
         addAjaxFilters();
     }
 
-    public Iterator<AjaxFilter> getAjaxFilters(String scriptname)
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.AjaxFilterManager#getAjaxFilters(java.lang.String)
+     */
+    public List<AjaxFilter> getAjaxFilters(String scriptname)
     {
         return ajaxFilterManager.getAjaxFilters(scriptname);
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter)
+     */
     public void addAjaxFilter(AjaxFilter filter)
     {
         ajaxFilterManager.addAjaxFilter(filter);
     }
 
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.AjaxFilterManager#addAjaxFilter(org.directwebremoting.AjaxFilter, java.lang.String)
+     */
     public void addAjaxFilter(AjaxFilter filter, String scriptname)
     {
         ajaxFilterManager.addAjaxFilter(filter, scriptname);
     }
-
 
     private final AjaxFilterManager ajaxFilterManager;
 

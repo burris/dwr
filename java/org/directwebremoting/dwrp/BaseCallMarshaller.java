@@ -184,7 +184,6 @@ public abstract class BaseCallMarshaller implements Marshaller
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use
             // that method.
-            Creator creator = creatorManager.getCreator(call.getScriptName());
 
             // Which method are we using?
             Method method = findMethod(call, inctx);
@@ -204,6 +203,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             call.setMethod(method);
 
             // Check this method is accessible
+            Creator creator = creatorManager.getCreator(call.getScriptName(), true);
             accessControl.assertExecutionIsPossible(creator, call.getScriptName(), method);
 
             // We are now sure we have the set of input lined up. They may
@@ -303,7 +303,7 @@ public abstract class BaseCallMarshaller implements Marshaller
             throw new IllegalArgumentException(Messages.getString("BaseCallMarshaller.MissingMethodParam"));
         }
 
-        Creator creator = creatorManager.getCreator(call.getScriptName());
+        Creator creator = creatorManager.getCreator(call.getScriptName(), true);
         List<Method> available = new ArrayList<Method>();
 
         methods:

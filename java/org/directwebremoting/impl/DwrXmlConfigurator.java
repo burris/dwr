@@ -492,7 +492,7 @@ public class DwrXmlConfigurator implements Configurator
             String methodName = include.getAttribute(ATTRIBUTE_METHOD);
 
             // Try to find the method that we are annotating
-            Creator creator = creatorManager.getCreator(javascript);
+            Creator creator = creatorManager.getCreator(javascript, true);
             Class<?> dest = creator.getType();
 
             Method method = null;

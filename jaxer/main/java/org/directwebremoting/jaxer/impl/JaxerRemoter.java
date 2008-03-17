@@ -34,7 +34,7 @@ public class JaxerRemoter extends DefaultRemoter
     @Override
     public String generateInterfaceScript(String fullCreatorName, String contextServletPath) throws SecurityException
     {
-        Creator creator = creatorManager.getCreator(fullCreatorName);
+        Creator creator = creatorManager.getCreator(fullCreatorName, false);
         if (creator == null)
         {
             log.warn("Failed to find creator using: " + fullCreatorName);

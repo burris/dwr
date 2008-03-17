@@ -21,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -142,7 +143,7 @@ public class DefaultRemoter implements Remoter
      */
     protected String createMethodDefinitions(String fullCreatorName)
     {
-        Creator creator = creatorManager.getCreator(fullCreatorName);
+        Creator creator = creatorManager.getCreator(fullCreatorName, false);
         String scriptName = creator.getJavascript();
 
         StringBuilder buffer = new StringBuilder();
@@ -399,7 +400,7 @@ public class DefaultRemoter implements Remoter
             // Get a list of the available matching methods with the coerced
             // parameters that we will use to call it if we choose to use that
             // method.
-            Creator creator = creatorManager.getCreator(call.getScriptName());
+            Creator creator = creatorManager.getCreator(call.getScriptName(), true);
 
             // We don't need to check accessControl.getReasonToNotExecute()
             // because the checks are made by the doExec method, but we do check
@@ -517,13 +518,22 @@ public class DefaultRemoter implements Remoter
             }
 
             // Execute the filter chain method.toString()
-            final Iterator<AjaxFilter> it = ajaxFilterManager.getAjaxFilters(call.getScriptName());
+            List<AjaxFilter> filters = ajaxFilterManager.getAjaxFilters(call.getScriptName());
+            final Iterator<AjaxFilter> it = filters.iterator();
+
             AjaxFilterChain chain = new AjaxFilterChain()
             {
-                public Object doFilter(Object obj, Method meth, Object[] p) throws Exception
+                public Object doFilter(Object obj, Method meth, Object[] params) throws Exception
                 {
-                    AjaxFilter next = it.next();
-                    return next.doFilter(obj, meth, p, this);
+                    if (it.hasNext())
+                    {
+                        AjaxFilter next = it.next();
+                        return next.doFilter(obj, meth, params, this);
+                    }
+                    else
+                    {
+                        return meth.invoke(obj, params);
+                    }
                 }
             };
             Object reply = chain.doFilter(object, method, call.getParameters());

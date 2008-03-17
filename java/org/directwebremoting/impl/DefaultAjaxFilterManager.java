@@ -18,7 +18,6 @@ package org.directwebremoting.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +33,13 @@ public class DefaultAjaxFilterManager implements AjaxFilterManager
     /* (non-Javadoc)
      * @see org.directwebremoting.AjaxFilterManager#getAjaxFilters(java.lang.String)
      */
-    public Iterator<AjaxFilter> getAjaxFilters(String scriptname)
+    public List<AjaxFilter> getAjaxFilters(String scriptname)
     {
+        if (ExportUtil.isSystemClass(scriptname))
+        {
+            return Collections.<AjaxFilter>emptyList();
+        }
+
         // PERFORMANCE: we could probably cache the results of these if we wanted to
         List<AjaxFilter> reply = new ArrayList<AjaxFilter>();
 
@@ -47,9 +51,7 @@ public class DefaultAjaxFilterManager implements AjaxFilterManager
             reply.addAll(classBased);
         }
 
-        reply.add(executor);
-
-        return Collections.unmodifiableList(reply).iterator();
+        return Collections.unmodifiableList(reply);
     }
 
     /* (non-Javadoc)
@@ -74,11 +76,6 @@ public class DefaultAjaxFilterManager implements AjaxFilterManager
 
         classBased.add(filter);
     }
-
-    /**
-     * The base filter that actually does the execution
-     */
-    private AjaxFilter executor = new ExecuteAjaxFilter();
 
     /**
      * The list of all global filters

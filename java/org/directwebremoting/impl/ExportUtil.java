@@ -15,22 +15,19 @@
  */
 package org.directwebremoting.impl;
 
-import java.lang.reflect.Method;
-
-import org.directwebremoting.AjaxFilter;
-import org.directwebremoting.AjaxFilterChain;
-
 /**
- * The last element in a filter chain actually executes the method.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class ExecuteAjaxFilter implements AjaxFilter
+public class ExportUtil
 {
-    /* (non-Javadoc)
-     * @see org.directwebremoting.AjaxFilter#doFilter(java.lang.Object, java.lang.reflect.Method, java.lang.Object[], org.directwebremoting.AjaxFilterChain)
+    /**
+     * Is this class the System export as from the system dwr.xml?
+     * @param scriptName The script name of the exported object
+     * @return True if the scriptName represents the System export
+     * @see org.directwebremoting.export.System
      */
-    public Object doFilter(Object obj, Method method, Object[] params, AjaxFilterChain chain) throws Exception
+    public static boolean isSystemClass(String scriptName)
     {
-        return method.invoke(obj, params);
+        return scriptName.equals("__System");
     }
 }

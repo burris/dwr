@@ -66,9 +66,9 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
 
         buffer.append("<h2>Classes known to DWR:</h2>\n");
         buffer.append("<ul>\n");
-        for (String name : creatorManager.getCreatorNames())
+        for (String name : creatorManager.getCreatorNames(false))
         {
-            Creator creator = creatorManager.getCreator(name);
+            Creator creator = creatorManager.getCreator(name, false);
 
             buffer.append("<li><a href='");
             buffer.append(root);
@@ -106,7 +106,7 @@ public class DefaultDebugPageGenerator implements DebugPageGenerator
         String proxyEngineURL = PATH_UP + engineHandlerUrl;
         String proxyUtilURL = PATH_UP + utilHandlerUrl;
 
-        Creator creator = creatorManager.getCreator(scriptName);
+        Creator creator = creatorManager.getCreator(scriptName, false);
         Method[] methods = creator.getType().getMethods();
         StringBuffer buffer = new StringBuffer();
 

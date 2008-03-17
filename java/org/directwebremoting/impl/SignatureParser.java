@@ -201,7 +201,7 @@ public class SignatureParser
     }
 
     /**
-     * Lookup a class acording to the import rules
+     * Lookup a class according to the import rules
      * @param type The name of the class to find
      * @return The found class, or null if it does not exist
      */
@@ -248,7 +248,7 @@ public class SignatureParser
         // So we've failed to find a Java class name. We can also lookup by
         // Javascript name to help the situation where there is a dynamic proxy
         // in the way.
-        Creator creator = creatorManager.getCreator(type);
+        Creator creator = creatorManager.getCreator(type, false);
         if (creator != null)
         {
             return creator.getType();

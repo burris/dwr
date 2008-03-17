@@ -128,6 +128,7 @@
 
     <create creator="new" javascript="__System" scope="application">
       <param name="class" value="org.directwebremoting.export.System"/>
+      <param name="hidden" value="true"/>
     </create>
 
   </allow>

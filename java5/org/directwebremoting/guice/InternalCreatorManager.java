@@ -95,17 +95,35 @@ public class InternalCreatorManager implements CreatorManager
     /* (non-Javadoc)
      * @see org.directwebremoting.extend.CreatorManager#getCreatorNames()
      */
+    @Deprecated
     public Collection<String> getCreatorNames() throws SecurityException
     {
         return creatorManager.getCreatorNames();
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#getCreatorNames()
+     */
+    public Collection<String> getCreatorNames(boolean includesHidden) throws SecurityException
+    {
+        return creatorManager.getCreatorNames(includesHidden);
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.CreatorManager#getCreator(java.lang.String)
      */
+    @Deprecated
     public Creator getCreator(String scriptName) throws SecurityException
     {
         return creatorManager.getCreator(scriptName);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.CreatorManager#getCreator(java.lang.String, boolean)
+     */
+    public Creator getCreator(String scriptName, boolean includesHidden) throws SecurityException
+    {
+        return creatorManager.getCreator(scriptName, includesHidden);
     }
 
     /* (non-Javadoc)

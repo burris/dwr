@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -155,12 +156,37 @@ public class DefaultCreatorManager implements CreatorManager
      */
     public Collection<String> getCreatorNames() throws SecurityException
     {
+        return getCreatorNames(false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.CreatorManager#getCreatorNames(boolean)
+     */
+    public Collection<String> getCreatorNames(boolean includeHidden) throws SecurityException
+    {
         if (!debug)
         {
             throw new SecurityException();
         }
 
-        return Collections.unmodifiableSet(creators.keySet());
+        if (includeHidden)
+        {
+            return Collections.unmodifiableSet(creators.keySet());
+        }
+        else
+        {
+            Collection<String> noHidden = new HashSet<String>();
+            for (Map.Entry<String, Creator> entry : creators.entrySet())
+            {
+                Creator creator = entry.getValue();
+                if (!creator.isHidden())
+                {
+                    noHidden.add(entry.getKey());
+                }
+            }
+
+            return noHidden;
+        }
     }
 
     /* (non-Javadoc)
@@ -168,7 +194,16 @@ public class DefaultCreatorManager implements CreatorManager
      */
     public Creator getCreator(String scriptName) throws SecurityException
     {
+        return getCreator(scriptName, false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.CreatorManager#getCreator(java.lang.String, boolean)
+     */
+    public Creator getCreator(String scriptName, boolean includeHidden) throws SecurityException
+    {
         Creator creator = creators.get(scriptName);
+
         if (creator == null)
         {
             StringBuffer buffer = new StringBuffer("Names of known classes are: ");
@@ -179,6 +214,12 @@ public class DefaultCreatorManager implements CreatorManager
             }
 
             log.warn(buffer.toString());
+            throw new SecurityException(Messages.getString("DefaultCreatorManager.MissingName", scriptName));
+        }
+
+        if (creator.isHidden() && !includeHidden)
+        {
+            log.warn("Attempt made to get hidden class with name: " + scriptName + " while includeHidden=false");
             throw new SecurityException(Messages.getString("DefaultCreatorManager.MissingName", scriptName));
         }
 

@@ -77,6 +77,15 @@ class InternalCreator implements Creator
     }
 
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.Creator#isHidden()
+     */
+    public boolean isHidden()
+    {
+        // TODO: enable hidden created classes through Guice
+        return false;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.extend.Creator#getJavascript()
      */
     public String getJavascript()

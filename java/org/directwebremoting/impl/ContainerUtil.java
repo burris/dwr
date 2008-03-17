@@ -674,9 +674,9 @@ public class ContainerUtil
             CreatorManager creatorManager = container.getBean(CreatorManager.class);
             log.debug("CreatorManager");
             log.debug("  Type: " + creatorManager.getClass().getName());
-            for (String creatorName : creatorManager.getCreatorNames())
+            for (String creatorName : creatorManager.getCreatorNames(false))
             {
-                Creator creator = creatorManager.getCreator(creatorName);
+                Creator creator = creatorManager.getCreator(creatorName, false);
                 log.debug("  Creator: " + creatorName + " = " + creator + " (" + creator.getClass().getName() + ")");
             }
         }

@@ -96,7 +96,7 @@ public class DefaultRemoterTest
         request.setContent(("callCount=2\n" + "c0-id=1\nc0-scriptName=creatorName\nc0-methodName=toString\n"
             + "c1-id=2\nc1-scriptName=creatorName\nc1-methodName=hashCode").getBytes());
 
-        creatorManager.getCreator("creatorName");
+        creatorManager.getCreator("creatorName", false);
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
         expectLastCall().andReturn(creator).times(4);
@@ -123,7 +123,7 @@ public class DefaultRemoterTest
                 return new Object();
             }
         });
-        expect(ajaxFilterManager.getAjaxFilters("creatorName")).andReturn(filters.iterator()).atLeastOnce();
+        expect(ajaxFilterManager.getAjaxFilters("creatorName")).andReturn(filters).atLeastOnce();
 
         replay(creatorManager);
         replay(accessControl);
@@ -158,7 +158,7 @@ public class DefaultRemoterTest
     {
         request.setPathInfo("/interface/creatorName.js");
 
-        creatorManager.getCreator("creatorName");
+        creatorManager.getCreator("creatorName", false);
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
         expectLastCall().andReturn(creator);
@@ -198,7 +198,7 @@ public class DefaultRemoterTest
     {
         request.setMethod("GET");
 
-        creatorManager.getCreator("");
+        creatorManager.getCreator("", false);
         expectLastCall().andThrow(new SecurityException());
 
         replay(creatorManager);
@@ -230,7 +230,7 @@ public class DefaultRemoterTest
 
         request.setPathInfo("/interface/creatorName.js");
 
-        creatorManager.getCreator("creatorName");
+        creatorManager.getCreator("creatorName", false);
         NewCreator creator = new NewCreator();
         creator.setClass(TestCreatedObject.class.getName());
         expectLastCall().andReturn(creator);
