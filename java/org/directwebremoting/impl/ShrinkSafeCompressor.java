@@ -15,7 +15,6 @@
  */
 package org.directwebremoting.impl;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -35,9 +34,7 @@ import org.mozilla.javascript.tools.shell.Main;
 public class ShrinkSafeCompressor implements Compressor
 {
     /**
-     * @throws IOException Likely if YUI is present, and not ShrinkSafe
-     * @throws NoSuchMethodException 
-     * @throws SecurityException 
+     * @throws Exception Likely if YUI is present, and not ShrinkSafe
      */
     public ShrinkSafeCompressor() throws Exception
     {
@@ -47,7 +44,14 @@ public class ShrinkSafeCompressor implements Compressor
         global.init(Main.shellContextFactory);
 
         // This should fail if ShrinkSafe is not in classpath
-        compressReaderMethod = Context.class.getMethod("compressReader", Context.class, Scriptable.class, Script .class, String.class, String.class, Integer.TYPE, Object.class);
+        try
+        {
+            compressReaderMethod = Context.class.getMethod("compressReader", Context.class, Scriptable.class, Script .class, String.class, String.class, Integer.TYPE, Object.class);
+        }
+        catch (NoSuchMethodException ex)
+        {
+            throw new InstantiationException("Context.compressReader() is not available, assuming Rhino is not here from custom_rhino.jar, aka ShrinkSafe");
+        }
 
         // Do a trial compression to check
         compressJavaScript("");

@@ -60,20 +60,6 @@ public class DefaultContainer extends AbstractContainer implements Container
      */
     public <T> void addImplementationOption(Class<T> base, Class<? extends T> implementation)
     {
-        // Check we can create this type
-        try
-        {
-            implementation.newInstance();
-        }
-        catch (InstantiationException ex)
-        {
-            throw new ContainerConfigurationException("Unable to instantiate " + implementation.getName());
-        }
-        catch (IllegalAccessException ex)
-        {
-            throw new ContainerConfigurationException("Unable to access " + implementation.getName());
-        }
-
         Object existingOptions = beans.get(base.getName());
         if (existingOptions == null)
         {
