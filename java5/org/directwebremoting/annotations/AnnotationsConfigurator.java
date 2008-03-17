@@ -217,7 +217,7 @@ public class AnnotationsConfigurator implements Configurator
     }
 
     /**
-     * Process the @Filter annotaion
+     * Process the @Filter annotation
      * @param filterAnn The filter annotation
      * @param name The Javascript name of the class to filter 
      * @param container The IoC container to configure

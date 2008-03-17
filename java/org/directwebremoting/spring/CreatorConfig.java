@@ -95,7 +95,7 @@ public class CreatorConfig extends AbstractConfig
 
     /**
      * Sets the authentication parameters for this creator.
-     * @param auth the map containing the method name and the corrosponding required role
+     * @param auth the map containing the method name and the corresponding required role
      * @see org.directwebremoting.extend.AccessControl#addRoleRestriction(String, String, String)
      */
     public void setAuth(Properties auth)
