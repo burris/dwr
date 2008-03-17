@@ -278,6 +278,7 @@ public class ContainerUtil
         container.addImplementation(DownloadManager.class, InMemoryDownloadManager.class);
 
         container.addImplementationOption(Compressor.class, YahooJSCompressor.class);
+        container.addImplementationOption(Compressor.class, ShrinkSafeCompressor.class);
         container.addImplementationOption(Compressor.class, LegacyCompressor.class);
         container.addImplementationOption(Compressor.class, NullCompressor.class);
 
