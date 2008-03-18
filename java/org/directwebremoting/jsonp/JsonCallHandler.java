@@ -45,7 +45,7 @@ import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.util.MimeConstants;
 
 /**
- * A Handler JSON/REST DWR calls
+ * A Handler JSON/REST DWR calls.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class JsonCallHandler implements Handler
