@@ -18,17 +18,16 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.util.MimeConstants;
 
 /**
- * A version of the Plain Javascript Marshaller that uses iframe syntax
+ * A Handler standard DWR calls whose replies are HTML wrapped.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class HtmlCallMarshaller extends BaseCallMarshaller
+public class HtmlCallHandler extends BaseCallHandler
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
+     * @see org.directwebremoting.dwrp.BaseCallHandler#getOutboundMimeType()
      */
     @Override
     protected String getOutboundMimeType()
@@ -37,7 +36,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, java.lang.String)
+     * @see org.directwebremoting.dwrp.BaseCallHandler#sendOutboundScriptPrefix(java.io.PrintWriter, java.lang.String)
      */
     @Override
     protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
@@ -50,7 +49,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptSuffix(java.io.PrintWriter, java.lang.String)
+     * @see org.directwebremoting.dwrp.BaseCallHandler#sendOutboundScriptSuffix(java.io.PrintWriter, java.lang.String)
      */
     @Override
     protected void sendOutboundScriptSuffix(PrintWriter out, String batchId) throws IOException
@@ -63,7 +62,7 @@ public class HtmlCallMarshaller extends BaseCallMarshaller
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendScript(java.io.PrintWriter, java.lang.String)
+     * @see org.directwebremoting.dwrp.BaseCallHandler#sendScript(java.io.PrintWriter, java.lang.String)
      */
     @Override
     protected void sendScript(PrintWriter out, String script) throws IOException

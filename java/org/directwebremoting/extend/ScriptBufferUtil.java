@@ -47,37 +47,37 @@ public class ScriptBufferUtil
 
     /**
      * Return a string ready for output.
-     * @param buffer The source of the script data
+     * @param script The source of the script data
      * @param converterManager How we convert script variable to Javascript
      * @param jsonOutput Are we doing strict JSON output?
      * @return Some Javascript to be eval()ed by a browser.
      * @throws MarshallException If an error happens during parameter marshalling
      */
-    public static String createOutput(ScriptBuffer buffer, ConverterManager converterManager, boolean jsonOutput) throws MarshallException
+    public static String createOutput(ScriptBuffer script, ConverterManager converterManager, boolean jsonOutput) throws MarshallException
     {
         OutboundContext context = new OutboundContext(jsonOutput);
         List<OutboundVariable> scriptParts = new ArrayList<OutboundVariable>();
 
         // First convert everything into OutboundVariables
-        for (Object part : buffer.getParts())
+        for (Object part : script.getParts())
         {
             OutboundVariable ov = converterManager.convertOutbound(part, context);
             scriptParts.add(ov);
         }
 
-        StringBuffer output = new StringBuffer();
+        StringBuffer buffer = new StringBuffer();
         context.prepareForOutput();
 
         // First we look for the declaration code
         for (OutboundVariable ov : scriptParts)
         {
-            output.append(ov.getDeclareCode());
+            buffer.append(ov.getDeclareCode());
         }
 
         // Then we look for the construction code
         for (OutboundVariable ov : scriptParts)
         {
-            output.append(ov.getBuildCode());
+            buffer.append(ov.getBuildCode());
         }
 
         // Then we output everything else
@@ -88,9 +88,18 @@ public class ScriptBufferUtil
             {
                 throw new NullPointerException();
             }
-            output.append(assignCode);
+            buffer.append(assignCode);
         }
 
-        return output.toString();
+        // Real JSON must be wrapped in { }
+        String output = buffer.toString();
+        if (jsonOutput && !output.startsWith("{"))
+        {
+            return "{" + output + "}";
+        }
+        else
+        {
+            return output;
+        }
     }
 }

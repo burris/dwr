@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.ConverterManager;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.ScriptBufferUtil;
 import org.directwebremoting.util.MimeConstants;
@@ -55,7 +54,7 @@ public class Html4kScriptConduit extends BaseScriptConduit
     }
 
     /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
+     * @see org.directwebremoting.dwrp.BaseCallHandler#getOutboundMimeType()
      */
     @Override
     protected String getOutboundMimeType()

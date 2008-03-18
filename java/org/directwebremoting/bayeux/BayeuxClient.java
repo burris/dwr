@@ -21,12 +21,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.dwrp.Batch;
-import org.directwebremoting.dwrp.PlainCallMarshaller;
+import org.directwebremoting.dwrp.EnginePrivate;
+import org.directwebremoting.dwrp.PlainCallHandler;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.ConverterManager;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.FormField;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
@@ -72,7 +73,7 @@ public class BayeuxClient implements Listener
             }
 
             Batch batch = new Batch(fileParams);
-            Calls calls = plainCallMarshaller.marshallInbound(batch);
+            Calls calls = plainCallHandler.marshallInbound(batch);
 
             log.debug("Calls="+calls);
 
@@ -94,7 +95,8 @@ public class BayeuxClient implements Listener
                 if (reply.getThrowable() != null)
                 {
                     Throwable ex = reply.getThrowable();
-                    EnginePrivate.remoteHandleException(conduit, batchId, reply.getCallId(), ex);
+                    ScriptBuffer script = EnginePrivate.getRemoteHandleExceptionScript(batchId, reply.getCallId(), ex);
+                    conduit.addScript(script);
 
                     log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']');
                 }
@@ -102,7 +104,8 @@ public class BayeuxClient implements Listener
                 {
                     Object data = reply.getReply();
                     log.debug("data="+data);
-                    EnginePrivate.remoteHandleCallback(conduit, batchId, reply.getCallId(), data);
+                    ScriptBuffer script = EnginePrivate.getRemoteHandleCallbackScript(batchId, reply.getCallId(), data);
+                    conduit.addScript(script);
                 }
             }
 
@@ -128,7 +131,7 @@ public class BayeuxClient implements Listener
      */
     public void setRemoter(Remoter remoter)
     {
-        this.remoter=remoter;
+        this.remoter = remoter;
     }
 
     /**
@@ -136,15 +139,15 @@ public class BayeuxClient implements Listener
      */
     public void setConverterManager(ConverterManager converterManager)
     {
-        this.converterManager=converterManager;
+        this.converterManager = converterManager;
     }
 
     /**
-     * @param plainCallMarshaller
+     * @param plainCallHandler
      */
-    public void setPlainCallMarshaller(PlainCallMarshaller plainCallMarshaller)
+    public void setPlainCallHandler(PlainCallHandler plainCallHandler)
     {
-        this.plainCallMarshaller=plainCallMarshaller;
+        this.plainCallHandler = plainCallHandler;
     }
 
     /**
@@ -160,7 +163,7 @@ public class BayeuxClient implements Listener
 
     private ConverterManager converterManager;
     
-    private PlainCallMarshaller plainCallMarshaller;
+    private PlainCallHandler plainCallHandler;
 
     /**
      * The log stream

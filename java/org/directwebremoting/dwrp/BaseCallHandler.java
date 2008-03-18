@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.json;
+package org.directwebremoting.dwrp;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,24 +29,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.dwrp.Batch;
-import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.extend.AccessControl;
 import org.directwebremoting.extend.Call;
 import org.directwebremoting.extend.Calls;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Creator;
 import org.directwebremoting.extend.CreatorManager;
-import org.directwebremoting.extend.DwrConstants;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.FormField;
+import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.InboundContext;
 import org.directwebremoting.extend.InboundVariable;
 import org.directwebremoting.extend.MarshallException;
-import org.directwebremoting.extend.Marshaller;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.RealWebContext;
+import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.extend.Replies;
 import org.directwebremoting.extend.Reply;
 import org.directwebremoting.extend.ScriptBufferUtil;
@@ -57,7 +53,6 @@ import org.directwebremoting.extend.TypeHintContext;
 import org.directwebremoting.io.FileTransfer;
 import org.directwebremoting.util.DebuggingPrintWriter;
 import org.directwebremoting.util.Messages;
-import org.directwebremoting.util.MimeConstants;
 
 /**
  * A Marshaller that output plain Javascript.
@@ -67,12 +62,31 @@ import org.directwebremoting.util.MimeConstants;
  * while editing the other.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class JsonCallMarshaller implements Marshaller
+public abstract class BaseCallHandler implements Handler
 {
     /* (non-Javadoc)
-     * @see org.directwebremoting.extend.Marshaller#marshallInbound(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.directwebremoting.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public Calls marshallInbound(HttpServletRequest request, HttpServletResponse response) throws IOException, ServerException
+    public void handle(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        try
+        {
+            Calls calls = convertToCalls(request);
+            Replies replies = remoter.execute(calls);
+            marshallOutbound(replies, response);
+        }
+        catch (Exception ex)
+        {
+            marshallException(request, response, ex);
+        }
+    }
+
+    /**
+     * Take an HttpServletRequest and create from it a Calls object.
+     * @param request The input data
+     * @return A Calls object that represents the data in the request
+     */
+    public Calls convertToCalls(HttpServletRequest request) throws ServerException
     {
         RealWebContext webContext = (RealWebContext) WebContextFactory.get();
         Batch batch = new Batch(request);
@@ -81,6 +95,11 @@ public class JsonCallMarshaller implements Marshaller
         {
             log.error("GET is disallowed because it makes request forgery easier. See http://getahead.org/dwr/security/allowGetForSafariButMakeForgeryEasier for more details.");
             throw new SecurityException("GET Disalowed");
+        }
+
+        if (crossDomainSessionSecurity)
+        {
+            checkNotCsrfAttack(request, batch);
         }
 
         // Save the batch so marshallException can get at a batch id
@@ -92,6 +111,48 @@ public class JsonCallMarshaller implements Marshaller
         // Various bits of the Batch need to be stashed away places
         storeParsedRequest(request, webContext, batch);
         return marshallInbound(batch);
+    }
+
+    /**
+     * Check that this request is not subject to a CSRF attack
+     * @param request The original browser's request
+     * @param batch The data that we've parsed from the request body
+     */
+    private void checkNotCsrfAttack(HttpServletRequest request, Batch batch)
+    {
+        // A check to see that this isn't a csrf attack
+        // http://en.wikipedia.org/wiki/Cross-site_request_forgery
+        // http://www.tux.org/~peterw/csrf.txt
+        if (request.isRequestedSessionIdValid() && request.isRequestedSessionIdFromCookie())
+        {
+            String headerSessionId = request.getRequestedSessionId();
+            if (headerSessionId.length() > 0)
+            {
+                String bodySessionId = batch.getHttpSessionId();
+
+                // Normal case; if same session cookie is supplied by DWR and
+                // in HTTP header then all is ok
+                if (headerSessionId.equals(bodySessionId))
+                {
+                    return;
+                }
+
+                // Weblogic adds creation time to the end of the incoming
+                // session cookie string (even for request.getRequestedSessionId()).
+                // Use the raw cookie instead
+                for (Cookie cookie : request.getCookies())
+                {
+                    if (cookie.getName().equals(sessionCookieName) && cookie.getValue().equals(bodySessionId))
+                    {
+                        return;
+                    }
+                }
+
+                // Otherwise error
+                log.error("A request has been denied as a potential CSRF attack.");
+                throw new SecurityException("CSRF Security Error");
+            }
+        }
     }
 
     /**
@@ -142,11 +203,12 @@ public class JsonCallMarshaller implements Marshaller
             // that method.
 
             // Which method are we using?
-            Method method = findMethod(call, inctx);
+            call.findMethod(creatorManager, converterManager, inctx);
+            Method method = call.getMethod();
             if (method == null)
             {
                 String name = call.getScriptName() + '.' + call.getMethodName();
-                String error = Messages.getString("JsonCallMarshaller.UnknownMethod", name);
+                String error = Messages.getString("BaseCallHandler.UnknownMethod", name);
                 log.warn("Marshalling exception: " + error);
 
                 call.setMethod(null);
@@ -241,76 +303,10 @@ public class JsonCallMarshaller implements Marshaller
         }
     }
 
-    /**
-     * Find the method the best matches the method name and parameters
-     * @param call The function call we are going to make
-     * @param inctx The data conversion context
-     * @return A matching method, or null if one was not found.
-     */
-    private Method findMethod(Call call, InboundContext inctx)
-    {
-        if (call.getScriptName() == null)
-        {
-            throw new IllegalArgumentException(Messages.getString("JsonCallMarshaller.MissingClassParam"));
-        }
-
-        if (call.getMethodName() == null)
-        {
-            throw new IllegalArgumentException(Messages.getString("JsonCallMarshaller.MissingMethodParam"));
-        }
-
-        Creator creator = creatorManager.getCreator(call.getScriptName(), true);
-        List<Method> available = new ArrayList<Method>();
-
-        methods:
-        for (Method method : creator.getType().getMethods())
-        {
-            // Check method name and access
-            if (method.getName().equals(call.getMethodName()))
-            {
-                // Check number of parameters
-                if (method.getParameterTypes().length == inctx.getParameterCount())
-                {
-                    // Clear the previous conversion attempts (the param types
-                    // will probably be different)
-                    inctx.clearConverted();
-
-                    // Check parameter types
-                    for (int j = 0; j < method.getParameterTypes().length; j++)
-                    {
-                        Class<?> paramType = method.getParameterTypes()[j];
-                        if (!converterManager.isConvertable(paramType))
-                        {
-                            // Give up with this method and try the next
-                            continue methods;
-                        }
-                    }
-
-                    available.add(method);
-                }
-            }
-        }
-
-        // Pick a method to call
-        if (available.size() > 1)
-        {
-            log.warn("Warning multiple matching methods. Using first match.");
-        }
-
-        if (available.isEmpty())
-        {
-            return null;
-        }
-
-        // At the moment we are just going to take the first match, for a
-        // later increment we might pick the best implementation
-        return available.get(0);
-    }
-
     /* (non-Javadoc)
      * @see org.directwebremoting.Marshaller#marshallOutbound(org.directwebremoting.Replies, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void marshallOutbound(Replies replies, HttpServletRequest request, HttpServletResponse response) throws IOException
+    public void marshallOutbound(Replies replies, HttpServletResponse response) throws IOException
     {
         // Get the output stream and setup the mime type
         response.setContentType(getOutboundMimeType());
@@ -361,14 +357,16 @@ public class JsonCallMarshaller implements Marshaller
                 if (reply.getThrowable() != null)
                 {
                     Throwable ex = reply.getThrowable();
-                    EnginePrivate.remoteHandleException(conduit, batchId, callId, ex);
+                    ScriptBuffer script = EnginePrivate.getRemoteHandleExceptionScript(batchId, callId, ex);
+                    conduit.addScript(script);
 
                     log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']');
                 }
                 else
                 {
                     Object data = reply.getReply();
-                    EnginePrivate.remoteHandleCallback(conduit, batchId, callId, data);
+                    ScriptBuffer script = EnginePrivate.getRemoteHandleCallbackScript(batchId, callId, data);
+                    conduit.addScript(script);
                 }
             }
             catch (IOException ex)
@@ -380,7 +378,8 @@ public class JsonCallMarshaller implements Marshaller
             }
             catch (MarshallException ex)
             {
-                EnginePrivate.remoteHandleException(conduit, batchId, callId, ex);
+                ScriptBuffer script = EnginePrivate.getRemoteHandleExceptionScript(batchId, callId, ex);
+                addScriptHandleExceptions(conduit, script);
                 log.warn("--MarshallException: batchId=" + batchId + " class=" + ex.getConversionType().getName(), ex);
             }
             catch (Exception ex)
@@ -388,10 +387,13 @@ public class JsonCallMarshaller implements Marshaller
                 // This is a bit of a "this can't happen" case so I am a bit
                 // nervous about sending the exception to the client, but we
                 // want to avoid silently dying so we need to do something.
-                EnginePrivate.remoteHandleException(conduit, batchId, callId, ex);
+                ScriptBuffer script = EnginePrivate.getRemoteHandleExceptionScript(batchId, callId, ex);
+                addScriptHandleExceptions(conduit, script);
                 log.error("--MarshallException: batchId=" + batchId + " message=" + ex.toString());
             }
         }
+
+        sendOutboundScriptSuffix(out, replies.getBatchId());
     }
 
     /* (non-Javadoc)
@@ -416,68 +418,53 @@ public class JsonCallMarshaller implements Marshaller
         sendOutboundScriptPrefix(out, batchId);
         String script = EnginePrivate.getRemoteHandleBatchExceptionScript(batchId, ex);
         out.print(script);
+        sendOutboundScriptSuffix(out, batchId);
     }
 
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#getOutboundMimeType()
+    /**
+     * Marshall a Script without worrying about MarshallExceptions
      */
-    protected String getOutboundMimeType()
+    public void addScriptHandleExceptions(ScriptConduit conduit, ScriptBuffer script) throws IOException
     {
-        return MimeConstants.MIME_JS;
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendOutboundScriptPrefix(java.io.PrintWriter, java.lang.String)
-     */
-    protected void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException
-    {
-        if (!allowScriptTagRemoting)
+        try
         {
-            synchronized (out)
-            {
-                out.println(scriptTagProtection);
-            }
+            conduit.addScript(script);
         }
-    }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.dwrp.BaseCallMarshaller#sendScript(java.io.PrintWriter, java.lang.String)
-     */
-    protected void sendScript(PrintWriter out, String script) throws IOException
-    {
-        synchronized (out)
+        catch (MarshallException ex)
         {
-            out.println(script);
+            log.warn("Error marshalling exception. Is the exception converter configured?");
         }
     }
 
     /**
-     * Do we allow ScriptTag remoting?
-     * @param allowScriptTagRemoting The new value to set
+     * Send a script to the browser
+     * @param out The stream to write to
+     * @param script The script to send
+     * @throws IOException If the write fails
      */
-    public void setAllowScriptTagRemoting(boolean allowScriptTagRemoting)
-    {
-        this.allowScriptTagRemoting = allowScriptTagRemoting;
-    }
+    protected abstract void sendScript(PrintWriter out, String script) throws IOException;
 
     /**
-     * Do we allow ScriptTag remoting.
+     * What mime type should we send to the browser for this data?
+     * @return A mime-type
      */
-    private boolean allowScriptTagRemoting = false;
+    protected abstract String getOutboundMimeType();
 
     /**
-     * What is the string we use for script tag hack protection
-     * @param scriptTagProtection the scriptTagProtection to set
+     * iframe mode starts as HTML, so get into script mode
+     * @param out The stream to write to
+     * @param batchId The batch identifier so we can prepare the environment
+     * @throws IOException If the write fails
      */
-    public void setScriptTagProtection(String scriptTagProtection)
-    {
-        this.scriptTagProtection = scriptTagProtection;
-    }
+    protected abstract void sendOutboundScriptPrefix(PrintWriter out, String batchId) throws IOException;
 
     /**
-     * What is the string we use for script tag hack protection
+     * iframe mode needs to get out of script mode
+     * @param out The stream to write to
+     * @param batchId The batch identifier so we can prepare the environment
+     * @throws IOException If the write fails
      */
-    private String scriptTagProtection = DwrConstants.SCRIPT_TAG_PROTECTION;
+    protected abstract void sendOutboundScriptSuffix(PrintWriter out, String batchId) throws IOException;
 
     /* (non-Javadoc)
      * @see org.directwebremoting.Marshaller#isConvertable(java.lang.Class)
@@ -488,87 +475,9 @@ public class JsonCallMarshaller implements Marshaller
     }
 
     /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param converterManager The new DefaultConverterManager
-     */
-    public void setConverterManager(ConverterManager converterManager)
-    {
-        this.converterManager = converterManager;
-    }
-
-    /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param creatorManager The new DefaultConverterManager
-     */
-    public void setCreatorManager(CreatorManager creatorManager)
-    {
-        this.creatorManager = creatorManager;
-    }
-
-    /**
-     * Accessor for the security manager
-     * @param accessControl The accessControl to set.
-     */
-    public void setAccessControl(AccessControl accessControl)
-    {
-        this.accessControl = accessControl;
-    }
-
-    /**
-     * Accessor for the PageNormalizer.
-     * @param pageNormalizer The new PageNormalizer
-     */
-    public void setPageNormalizer(PageNormalizer pageNormalizer)
-    {
-        this.pageNormalizer = pageNormalizer;
-    }
-
-    /**
-     * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
-     */
-    public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
-    {
-        this.allowGetForSafariButMakeForgeryEasier = allowGetForSafariButMakeForgeryEasier;
-    }
-
-    /**
-     * Alter the session cookie name from the default JSESSIONID.
-     * @param sessionCookieName the sessionCookieName to set
-     */
-    public void setSessionCookieName(String sessionCookieName)
-    {
-        this.sessionCookieName = sessionCookieName;
-    }
-
-    /**
-     * @return Are we outputting in JSON mode?
-     */
-    public boolean isJsonOutput()
-    {
-        return jsonOutput;
-    }
-
-    /**
-     * @param jsonOutput Are we outputting in JSON mode?
-     */
-    public void setJsonOutput(boolean jsonOutput)
-    {
-        this.jsonOutput = jsonOutput;
-    }
-
-    /**
-     * Do we debug all the scripts that we output?
-     * @param debugScriptOutput true to debug all of the output scripts (verbose)
-     */
-    public void setDebugScriptOutput(boolean debugScriptOutput)
-    {
-        this.debugScriptOutput = debugScriptOutput;
-    }
-
-    /**
      * A ScriptConduit that works with the parent Marshaller.
      * In some ways this is nasty because it has access to essentially private parts
-     * of JsonCallMarshaller, however there is nowhere sensible to store them
+     * of BaseCallHandler, however there is nowhere sensible to store them
      * within that class, so this is a hacky simplification.
      * @author Joe Walker [joe at getahead dot ltd dot uk]
      */
@@ -606,9 +515,48 @@ public class JsonCallMarshaller implements Marshaller
     }
 
     /**
+     * Setter for the remoter
+     * @param remoter The new remoter
+     */
+    public void setRemoter(Remoter remoter)
+    {
+        this.remoter = remoter;
+    }
+
+    /**
+     * The bean to execute remote requests and generate interfaces
+     */
+    protected Remoter remoter = null;
+
+    /**
+     * Do we debug all the scripts that we output?
+     * @param debugScriptOutput true to debug all of the output scripts (verbose)
+     */
+    public void setDebugScriptOutput(boolean debugScriptOutput)
+    {
+        this.debugScriptOutput = debugScriptOutput;
+    }
+
+    /**
      * Do we debug all the scripts that we output?
      */
     protected boolean debugScriptOutput = false;
+
+    /**
+     * @return Are we outputting in JSON mode?
+     */
+    public boolean isJsonOutput()
+    {
+        return jsonOutput;
+    }
+
+    /**
+     * @param jsonOutput Are we outputting in JSON mode?
+     */
+    public void setJsonOutput(boolean jsonOutput)
+    {
+        this.jsonOutput = jsonOutput;
+    }
 
     /**
      * Are we outputting in JSON mode?
@@ -616,9 +564,26 @@ public class JsonCallMarshaller implements Marshaller
     protected boolean jsonOutput = false;
 
     /**
+     * Alter the session cookie name from the default JSESSIONID.
+     * @param sessionCookieName the sessionCookieName to set
+     */
+    public void setSessionCookieName(String sessionCookieName)
+    {
+        this.sessionCookieName = sessionCookieName;
+    }
+
+    /**
      * The session cookie name
      */
     protected String sessionCookieName = "JSESSIONID";
+
+    /**
+     * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
+     */
+    public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
+    {
+        this.allowGetForSafariButMakeForgeryEasier = allowGetForSafariButMakeForgeryEasier;
+    }
 
     /**
      * By default we disable GET, but this hinders old Safaris
@@ -626,9 +591,41 @@ public class JsonCallMarshaller implements Marshaller
     private boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
+     * To we perform cross-domain session security checks?
+     * @param crossDomainSessionSecurity the cross domain session security setting
+     */
+    public void setCrossDomainSessionSecurity(boolean crossDomainSessionSecurity)
+    {
+        this.crossDomainSessionSecurity = crossDomainSessionSecurity;
+    }
+
+    /**
+     * To we perform cross-domain session security checks?
+     */
+    protected boolean crossDomainSessionSecurity = true;
+
+    /**
+     * Accessor for the PageNormalizer.
+     * @param pageNormalizer The new PageNormalizer
+     */
+    public void setPageNormalizer(PageNormalizer pageNormalizer)
+    {
+        this.pageNormalizer = pageNormalizer;
+    }
+
+    /**
      * How we turn pages into the canonical form.
      */
     protected PageNormalizer pageNormalizer = null;
+
+    /**
+     * Accessor for the DefaultCreatorManager that we configure
+     * @param converterManager The new DefaultConverterManager
+     */
+    public void setConverterManager(ConverterManager converterManager)
+    {
+        this.converterManager = converterManager;
+    }
 
     /**
      * How we convert parameters
@@ -636,9 +633,27 @@ public class JsonCallMarshaller implements Marshaller
     protected ConverterManager converterManager = null;
 
     /**
+     * Accessor for the DefaultCreatorManager that we configure
+     * @param creatorManager The new DefaultConverterManager
+     */
+    public void setCreatorManager(CreatorManager creatorManager)
+    {
+        this.creatorManager = creatorManager;
+    }
+
+    /**
      * How we create new beans
      */
     protected CreatorManager creatorManager = null;
+
+    /**
+     * Accessor for the security manager
+     * @param accessControl The accessControl to set.
+     */
+    public void setAccessControl(AccessControl accessControl)
+    {
+        this.accessControl = accessControl;
+    }
 
     /**
      * The security manager
@@ -653,5 +668,5 @@ public class JsonCallMarshaller implements Marshaller
     /**
      * The log stream
      */
-    protected static final Log log = LogFactory.getLog(JsonCallMarshaller.class);
+    protected static final Log log = LogFactory.getLog(BaseCallHandler.class);
 }

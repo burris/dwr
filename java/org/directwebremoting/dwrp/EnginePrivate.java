@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.extend;
+package org.directwebremoting.dwrp;
 
-import java.io.IOException;
-
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.ScriptSession;
-import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.impl.DefaultRemoter;
 import org.directwebremoting.proxy.ScriptProxy;
 import org.directwebremoting.util.JavascriptUtil;
 
 /**
  * An abstraction of the DWREngine Javascript class for use by
- * {@link org.directwebremoting.dwrp.BaseCallMarshaller},
+ * {@link org.directwebremoting.dwrp.BaseCallHandler},
  * {@link org.directwebremoting.dwrp.PollHandler} and a few others that need
  * to call internal functions in engine.js
  * @author Joe Walker [joe at getahead dot ltd dot uk]
@@ -37,64 +31,54 @@ public class EnginePrivate extends ScriptProxy
 {
     /**
      * Call the dwr.engine.remote.handleResponse() in the browser
-     * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The identifier of the call that we are handling a response for
      * @param data The data to pass to the callback function
-     * @throws IOException If writing fails.
-     * @throws MarshallException If objects in the script can not be marshalled
+     * @return The script to send to the browser
      */
-    public static void remoteHandleCallback(ScriptConduit conduit, String batchId, String callId, Object data) throws IOException, MarshallException
+    public static ScriptBuffer getRemoteHandleCallbackScript(String batchId, String callId, Object data)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("dwr.engine.remote.handleCallback", batchId, callId, data);
-        conduit.addScript(script);
+        return script;
     }
 
     /**
      * Call dwr.engine.remote.handleException() in the browser
-     * @param conduit The browser pipe to write to
      * @param batchId The identifier of the batch that we are handling a response for
      * @param callId The id of the call we are replying to
      * @param ex The exception to throw on the remote end
-     * @throws IOException If writing fails.
+     * @return The script to send to the browser
      */
-    public static void remoteHandleException(ScriptConduit conduit, String batchId, String callId, Throwable ex) throws IOException
+    public static ScriptBuffer getRemoteHandleExceptionScript(String batchId, String callId, Throwable ex)
     {
-        try
-        {
-            ScriptBuffer script = new ScriptBuffer();
-            script.appendCall("dwr.engine.remote.handleException", batchId, callId, ex);
-            conduit.addScript(script);
-        }
-        catch (MarshallException mex)
-        {
-            log.warn("This exception can't happen. Really.", ex);
-        }
+        ScriptBuffer script = new ScriptBuffer();
+        script.appendCall("dwr.engine.remote.handleException", batchId, callId, ex);
+        return script;
     }
 
     /**
      * Call dwr.engine.remote.handleNewScriptSession() in the browser
-     * @param session The browser page to write to
      * @param newSessionId The new script session id for the browser to reuse
+     * @return The script to send to the browser
      */
-    public static void remoteHandleNewScriptSession(ScriptSession session, String newSessionId)
+    public static ScriptBuffer getRemoteHandleNewScriptSessionScript(String newSessionId)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("dwr.engine.remote.handleNewScriptSession", newSessionId);
-        session.addScript(script);
+        return script;
     }
 
     /**
      * Call dwr.engine.remote.handleNewWindowName() in the browser
-     * @param session The browser page to write to
      * @param windowName The new window name for the page
+     * @return The script to send to the browser
      */
-    public static void remoteHandleNewWindowName(ScriptSession session, String windowName)
+    public static ScriptBuffer getRemoteHandleNewWindowNameScript(String windowName)
     {
         ScriptBuffer script = new ScriptBuffer();
         script.appendCall("dwr.engine.remote.handleNewWindowName", windowName);
-        session.addScript(script);
+        return script;
     }
 
     /**
@@ -252,9 +236,4 @@ public class EnginePrivate extends ScriptProxy
     {
         return "try { window.parent." + script + " } catch(ex) { if (!(ex.number && ex.number == -2146823277)) { throw ex; }}";
     }
-
-    /**
-     * The log stream
-     */
-    private static final Log log = LogFactory.getLog(EnginePrivate.class);
 }

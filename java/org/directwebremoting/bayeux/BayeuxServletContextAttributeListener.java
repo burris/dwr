@@ -23,7 +23,7 @@ import javax.servlet.ServletContextAttributeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
-import org.directwebremoting.dwrp.PlainCallMarshaller;
+import org.directwebremoting.dwrp.PlainCallHandler;
 import org.directwebremoting.extend.ConverterManager;
 import org.directwebremoting.extend.Remoter;
 import org.directwebremoting.impl.ContainerUtil;
@@ -58,9 +58,9 @@ public class BayeuxServletContextAttributeListener implements ServletContextAttr
                     bayeuxHandler.setConverterManager(converterManager);
                 }
 
-                if (plainCallMarshaller != null)
+                if (plainCallHandler != null)
                 {
-                    bayeuxHandler.setPlainCallMarshaller(plainCallMarshaller);
+                    bayeuxHandler.setPlainCallHandler(plainCallHandler);
                 }
             }
             
@@ -97,16 +97,16 @@ public class BayeuxServletContextAttributeListener implements ServletContextAttr
                         log.debug("converterManager=" + converterManager);
                     }
 
-                    PlainCallMarshaller p = (PlainCallMarshaller) container.getBean("org.directwebremoting.dwrp.PlainCallMarshaller");
+                    PlainCallHandler p = (PlainCallHandler) container.getBean("org.directwebremoting.dwrp.PlainCallHandler");
                     if (p != null)
                     {
-                        this.plainCallMarshaller = p;
+                        this.plainCallHandler = p;
                         if (bayeuxHandler != null)
                         {
-                            bayeuxHandler.setPlainCallMarshaller(plainCallMarshaller);
+                            bayeuxHandler.setPlainCallHandler(plainCallHandler);
                         }
 
-                        log.debug("plainCallMarshaller=" + plainCallMarshaller);
+                        log.debug("plainCallHandler=" + plainCallHandler);
                     }
                 }
             }
@@ -130,7 +130,7 @@ public class BayeuxServletContextAttributeListener implements ServletContextAttr
     private BayeuxClient bayeuxHandler;
     private Remoter remoter;
     private ConverterManager converterManager;
-    private PlainCallMarshaller plainCallMarshaller;
+    private PlainCallHandler plainCallHandler;
 
     /**
      * The log stream

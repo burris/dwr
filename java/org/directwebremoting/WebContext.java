@@ -24,6 +24,8 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Class to enable us to access servlet parameters.
+ * WebContext is only available from a DWR thread. If you need to access web
+ * data from a non-DWR thread, use the superclass, {@link ServerContext}.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public interface WebContext extends ServerContext
@@ -31,16 +33,22 @@ public interface WebContext extends ServerContext
     /**
      * Get the script session that represents the currently viewed page in the
      * same way that an HttpSession represents a cookie.
+     * <p>If the DWR thread that gave rise to this {@link WebContext} is as a
+     * result of a JSON call, this method will throw an UnsupportedOperationException
      * @return A browser object for this user
+     * @throws UnsupportedOperationException If this is part of a JSON call
      */
-    ScriptSession getScriptSession();
+    ScriptSession getScriptSession() throws UnsupportedOperationException;
 
     /**
      * What is the URL of the current page.
      * This includes 'http://', up to (but not including) '?' or '#'
+     * <p>If the DWR thread that gave rise to this {@link WebContext} is as a
+     * result of a JSON call, this method will throw an UnsupportedOperationException
      * @return The URL of the current page
+     * @throws UnsupportedOperationException If this is part of a JSON call
      */
-    String getCurrentPage();
+    String getCurrentPage() throws UnsupportedOperationException;
 
     /**
      * Returns the current session associated with this request, or if the

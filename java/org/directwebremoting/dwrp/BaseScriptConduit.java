@@ -22,9 +22,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.extend.Alarm;
 import org.directwebremoting.extend.ConverterManager;
-import org.directwebremoting.extend.EnginePrivate;
+import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.ScriptConduit;
 import org.directwebremoting.impl.BasicAlarm;
 import org.directwebremoting.util.DebuggingPrintWriter;
@@ -101,11 +102,21 @@ public abstract class BaseScriptConduit extends ScriptConduit
     {
         try
         {
-            EnginePrivate.remoteHandleCallback(this, batchId, "0", timetoNextPoll);
+            ScriptBuffer script = EnginePrivate.getRemoteHandleCallbackScript(batchId, "0", timetoNextPoll);
+            addScript(script);
         }
         catch (Exception ex)
         {
-            EnginePrivate.remoteHandleException(this, batchId, "0", ex);
+            ScriptBuffer script = EnginePrivate.getRemoteHandleExceptionScript(batchId, "0", ex);
+            try
+            {
+                addScript(script);
+            }
+            catch (MarshallException ex1)
+            {
+                log.warn("This can't happen:", ex1);
+            }
+
             log.warn("--Erroring: batchId[" + batchId + "] message[" + ex.toString() + ']', ex);
         }
 

@@ -28,9 +28,10 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.Container;
+import org.directwebremoting.ScriptBuffer;
 import org.directwebremoting.ScriptSession;
 import org.directwebremoting.WebContext;
-import org.directwebremoting.extend.EnginePrivate;
+import org.directwebremoting.dwrp.EnginePrivate;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.RealWebContext;
 import org.directwebremoting.extend.ScriptSessionManager;
@@ -92,7 +93,8 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
             String newSessionId = scriptSession.getId();
 
             // Inject a (new) script session id into the page
-            EnginePrivate.remoteHandleNewScriptSession(scriptSession, newSessionId);
+            ScriptBuffer script = EnginePrivate.getRemoteHandleNewScriptSessionScript(newSessionId);
+            scriptSession.addScript(script);
 
             // Use the new script session id not the one passed in
             log.debug("ScriptSession re-sync: " + sentScriptId + " has become " + newSessionId);
@@ -122,7 +124,8 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
             if (windowName == null || windowName.equals(""))
             {
                 windowName = "DWR-" + generator.generateId(16);
-                EnginePrivate.remoteHandleNewWindowName(scriptSession, windowName);
+                ScriptBuffer script = EnginePrivate.getRemoteHandleNewWindowNameScript(windowName);
+                scriptSession.addScript(script);
             }
             scriptSession.setWindowName(windowName);
         }
@@ -133,6 +136,11 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
      */
     public String getCurrentPage()
     {
+        if (page == null)
+        {
+            throw new UnsupportedOperationException("CurrentPage is not supported from a JSON call.");
+        }
+
         return page;
     }
 
@@ -141,6 +149,11 @@ public class DefaultWebContext extends DefaultServerContext implements RealWebCo
      */
     public ScriptSession getScriptSession()
     {
+        if (scriptSessionId == null)
+        {
+            throw new UnsupportedOperationException("ScriptSession is not supported from a JSON call.");
+        }
+
         ScriptSessionManager manager = getScriptSessionManager();
 
         RealScriptSession scriptSession = manager.getScriptSession(scriptSessionId, null, null);

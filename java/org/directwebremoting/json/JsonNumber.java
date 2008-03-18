@@ -16,7 +16,7 @@
 package org.directwebremoting.json;
 
 /**
- * The Json version of a String
+ * The Json version of a Number
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class JsonNumber extends JsonValue

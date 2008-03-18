@@ -29,7 +29,6 @@ import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.Alarm;
 import org.directwebremoting.extend.ContainerAbstraction;
 import org.directwebremoting.extend.ConverterManager;
-import org.directwebremoting.extend.EnginePrivate;
 import org.directwebremoting.extend.Handler;
 import org.directwebremoting.extend.PageNormalizer;
 import org.directwebremoting.extend.RealScriptSession;

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.servlet;
+package org.directwebremoting.dwrp;
 
-import org.directwebremoting.dwrp.PollHandler;
 
 /**
  * A Handler polling DWR calls whose replies are NOT HTML wrapped.

@@ -8,16 +8,6 @@
   <display-name>DWR (Direct Web Remoting)</display-name>
   <description>A Simple Demo DWR</description>
 
-  <!--
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>/WEB-INF/classes/spring-context.xml</param-value>
-  </context-param>
-  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-  -->
-
   <listener>
     <listener-class>org.directwebremoting.servlet.EfficientShutdownServletContextAttributeListener</listener-class>
   </listener>
@@ -43,28 +33,11 @@
       <param-value>true</param-value>
     </init-param>
     <init-param>
-      <param-name>allowScriptTagRemoting</param-name>
+      <param-name>jsonEnabled</param-name>
       <param-value>true</param-value>
     </init-param>
-    <init-param>
-      <param-name>preferDataUrlSchema</param-name>
-      <param-value>false</param-value>
-    </init-param>
-    <!--
-    <init-param>
-      <param-name>customConfigurator</param-name>
-      <param-value>org.getahead.dwrdemo.fluent.DemoFluentConfigurator</param-value>
-    </init-param>
-    -->
     <load-on-startup>1</load-on-startup>
   </servlet>
-  <!--
-  <servlet>
-    <servlet-name>dwr-invoker</servlet-name>
-    <servlet-class>org.directwebremoting.spring.DwrSpringServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  -->
 
   <servlet-mapping>
     <servlet-name>dwr-invoker</servlet-name>

@@ -19,7 +19,7 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.directwebremoting.dwrp.BaseCallMarshaller;
+import org.directwebremoting.dwrp.BaseCallHandler;
 import org.directwebremoting.fsguide.Visitor;
 
 /**
@@ -48,5 +48,5 @@ public class SystemOutVisitor implements Visitor
     /**
      * The log stream
      */
-    protected static final Log log = LogFactory.getLog(BaseCallMarshaller.class);
+    protected static final Log log = LogFactory.getLog(BaseCallHandler.class);
 }

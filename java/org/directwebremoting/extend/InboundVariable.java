@@ -24,7 +24,6 @@ import org.directwebremoting.dwrp.ProtocolConstants;
 import org.directwebremoting.json.InvalidJsonException;
 import org.directwebremoting.json.JsonArray;
 import org.directwebremoting.json.JsonBoolean;
-import org.directwebremoting.json.JsonHack;
 import org.directwebremoting.json.JsonNull;
 import org.directwebremoting.json.JsonNumber;
 import org.directwebremoting.json.JsonObject;
@@ -151,13 +150,6 @@ public final class InboundVariable
          * be represented in 100% pure JSON, then insert null and carry on
          */
         Skip,
-
-        /**
-         * If there is anything about the {@link InboundVariable} that can not
-         * be represented in 100% pure JSON, then find some hack to do the best
-         * we can and carry on. This option may produce invalid JSON
-         */
-        Hack,
     }
 
     /**
@@ -204,8 +196,6 @@ public final class InboundVariable
                 throw new InvalidJsonException("Can't use date in JSON");
             case Skip:
                 return new JsonNull();
-            case Hack:
-                return new JsonHack("new Date(" + value + ")");
             }
         }
         else if (type.equalsIgnoreCase("xml"))
@@ -216,8 +206,6 @@ public final class InboundVariable
                 throw new InvalidJsonException("Can't use XML in JSON");
             case Skip:
                 return new JsonNull();
-            case Hack:
-                return new JsonHack(EnginePrivate.xmlStringToJavascriptDom(value));
             }
         }
         else if (type.equalsIgnoreCase("array"))

@@ -13,30 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.json;
+package org.directwebremoting.dwrp;
+
 
 /**
+ * A Handler polling DWR calls whose replies are HTML wrapped.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class JsonHack extends JsonValue
+public class HtmlPollHandler extends PollHandler
 {
-
     /**
-     * @param string
+     * Initialize a PollHandler to not do HTML wrapping
      */
-    public JsonHack(String string)
+    public HtmlPollHandler()
     {
+        super(false);
     }
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.json.JsonValue#toExternalRepresentation()
-     */
-    @Override
-    public String toExternalRepresentation()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
-

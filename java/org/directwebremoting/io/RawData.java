@@ -63,7 +63,7 @@ public class RawData
     {
         try
         {
-            return inboundVariable.getJsonValue(InboundVariable.OnJsonParseError.Hack).toExternalRepresentation();
+            return inboundVariable.getJsonValue(InboundVariable.OnJsonParseError.Skip).toExternalRepresentation();
         }
         catch (InvalidJsonException ex)
         {

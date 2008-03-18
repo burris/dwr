@@ -13,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.directwebremoting.servlet;
-
-import org.directwebremoting.dwrp.PollHandler;
+package org.directwebremoting.jsonp;
 
 /**
- * A Handler polling DWR calls whose replies are HTML wrapped.
+ * Called when a JSON request is not formatted properly
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
-public class HtmlPollHandler extends PollHandler
+public class JsonCallException extends RuntimeException
 {
     /**
-     * Initialize a PollHandler to not do HTML wrapping
+     * All JsonCallException must have a reason
      */
-    public HtmlPollHandler()
+    public JsonCallException(String reason)
     {
-        super(false);
+        super(reason);
     }
 }
