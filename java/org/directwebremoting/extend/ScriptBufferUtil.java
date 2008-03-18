@@ -95,7 +95,7 @@ public class ScriptBufferUtil
         String output = buffer.toString();
         if (jsonOutput && !output.startsWith("{"))
         {
-            return "{" + output + "}";
+            return "{ reply:" + output + "}";
         }
         else
         {
