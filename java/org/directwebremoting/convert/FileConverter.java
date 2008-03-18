@@ -22,6 +22,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
+import org.directwebremoting.Container;
 import org.directwebremoting.WebContextFactory;
 import org.directwebremoting.extend.Converter;
 import org.directwebremoting.extend.DownloadManager;
@@ -33,6 +34,7 @@ import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.NonNestedOutboundVariable;
 import org.directwebremoting.extend.OutboundContext;
 import org.directwebremoting.extend.OutboundVariable;
+import org.directwebremoting.impl.ContainerUtil;
 import org.directwebremoting.impl.DataUrlDownloadManager;
 import org.directwebremoting.impl.FileTransferFileGenerator;
 import org.directwebremoting.impl.ImageIOFileGenerator;
@@ -111,6 +113,9 @@ public class FileConverter extends BaseV20Converter implements Converter
                 throw new MarshallException(object.getClass());
             }
 
+            Container container = WebContextFactory.get().getContainer();
+            boolean preferDataUrlSchema = ContainerUtil.getBooleanSetting(container, "preferDataUrlSchema", false);
+
             DownloadManager downloadManager;
             if (preferDataUrlSchema && isDataUrlAvailable())
             {
@@ -118,7 +123,7 @@ public class FileConverter extends BaseV20Converter implements Converter
             }
             else
             {
-                downloadManager = WebContextFactory.get().getContainer().getBean(DownloadManager.class);
+                downloadManager = container.getBean(DownloadManager.class);
             }
 
             String url = downloadManager.addFile(generator);
@@ -137,20 +142,19 @@ public class FileConverter extends BaseV20Converter implements Converter
     protected boolean isDataUrlAvailable()
     {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-        return request.getHeader("user-agent").indexOf("MSIE") == -1;
-    }
+        String userAgent = request.getHeader("user-agent");
 
-    /**
-     * Do we use a data: URL when we know it will work
-     * @param preferDataUrlSchema
-     */
-    public void setPreferDataUrlSchema(boolean preferDataUrlSchema)
-    {
-        this.preferDataUrlSchema = preferDataUrlSchema;
-    }
+        int msiePos = userAgent.indexOf("MSIE ");
+        if (msiePos >= 0)
+        {
+            // So this is IE
+            int decimalPos = userAgent.indexOf(".", msiePos);
+            String majorVersionStr = userAgent.substring(msiePos + 5, decimalPos);
+            int majorVersion = Integer.parseInt(majorVersionStr);
 
-    /**
-     * Do we use data: URLs when we can?
-     */
-    private boolean preferDataUrlSchema = false;
+            return majorVersion >= 8;
+        }
+
+        return true;
+    }
 }

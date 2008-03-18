@@ -634,6 +634,51 @@ public class ContainerUtil
     }
 
     /**
+     * Get an boolean setting from the Container.
+     * @param container The container to look into
+     * @param name The name of the setting to investigate
+     * @param defaultValue The value to return if none is given
+     * @return The value of the setting as an boolean, or the defaultValue if the
+     * setting is empty or not convertible.
+     */
+    public static boolean getBooleanSetting(Container container, String name, boolean defaultValue)
+    {
+        Object value = container.getBean(name);
+        if (value == null)
+        {
+            return defaultValue;
+        }
+        return Boolean.parseBoolean(value.toString());
+    }
+
+    /**
+     * Get an integer setting from the Container.
+     * @param container The container to look into
+     * @param name The name of the setting to investigate
+     * @param defaultValue The value to return if none is given
+     * @return The value of the setting as an int, or the defaultValue if the
+     * setting is empty or not convertible.
+     */
+    public static int getIntSetting(Container container, String name, int defaultValue)
+    {
+        Object value = container.getBean(name);
+        if (value == null)
+        {
+            return defaultValue;
+        }
+
+        try
+        {
+            return Integer.parseInt(value.toString());
+        }
+        catch (NumberFormatException ex)
+        {
+            log.warn("Failed to convert value '" + value + "' from setting '" + name + "' to an integer: " + ex.getMessage());
+            return defaultValue;
+        }
+    }
+
+    /**
      * Create a bunch of debug information about a container
      * @param container The container to print debug information about
      */
