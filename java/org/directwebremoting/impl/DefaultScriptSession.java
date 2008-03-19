@@ -259,7 +259,6 @@ public class DefaultScriptSession implements RealScriptSession
             if (conduit.isHoldingConnectionToBrowser())
             {
                 persistentConnections++;
-                log.debug("- counting as persistent connection: " + conduit);
             }
         }
         return persistentConnections;

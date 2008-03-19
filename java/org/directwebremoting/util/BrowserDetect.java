@@ -174,6 +174,40 @@ public class BrowserDetect
     }
 
     /**
+     * This method is for debugging only
+     */
+    public static String getUserAgentDebugString(HttpServletRequest request)
+    {
+        String userAgent = request.getHeader("user-agent");
+
+        int version = getMajorVersionAssumingIE(userAgent);
+        if (version != -1)
+        {
+            return "IE/" + version;
+        }
+
+        version = getMajorVersionAssumingGecko(userAgent);
+        if (version != -1)
+        {
+            return "Gecko/" + version;
+        }
+
+        version = getMajorVersionAssumingAppleWebKit(userAgent);
+        if (version != -1)
+        {
+            return "WebKit/" + version;
+        }
+
+        version = getMajorVersionAssumingOpera(userAgent);
+        if (version != -1)
+        {
+            return "Opera/" + version;
+        }
+
+        return "Unknown: (" + userAgent + ")";
+    }
+
+    /**
      * @deprecated This method is for debugging only
      */
     @Deprecated

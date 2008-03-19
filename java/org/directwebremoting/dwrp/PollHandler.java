@@ -170,12 +170,14 @@ public class PollHandler implements Handler
         {
             connectedTime = 0;
             idealDisconnectedTime = connectionLimitDisconnectedTime;
+
+            if (log.isDebugEnabled())
+            {
+                String uaStr = BrowserDetect.getUserAgentDebugString(request);
+                log.debug("Persistent connections=" + persistentConnections + ". (limit=" + connectionLimit + " in " + uaStr + "). Polling");
+            }
         }
         final int disconnectedTime = idealDisconnectedTime;
-
-        log.debug("Counted persistentConnections=" + persistentConnections);
-        log.debug("Detected connectionLimit=" + connectionLimit);
-        log.debug("Setting connectedTime=" + connectedTime + " and disconnectedTime=" + disconnectedTime);
 
         alarms.add(new TimedAlarm(connectedTime));
 
