@@ -21,10 +21,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
+ * Various functions to do with working out what is at the other end of the
+ * wire, and what it can do.
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class BrowserDetect
 {
+    public static int getConnectionLimit(HttpServletRequest request)
+    {
+        if (atLeast(request, UserAgent.IE, 8))
+        {
+            return 6;
+        }
+        else
+        {
+            return 2;
+        }
+    }
+
     /**
      * Check that the user-agent string indicates some minimum browser level
      * @param request The browsers request

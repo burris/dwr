@@ -90,7 +90,7 @@ public class OutputAlarm extends BasicAlarm implements Alarm
          */
         protected AlarmScriptConduit()
         {
-            super(RANK_PROCEDURAL);
+            super(RANK_PROCEDURAL, false);
         }
 
         /* (non-Javadoc)

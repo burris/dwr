@@ -17,7 +17,6 @@ package org.directwebremoting.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +29,6 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.directwebremoting.ScriptBuffer;
-import org.directwebremoting.dwrp.EnginePrivate;
 import org.directwebremoting.extend.MarshallException;
 import org.directwebremoting.extend.RealScriptSession;
 import org.directwebremoting.extend.ScriptConduit;
@@ -51,9 +49,8 @@ public class DefaultScriptSession implements RealScriptSession
      * @param id The new unique identifier for this session
      * @param manager The manager that created us
      * @param page The URL of the page on which we sit
-     * @param httpSessionId The cookie based id of the browser
      */
-    protected DefaultScriptSession(String id, DefaultScriptSessionManager manager, String page, String httpSessionId)
+    protected DefaultScriptSession(String id, DefaultScriptSessionManager manager, String page)
     {
         this.id = id;
         if (id == null)
@@ -61,7 +58,6 @@ public class DefaultScriptSession implements RealScriptSession
             throw new IllegalArgumentException("id can not be null");
         }
 
-        this.httpSessionId = httpSessionId;
         this.page = page;
         this.manager = manager;
         this.creationTime = System.currentTimeMillis();
@@ -191,17 +187,27 @@ public class DefaultScriptSession implements RealScriptSession
         {
             if (conduits.isEmpty())
             {
+                boolean written = false;
+
+                // This would be an excellent solution to the connection limit
+                // problem, however browsers are extending their limits, and
+                // we don't have inter-window communication sorted yet.
+                // If we do sort out I-W comms, then uncomment this, add a
+                // member: private String httpSessionId;
+                // which is passed into the constructor from the Manager
+
+                /*
                 // Are there any other script sessions in the same browser
                 // that could proxy the script for us?
                 Collection<RealScriptSession> sessions = manager.getScriptSessionsByHttpSessionId(httpSessionId);
                 ScriptBuffer proxyScript = EnginePrivate.createForeignWindowProxy(getWindowName(), script);
 
-                boolean written = false;
                 for (Iterator<RealScriptSession> it = sessions.iterator(); !written && it.hasNext();)
                 {
                     RealScriptSession session = it.next();
                     written = session.addScriptImmediately(proxyScript);
                 }
+                */
 
                 if (!written)
                 {
@@ -232,6 +238,31 @@ public class DefaultScriptSession implements RealScriptSession
                 }
             }
         }
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#addScriptImmediately(org.directwebremoting.ScriptBuffer)
+     */
+    public boolean addScriptImmediately(ScriptBuffer script)
+    {
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.RealScriptSession#countPersistentConnections()
+     */
+    public int countPersistentConnections()
+    {
+        int persistentConnections = 0;
+        for (ScriptConduit conduit : conduits)
+        {
+            if (conduit.isHoldingConnectionToBrowser())
+            {
+                persistentConnections++;
+                log.debug("- counting as persistent connection: " + conduit);
+            }
+        }
+        return persistentConnections;
     }
 
     /* (non-Javadoc)
@@ -500,11 +531,6 @@ public class DefaultScriptSession implements RealScriptSession
     private String windowName;
 
     /**
-     * The cookie based id of the browser, or null if no http session is active
-     */
-    private String httpSessionId;
-
-    /**
      * The session manager that collects sessions together
      * <p>This should not need careful synchronization since it is unchanging
      */
@@ -514,13 +540,4 @@ public class DefaultScriptSession implements RealScriptSession
      * The log stream
      */
     private static final Log log = LogFactory.getLog(DefaultScriptSession.class);
-
-    /* (non-Javadoc)
-     * @see org.directwebremoting.extend.RealScriptSession#addScriptImmediately(org.directwebremoting.ScriptBuffer)
-     */
-    public boolean addScriptImmediately(ScriptBuffer script)
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
 }

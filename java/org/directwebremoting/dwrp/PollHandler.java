@@ -18,6 +18,7 @@ package org.directwebremoting.dwrp;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ import org.directwebremoting.extend.Sleeper;
 import org.directwebremoting.impl.OutputAlarm;
 import org.directwebremoting.impl.ShutdownAlarm;
 import org.directwebremoting.impl.TimedAlarm;
+import org.directwebremoting.util.BrowserDetect;
 import org.directwebremoting.util.MimeConstants;
 
 /**
@@ -151,6 +153,30 @@ public class PollHandler implements Handler
 
         // Set the system up to resume anyway after maxConnectedTime
         long connectedTime = serverLoadMonitor.getConnectedTime();
+        int idealDisconnectedTime = serverLoadMonitor.getDisconnectedTime();
+
+        // Nasty 2 connection limit hack. How many times is this browser connected?
+        String httpSessionId = webContext.getSession(true).getId();
+        Collection<RealScriptSession> sessions = scriptSessionManager.getScriptSessionsByHttpSessionId(httpSessionId);
+        int persistentConnections = 0;
+        for (RealScriptSession session : sessions)
+        {
+            persistentConnections += session.countPersistentConnections();
+        }
+
+        // We should not hold onto the last connection
+        int connectionLimit = BrowserDetect.getConnectionLimit(request);
+        if (persistentConnections + 1 >= connectionLimit)
+        {
+            connectedTime = 0;
+            idealDisconnectedTime = connectionLimitDisconnectedTime;
+        }
+        final int disconnectedTime = idealDisconnectedTime;
+
+        log.debug("Counted persistentConnections=" + persistentConnections);
+        log.debug("Detected connectionLimit=" + connectionLimit);
+        log.debug("Setting connectedTime=" + connectedTime + " and disconnectedTime=" + disconnectedTime);
+
         alarms.add(new TimedAlarm(connectedTime));
 
         // We also need to wake-up if the server is being shut down
@@ -190,8 +216,7 @@ public class PollHandler implements Handler
                 // Tell the browser to come back at the right time
                 try
                 {
-                    int timeToNextPoll = serverLoadMonitor.getDisconnectedTime();
-                    conduit.close(timeToNextPoll);
+                    conduit.close(disconnectedTime);
                 }
                 catch (IOException ex)
                 {
@@ -260,39 +285,25 @@ public class PollHandler implements Handler
     }
 
     /**
-     * Accessor for the DefaultCreatorManager that we configure
-     * @param converterManager The new DefaultConverterManager
+     * @return Are we outputting in JSON mode?
      */
-    public void setConverterManager(ConverterManager converterManager)
+    public boolean isJsonOutput()
     {
-        this.converterManager = converterManager;
+        return jsonOutput;
     }
 
     /**
-     * Accessor for the server load monitor
-     * @param serverLoadMonitor the new server load monitor
+     * @param jsonOutput Are we outputting in JSON mode?
      */
-    public void setServerLoadMonitor(ServerLoadMonitor serverLoadMonitor)
+    public void setJsonOutput(boolean jsonOutput)
     {
-        this.serverLoadMonitor = serverLoadMonitor;
+        this.jsonOutput = jsonOutput;
     }
 
     /**
-     * Accessor for the PageNormalizer.
-     * @param pageNormalizer The new PageNormalizer
+     * Are we outputting in JSON mode?
      */
-    public void setPageNormalizer(PageNormalizer pageNormalizer)
-    {
-        this.pageNormalizer = pageNormalizer;
-    }
-
-    /**
-     * @param scriptSessionManager the scriptSessionManager to set
-     */
-    public void setScriptSessionManager(ScriptSessionManager scriptSessionManager)
-    {
-        this.scriptSessionManager = scriptSessionManager;
-    }
+    protected boolean jsonOutput = false;
 
     /**
      * Use {@link #setActiveReverseAjaxEnabled(boolean)}
@@ -315,6 +326,11 @@ public class PollHandler implements Handler
     }
 
     /**
+     * Are we doing full reverse ajax
+     */
+    protected boolean activeReverseAjaxEnabled = false;
+
+    /**
      * @param allowGetForSafariButMakeForgeryEasier Do we reduce security to help Safari
      */
     public void setAllowGetForSafariButMakeForgeryEasier(boolean allowGetForSafariButMakeForgeryEasier)
@@ -323,12 +339,9 @@ public class PollHandler implements Handler
     }
 
     /**
-     * @param containerAbstraction the containerAbstraction to set
+     * By default we disable GET, but this hinders old Safaris
      */
-    public void setContainerAbstraction(ContainerAbstraction containerAbstraction)
-    {
-        this.containerAbstraction = containerAbstraction;
-    }
+    protected boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
      * Sometimes with proxies, you need to close the stream all the time to
@@ -340,37 +353,6 @@ public class PollHandler implements Handler
     {
         this.maxWaitAfterWrite = maxWaitAfterWrite;
     }
-
-    /**
-     * @return Are we outputting in JSON mode?
-     */
-    public boolean isJsonOutput()
-    {
-        return jsonOutput;
-    }
-
-    /**
-     * @param jsonOutput Are we outputting in JSON mode?
-     */
-    public void setJsonOutput(boolean jsonOutput)
-    {
-        this.jsonOutput = jsonOutput;
-    }
-
-    /**
-     * Are we outputting in JSON mode?
-     */
-    protected boolean jsonOutput = false;
-
-    /**
-     * Are we doing full reverse ajax
-     */
-    protected boolean activeReverseAjaxEnabled = false;
-
-    /**
-     * By default we disable GET, but this hinders old Safaris
-     */
-    protected boolean allowGetForSafariButMakeForgeryEasier = false;
 
     /**
      * Sometimes with proxies, you need to close the stream all the time to
@@ -386,9 +368,27 @@ public class PollHandler implements Handler
     protected boolean plain;
 
     /**
+     * Accessor for the PageNormalizer.
+     * @param pageNormalizer The new PageNormalizer
+     */
+    public void setPageNormalizer(PageNormalizer pageNormalizer)
+    {
+        this.pageNormalizer = pageNormalizer;
+    }
+
+    /**
      * How we turn pages into the canonical form.
      */
     protected PageNormalizer pageNormalizer;
+
+    /**
+     * Accessor for the server load monitor
+     * @param serverLoadMonitor the new server load monitor
+     */
+    public void setServerLoadMonitor(ServerLoadMonitor serverLoadMonitor)
+    {
+        this.serverLoadMonitor = serverLoadMonitor;
+    }
 
     /**
      * We need to tell the system that we are waiting so it can load adjust
@@ -396,9 +396,26 @@ public class PollHandler implements Handler
     protected ServerLoadMonitor serverLoadMonitor = null;
 
     /**
+     * Accessor for the DefaultCreatorManager that we configure
+     * @param converterManager The new DefaultConverterManager
+     */
+    public void setConverterManager(ConverterManager converterManager)
+    {
+        this.converterManager = converterManager;
+    }
+
+    /**
      * How we convert parameters
      */
     protected ConverterManager converterManager = null;
+
+    /**
+     * @param scriptSessionManager the scriptSessionManager to set
+     */
+    public void setScriptSessionManager(ScriptSessionManager scriptSessionManager)
+    {
+        this.scriptSessionManager = scriptSessionManager;
+    }
 
     /**
      * The owner of script sessions
@@ -406,9 +423,36 @@ public class PollHandler implements Handler
     protected ScriptSessionManager scriptSessionManager = null;
 
     /**
+     * @param containerAbstraction the containerAbstraction to set
+     */
+    public void setContainerAbstraction(ContainerAbstraction containerAbstraction)
+    {
+        this.containerAbstraction = containerAbstraction;
+    }
+
+    /**
      * How we abstract away container specific logic
      */
     protected ContainerAbstraction containerAbstraction = null;
+
+    /**
+     * Accessor for the disconnected time when we are at a browsers connection limit.
+     * @param connectionLimitDisconnectedTime How long should clients spend disconnected
+     */
+    public void setConnectionLimitDisconnectedTime(int connectionLimitDisconnectedTime)
+    {
+        if (connectionLimitDisconnectedTime < 500)
+        {
+            connectionLimitDisconnectedTime = 500;
+        }
+
+        this.connectionLimitDisconnectedTime = connectionLimitDisconnectedTime;
+    }
+
+    /**
+     * How long are we telling users to wait before they come back next
+     */
+    protected int connectionLimitDisconnectedTime = 5000;
 
     /**
      * The log stream

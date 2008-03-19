@@ -89,4 +89,11 @@ public interface RealScriptSession extends ScriptSession
      * Accessor for the name attached to this window
      */
     String getWindowName();
+
+    /**
+     * Are there any persistent {@link ScriptConduit}s currently connected to
+     * this session?
+     * @return The number of current persistent connections.
+     */
+    int countPersistentConnections();
 }

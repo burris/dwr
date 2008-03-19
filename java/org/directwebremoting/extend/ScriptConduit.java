@@ -33,10 +33,13 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
     /**
      * All ScriptConduit need a rank
      * @param rank How does this ScriptConduit sort
+     * @param holdingConnectionToBrowser Is this conduit a fake one for tracking
+     * things, or does it represent a real long term open connection?
      */
-    public ScriptConduit(int rank)
+    public ScriptConduit(int rank, boolean holdingConnectionToBrowser)
     {
         this.rank = rank;
+        this.holdingConnectionToBrowser = holdingConnectionToBrowser;
     }
 
     /**
@@ -88,6 +91,20 @@ public abstract class ScriptConduit implements Comparable<ScriptConduit>
      * @throws MarshallException If objects in the script can not be marshalled
      */
     public abstract boolean addScript(ScriptBuffer script) throws IOException, MarshallException;
+
+    /**
+     * Is this conduit a fake one for tracking things, or does it represent a
+     * real long term open connection?
+     */
+    public boolean isHoldingConnectionToBrowser()
+    {
+        return holdingConnectionToBrowser;
+    }
+
+    /**
+     * @see #isHoldingConnectionToBrowser()
+     */
+    private boolean holdingConnectionToBrowser;
 
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)

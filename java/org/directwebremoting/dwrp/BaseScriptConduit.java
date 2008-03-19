@@ -48,7 +48,7 @@ public abstract class BaseScriptConduit extends ScriptConduit
      */
     public BaseScriptConduit(HttpServletResponse response, String batchId, ConverterManager converterManager, boolean jsonOutput) throws IOException
     {
-        super(RANK_SLOW);
+        super(RANK_SLOW, true);
 
         this.response = response;
         this.batchId = batchId;

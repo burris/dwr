@@ -489,7 +489,7 @@ public abstract class BaseCallHandler implements Handler
          */
         protected CallScriptConduit(PrintWriter out)
         {
-            super(RANK_FAST);
+            super(RANK_FAST, false);
             if (out == null)
             {
                 throw new NullPointerException("out=null");

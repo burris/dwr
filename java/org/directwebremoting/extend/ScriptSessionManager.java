@@ -46,6 +46,13 @@ public interface ScriptSessionManager
     Collection<ScriptSession> getScriptSessionsByPage(String url);
 
     /**
+     * Lookup all the windows associated with a given browser
+     * @param httpSessionId The browser id to lookup
+     * @return A list of script sessions for each open window
+     */
+    Collection<RealScriptSession> getScriptSessionsByHttpSessionId(String httpSessionId);
+
+    /**
       * For a given script session id, return the related ScriptSession object
      * or null if the id is not known.
      * @param id The id to get a ScriptSession object for

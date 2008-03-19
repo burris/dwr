@@ -108,7 +108,7 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         String id = generator.generateId(16);
 
-        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page, httpSessionId);
+        DefaultScriptSession scriptSession = new DefaultScriptSession(id, this, page);
 
         synchronized (sessionLock)
         {
@@ -236,24 +236,26 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
         }
     }
 
-    /**
-     * Lookup all the windows associated with a given browser
-     * @param httpSessionId The browser id to lookup
-     * @return A list of script sessions for each open window
+    /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ScriptSessionManager#getScriptSessionsByHttpSessionId(java.lang.String)
      */
     public Collection<RealScriptSession> getScriptSessionsByHttpSessionId(String httpSessionId)
     {
         Collection<RealScriptSession> reply = new ArrayList<RealScriptSession>();
 
         Set<String> scriptSessionIds = sessionXRef.get(httpSessionId);
-        for (String scriptSessionId : scriptSessionIds)
+        if (scriptSessionIds != null)
         {
-            DefaultScriptSession scriptSession = sessionMap.get(scriptSessionId);
-            if (scriptSession != null)
+            for (String scriptSessionId : scriptSessionIds)
             {
-                reply.add(scriptSession);
+                DefaultScriptSession scriptSession = sessionMap.get(scriptSessionId);
+                if (scriptSession != null)
+                {
+                    reply.add(scriptSession);
+                }
             }
         }
+
         return reply;
     }
 
