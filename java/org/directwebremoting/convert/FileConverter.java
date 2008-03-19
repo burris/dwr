@@ -40,7 +40,9 @@ import org.directwebremoting.impl.FileTransferFileGenerator;
 import org.directwebremoting.impl.ImageIOFileGenerator;
 import org.directwebremoting.impl.InputStreamFileGenerator;
 import org.directwebremoting.io.FileTransfer;
+import org.directwebremoting.util.BrowserDetect;
 import org.directwebremoting.util.Messages;
+import org.directwebremoting.util.UserAgent;
 
 /**
  * The FileConverter can only convert inbound files, convertOutbound is not
@@ -142,19 +144,10 @@ public class FileConverter extends BaseV20Converter implements Converter
     protected boolean isDataUrlAvailable()
     {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-        String userAgent = request.getHeader("user-agent");
 
-        int msiePos = userAgent.indexOf("MSIE ");
-        if (msiePos >= 0)
-        {
-            // So this is IE
-            int decimalPos = userAgent.indexOf(".", msiePos);
-            String majorVersionStr = userAgent.substring(msiePos + 5, decimalPos);
-            int majorVersion = Integer.parseInt(majorVersionStr);
-
-            return majorVersion >= 8;
-        }
-
-        return true;
+        return BrowserDetect.atLeast(request, UserAgent.IE, 8) ||
+               BrowserDetect.atLeast(request, UserAgent.Gecko, 20041107) ||
+               BrowserDetect.atLeast(request, UserAgent.AppleWebKit, 2) ||
+               BrowserDetect.atLeast(request, UserAgent.Opera, 8);
     }
 }
