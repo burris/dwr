@@ -29,6 +29,19 @@ import org.directwebremoting.extend.Sleeper;
 public class JettyContainerAbstraction implements ContainerAbstraction
 {
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ContainerAbstraction#isResponseCompleted(javax.servlet.http.HttpServletRequest)
+     */
+    public boolean isResponseCompleted(HttpServletRequest request)
+    {
+        if (JettyContinuationSleeper.isRestart(request))
+        {
+            JettyContinuationSleeper.restart(request);
+            return true;
+        }
+        return false;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.ContainerAbstraction#isNativeEnvironment(javax.servlet.ServletConfig)
      */
     public boolean isNativeEnvironment(ServletConfig servletConfig)

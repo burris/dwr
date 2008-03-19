@@ -29,6 +29,14 @@ import org.directwebremoting.extend.Sleeper;
 public class GrizzlyContainerAbstraction implements ContainerAbstraction
 {
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ContainerAbstraction#isResponseCompleted(javax.servlet.http.HttpServletRequest)
+     */
+    public boolean isResponseCompleted(HttpServletRequest request)
+    {
+        return false;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.ContainerAbstraction#isNativeEnvironment(javax.servlet.ServletConfig)
      */
     public boolean isNativeEnvironment(ServletConfig servletConfig)

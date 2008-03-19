@@ -49,4 +49,14 @@ public interface ContainerAbstraction
      * @return The ServerLoadMonitor implementation to go with this container
      */
     Class<? extends ServerLoadMonitor> getServerLoadMonitorImplementation();
+
+    /**
+     * Some async-servlet implementations (Jetty) restart requests, when we
+     * might have already completed dealing with them. If this method returns
+     * true then {@link PollHandler} will assume that we're done and will bail
+     * out before we even get started.
+     * @param request The request that we might be finished with
+     * @return true if the request is completed
+     */
+    boolean isResponseCompleted(HttpServletRequest request);
 }

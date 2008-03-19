@@ -37,7 +37,6 @@ import org.directwebremoting.extend.ScriptSessionManager;
 import org.directwebremoting.extend.ServerException;
 import org.directwebremoting.extend.ServerLoadMonitor;
 import org.directwebremoting.extend.Sleeper;
-import org.directwebremoting.impl.JettyContinuationSleeper;
 import org.directwebremoting.impl.OutputAlarm;
 import org.directwebremoting.impl.ShutdownAlarm;
 import org.directwebremoting.impl.TimedAlarm;
@@ -79,9 +78,8 @@ public class PollHandler implements Handler
         // to write to the response outside of the servlet thread, there is no
         // need for us to do anything if we have been restarted. So we ignore
         // all Jetty continuation restarts.
-        if (JettyContinuationSleeper.isRestart(request))
+        if (containerAbstraction.isResponseCompleted(request))
         {
-            JettyContinuationSleeper.restart(request);
             return;
         }
 

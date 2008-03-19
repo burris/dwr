@@ -15,7 +15,6 @@
  */
 package org.directwebremoting.dwrp;
 
-
 /**
  * A Handler polling DWR calls whose replies are NOT HTML wrapped.
  * @author Joe Walker [joe at getahead dot ltd dot uk]

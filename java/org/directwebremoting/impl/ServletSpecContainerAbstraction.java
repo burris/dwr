@@ -29,6 +29,14 @@ import org.directwebremoting.extend.Sleeper;
 public class ServletSpecContainerAbstraction implements ContainerAbstraction
 {
     /* (non-Javadoc)
+     * @see org.directwebremoting.extend.ContainerAbstraction#isResponseCompleted(javax.servlet.http.HttpServletRequest)
+     */
+    public boolean isResponseCompleted(HttpServletRequest request)
+    {
+        return false;
+    }
+
+    /* (non-Javadoc)
      * @see org.directwebremoting.dwrp.ContainerAbstraction#createSleeper(javax.servlet.http.HttpServletRequest)
      */
     public Sleeper createSleeper(HttpServletRequest request)
