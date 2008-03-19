@@ -243,15 +243,18 @@ public class DefaultScriptSessionManager implements ScriptSessionManager
     {
         Collection<RealScriptSession> reply = new ArrayList<RealScriptSession>();
 
-        Set<String> scriptSessionIds = sessionXRef.get(httpSessionId);
-        if (scriptSessionIds != null)
+        synchronized (sessionLock)
         {
-            for (String scriptSessionId : scriptSessionIds)
+            Set<String> scriptSessionIds = sessionXRef.get(httpSessionId);
+            if (scriptSessionIds != null)
             {
-                DefaultScriptSession scriptSession = sessionMap.get(scriptSessionId);
-                if (scriptSession != null)
+                for (String scriptSessionId : scriptSessionIds)
                 {
-                    reply.add(scriptSession);
+                    DefaultScriptSession scriptSession = sessionMap.get(scriptSessionId);
+                    if (scriptSession != null)
+                    {
+                        reply.add(scriptSession);
+                    }
                 }
             }
         }
