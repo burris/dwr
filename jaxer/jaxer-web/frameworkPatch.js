@@ -39,7 +39,7 @@ Jaxer.dwr.requireUtil = function() {
  * <code>Jaxer.dwr.createNew("java.io.File");</code>
  * @param {string} varargs list of resources to import
  */
-Jaxer.dwr.createNew = function(className) {
+Jaxer.dwr.configureAccess = function(className) {
   if (!Jaxer.dwr.pathToDwrServlet) {
     Jaxer.Log.error("Jaxer.dwr.pathToDwrServlet has not been set");
     return;
