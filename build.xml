@@ -251,7 +251,7 @@
       <fileset dir="${target.root}/jaxer-main-classes"/>
     </jar>
     <copy file="${source.root}/jaxer/web/WEB-INF/web.xml" todir="${target.root}/jaxer/"/>
-    <copy file="${source.root}/jaxer/etc/docs/readme.txt" todir="${target.root}/jaxer/"/>
+    <copy file="${source.root}/jaxer/readme.txt" todir="${target.root}/jaxer/"/>
     <war destfile="${target.root}/jaxer/demoServer.war" webxml="${source.root}/jaxer/web/WEB-INF/web.xml">
       <lib file="${target.root}/jaxer/jaxer-dwr.jar"/>
       <classes dir="${target.root}/jaxer-test-classes"/>
