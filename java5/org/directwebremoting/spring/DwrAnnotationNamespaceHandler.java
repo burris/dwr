@@ -15,10 +15,15 @@
  */
 package org.directwebremoting.spring;
 
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -39,10 +44,11 @@ public class DwrAnnotationNamespaceHandler extends DwrNamespaceHandler
     {
         super.init();
         registerBeanDefinitionParser("annotation-config", new AnnotationConfigBeanDefinitionParser());
+        registerBeanDefinitionParser("annotation-scan", new AnnotationScannerDefinitionParser());
     }
 
     /**
-     * Register a new bean definition for each Spring bean that is annotated with 
+     * Register a new creator proxy for each Spring bean that is annotated with 
      * {@link org.directwebremoting.annotations.RemoteProxy}.
      *
      * @author Jose Noheda [jose.noheda@gmail.com]
@@ -60,6 +66,38 @@ public class DwrAnnotationNamespaceHandler extends DwrNamespaceHandler
             BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(DwrAnnotationPostProcessor.class);
             parserContext.getRegistry().registerBeanDefinition("dwrAnnotationPostProcessor", builder.getBeanDefinition());
             return parserContext.getRegistry().getBeanDefinition("dwrAnnotationPostProcessor");
+        }
+
+    }
+
+    /**
+     * Register a new bean definition and a proxy for each class that is annotated with 
+     * {@link org.directwebremoting.annotations.RemoteProxy} and is detected scanning the 
+     * base-package directory.
+     *
+     * @author Jose Noheda [jose.noheda@gmail.com]
+     */
+    protected class AnnotationScannerDefinitionParser implements BeanDefinitionParser
+    {
+
+        public BeanDefinition parse(Element element, ParserContext parserContext)
+        {
+            ClassPathBeanDefinitionScanner c = new DwrClassPathBeanDefinitionScanner(parserContext.getRegistry());
+            String basePackage = element.getAttribute("base-package");
+            if (!StringUtils.hasText(basePackage))
+            {
+                if (log.isInfoEnabled())
+                {
+                    log.info("No base package defined for classpath scanning. Traversing the whole JVM classpath");
+                }
+            }
+            String regex = element.getAttribute("regex");
+            if (StringUtils.hasText(regex))
+            {
+                c.addIncludeFilter(new RegexPatternTypeFilter(Pattern.compile(regex)));
+            }
+            c.scan(basePackage == null ? "" : basePackage);
+            return null;
         }
 
     }

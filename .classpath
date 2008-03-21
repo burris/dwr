@@ -125,5 +125,6 @@
 	<classpathentry kind="src" output="target/eclipse/classes/jaxer-main" path="jaxer/main/resources"/>
 	<classpathentry kind="src" output="target/eclipse/classes/jaxer-test" path="jaxer/test/java"/>
 	<classpathentry kind="src" output="target/eclipse/classes/jaxer-test" path="jaxer/test/resources"/>
+	<classpathentry kind="lib" path="jar/spring-2.5.2.jar" sourcepath="jar/spring-2.5.2-sources.jar"/>
 	<classpathentry kind="output" path="target/eclipse/classes/other"/>
 </classpath>

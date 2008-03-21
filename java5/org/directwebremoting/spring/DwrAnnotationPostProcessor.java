@@ -80,35 +80,42 @@ public class DwrAnnotationPostProcessor implements BeanFactoryPostProcessor
         }
     }
 
-    protected void registerCreator(BeanDefinitionHolder beanDefinitionHolder, BeanDefinitionRegistry beanDefinitionRegistry, Class<?> beanDefinitionClass, String javascript)
+    protected static void registerCreator(BeanDefinitionHolder beanDefinitionHolder, BeanDefinitionRegistry beanDefinitionRegistry, Class<?> beanDefinitionClass, String javascript)
     {
-        BeanDefinitionBuilder beanCreator = BeanDefinitionBuilder.rootBeanDefinition(BeanCreator.class);
-        try {
-            beanCreator.addPropertyValue("beanClass", beanDefinitionClass);
-            String name = beanDefinitionHolder.getBeanName();
-            if (name.startsWith("scopedTarget."))
-            {
-                name = name.substring(name.indexOf(".") + 1);
-            }
-            beanCreator.addPropertyValue("beanId", name);
-            beanCreator.addDependsOn(name);
-            String creatorConfigName = "__" + javascript;
-            beanCreator.addPropertyValue("javascript", javascript);
-            BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
-            creatorConfig.addPropertyValue("creator", beanCreator.getBeanDefinition());
-            List<String> includes = new ArrayList<String>();
-            for (Method method : beanDefinitionClass.getMethods()) {
-                if (method.getAnnotation(RemoteMethod.class) != null)
+        String creatorConfigName = "__" + javascript;
+        if (beanDefinitionRegistry.containsBeanDefinition(creatorConfigName))
+        {
+            log.info("[" + javascript + "] remote bean definition already detected. Mixed use of <dwr:annotation-config /> and <dwr:annotation-scan />? Re-scanned package?");
+        }
+        else
+        {
+            BeanDefinitionBuilder beanCreator = BeanDefinitionBuilder.rootBeanDefinition(BeanCreator.class);
+            try {
+                beanCreator.addPropertyValue("beanClass", beanDefinitionClass);
+                String name = beanDefinitionHolder.getBeanName();
+                if (name.startsWith("scopedTarget."))
                 {
-                    includes.add(method.getName());
+                    name = name.substring(name.indexOf(".") + 1);
                 }
+                beanCreator.addPropertyValue("beanId", name);
+                beanCreator.addDependsOn(name);
+                beanCreator.addPropertyValue("javascript", javascript);
+                BeanDefinitionBuilder creatorConfig = BeanDefinitionBuilder.rootBeanDefinition(CreatorConfig.class);
+                creatorConfig.addPropertyValue("creator", beanCreator.getBeanDefinition());
+                List<String> includes = new ArrayList<String>();
+                for (Method method : beanDefinitionClass.getMethods()) {
+                    if (method.getAnnotation(RemoteMethod.class) != null)
+                    {
+                        includes.add(method.getName());
+                    }
+                }
+                creatorConfig.addPropertyValue("includes", includes);
+                BeanDefinitionHolder aux = new BeanDefinitionHolder(creatorConfig.getBeanDefinition(), creatorConfigName);
+                BeanDefinitionReaderUtils.registerBeanDefinition(aux, beanDefinitionRegistry);
+                DwrNamespaceHandler.lookupCreators(beanDefinitionRegistry).put(javascript, new RuntimeBeanReference(creatorConfigName));
+            } catch (Exception ex) {
+                throw new FatalBeanException("Unable to create DWR bean creator for '" + beanDefinitionHolder.getBeanName() + "'. ", ex);
             }
-            creatorConfig.addPropertyValue("includes", includes);
-            BeanDefinitionHolder aux = new BeanDefinitionHolder(creatorConfig.getBeanDefinition(), creatorConfigName);
-            BeanDefinitionReaderUtils.registerBeanDefinition(aux, beanDefinitionRegistry);
-            DwrNamespaceHandler.lookupCreators(beanDefinitionRegistry).put(javascript, new RuntimeBeanReference(creatorConfigName));
-        } catch (Exception ex) {
-            throw new FatalBeanException("Unable to create DWR bean creator for '" + beanDefinitionHolder.getBeanName() + "'. ", ex);
         }
     }
 
@@ -118,4 +125,3 @@ public class DwrAnnotationPostProcessor implements BeanFactoryPostProcessor
     protected static final Log log = LogFactory.getLog(DwrAnnotationPostProcessor.class);
 
 }
-
