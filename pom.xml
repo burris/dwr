@@ -204,7 +204,7 @@
       <dependency>
         <groupId>org.apache.myfaces.core</groupId>
         <artifactId>myfaces-api</artifactId>
-        <version>1.1.2</version>
+        <version>1.1.8</version>
       </dependency>
       
       <!-- Spring -->
